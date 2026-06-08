@@ -1,6 +1,6 @@
 # 🏆 Proyek: Sistem Manajemen & Penjadwalan Turnamen
 
-Proyek ini adalah aplikasi berbasis *Command Line Interface* (CLI) C++ untuk mengelola jalannya turnamen kompetitif menggunakan sistem eliminasi (sistem gugur). Proyek ini dibagi menjadi berkas-berkas `*.cpp` terpisah tanpa file header (`*.h`) untuk mempermudah pengerjaan tim. Keterhubungan antar-berkas diatur melalui `#include` di dalam berkas [main.cpp](file:///home/fais/Documents/strukturData/main.cpp).
+Proyek ini adalah aplikasi berbasis *Command Line Interface* (CLI) C++ untuk mengelola jalannya turnamen kompetitif menggunakan sistem eliminasi (sistem gugur). Proyek ini dibagi menjadi berkas-berkas `*.cpp` terpisah tanpa file header (`*.h`) untuk mempermudah pengerjaan tim. Keterhubungan antar-berkas diatur melalui `#include` di dalam berkas [main.cpp](file:///home/fais/Documents/strukturData/src/main.cpp).
 
 ---
 
@@ -8,24 +8,24 @@ Proyek ini adalah aplikasi berbasis *Command Line Interface* (CLI) C++ untuk men
 
 Semua berkas berada di dalam satu folder dan harus dikerjakan sesuai spesifikasinya:
 
-1. **[models.cpp](file:///home/fais/Documents/strukturData/models.cpp)**: Definisi struktur data (struct) dan variabel global.
-2. **[search_sort.cpp](file:///home/fais/Documents/strukturData/search_sort.cpp)**: Fungsi pencarian tim dan pengurutan klasemen.
-3. **[main.cpp](file:///home/fais/Documents/strukturData/main.cpp)**: Menu utama program CLI dan penggabung seluruh file.
+1. **[models.cpp](file:///home/fais/Documents/strukturData/src/models.cpp)**: Definisi struktur data (struct) dan variabel global.
+2. **[search_sort.cpp](file:///home/fais/Documents/strukturData/src/search_sort.cpp)**: Fungsi pencarian tim dan pengurutan klasemen.
+3. **[main.cpp](file:///home/fais/Documents/strukturData/src/main.cpp)**: Menu utama program CLI dan penggabung seluruh file.
 
 ### 🛡️ Fitur Menu Admin (Admin Access)
-4. **[login_admin.cpp](file:///home/fais/Documents/strukturData/login_admin.cpp)**: Logika login akses Admin.
-5. **[lihat_tim.cpp](file:///home/fais/Documents/strukturData/lihat_tim.cpp)**: Menampilkan seluruh tim terdaftar dan anggotanya.
-6. **[edit_tim.cpp](file:///home/fais/Documents/strukturData/edit_tim.cpp)**: Mengubah nama tim/anggota menggunakan pointer.
-7. **[hapus_tim.cpp](file:///home/fais/Documents/strukturData/hapus_tim.cpp)**: Menghapus tim dari array (shifting index).
-8. **[buat_jadwal.cpp](file:///home/fais/Documents/strukturData/buat_jadwal.cpp)**: Mengacak bagan tanding dan memasukkannya ke Queue.
-9. **[input_hasil.cpp](file:///home/fais/Documents/strukturData/input_hasil.cpp)**: Memasukkan skor, update klasemen (poin), eliminasi tim, dan dequeue (pop).
-10. **[lihat_klasemen.cpp](file:///home/fais/Documents/strukturData/lihat_klasemen.cpp)**: Menampilkan tabel papan peringkat klasemen.
-11. **[lihat_bracket.cpp](file:///home/fais/Documents/strukturData/lihat_bracket.cpp)**: Menampilkan visualisasi bagan eliminasi turnamen.
+4. **[login_admin.cpp](file:///home/fais/Documents/strukturData/src/login_admin.cpp)**: Logika login akses Admin.
+5. **[lihat_tim.cpp](file:///home/fais/Documents/strukturData/src/lihat_tim.cpp)**: Menampilkan seluruh tim terdaftar dan anggotanya.
+6. **[edit_tim.cpp](file:///home/fais/Documents/strukturData/src/edit_tim.cpp)**: Mengubah nama tim/anggota menggunakan pointer.
+7. **[hapus_tim.cpp](file:///home/fais/Documents/strukturData/src/hapus_tim.cpp)**: Menghapus tim dari array (shifting index).
+8. **[buat_jadwal.cpp](file:///home/fais/Documents/strukturData/src/buat_jadwal.cpp)**: Mengacak bagan tanding dan memasukkannya ke Queue.
+9. **[input_hasil.cpp](file:///home/fais/Documents/strukturData/src/input_hasil.cpp)**: Memasukkan skor, update klasemen (poin), eliminasi tim, dan dequeue (pop).
+10. **[lihat_klasemen.cpp](file:///home/fais/Documents/strukturData/src/lihat_klasemen.cpp)**: Menampilkan tabel papan peringkat klasemen.
+11. **[lihat_bracket.cpp](file:///home/fais/Documents/strukturData/src/lihat_bracket.cpp)**: Menampilkan visualisasi bagan eliminasi turnamen.
 
 ### 👥 Fitur Menu Tim / Pemain (Restricted Access)
-12. **[registrasi_tim.cpp](file:///home/fais/Documents/strukturData/registrasi_tim.cpp)**: Mendaftarkan nama tim baru beserta 5 anggota.
-13. **[lihat_jadwal.cpp](file:///home/fais/Documents/strukturData/lihat_jadwal.cpp)**: Melihat antrian jadwal tanding.
-14. **[cari_lawan.cpp](file:///home/fais/Documents/strukturData/cari_lawan.cpp)**: Mencari profil/anggota tim lain dengan algoritma pencarian.
+12. **[registrasi_tim.cpp](file:///home/fais/Documents/strukturData/src/registrasi_tim.cpp)**: Mendaftarkan nama tim baru beserta 5 anggota.
+13. **[lihat_jadwal.cpp](file:///home/fais/Documents/strukturData/src/lihat_jadwal.cpp)**: Melihat antrian jadwal tanding.
+14. **[cari_lawan.cpp](file:///home/fais/Documents/strukturData/src/cari_lawan.cpp)**: Mencari profil/anggota tim lain dengan algoritma pencarian.
 
 ---
 
@@ -131,11 +131,11 @@ Berikut adalah daftar fungsi dan kebutuhan logika yang perlu diisi di dalam masi
 
 ## 🛠️ Cara Kompilasi dan Menjalankan Program
 
-Karena proyek ini menggunakan pendekatan Single-File Architecture yang digabungkan lewat `#include` berkas `.cpp` di `main.cpp`, Anda **tidak perlu** melakukan kompilasi terhadap semua berkas secara manual. Anda cukup melakukan kompilasi pada **[main.cpp](file:///home/fais/Documents/strukturData/main.cpp)** saja.
+Karena proyek ini menggunakan pendekatan Single-File Architecture yang digabungkan lewat `#include` berkas `.cpp` di `main.cpp`, Anda **tidak perlu** melakukan kompilasi terhadap semua berkas secara manual. Anda cukup melakukan kompilasi pada **[main.cpp](file:///home/fais/Documents/strukturData/src/main.cpp)** saja.
 
 ### Menggunakan g++ (GCC) di Terminal Linux/Windows:
 
 ```bash
-g++ /src/main.cpp -o sistem_turnamen
+g++ src/main.cpp -o sistem_turnamen
 ./sistem_turnamen atau sistem_turnamen.exe
 ```
