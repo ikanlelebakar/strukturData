@@ -136,6 +136,6 @@ Karena proyek ini menggunakan pendekatan Single-File Architecture yang digabungk
 ### Menggunakan g++ (GCC) di Terminal Linux/Windows:
 
 ```bash
-g++ main.cpp -o sistem_turnamen
-./sistem_turnamen
+g++ /src/main.cpp -o sistem_turnamen
+./sistem_turnamen atau sistem_turnamen.exe
 ```
