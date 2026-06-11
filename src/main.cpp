@@ -25,6 +25,7 @@ using namespace std;
 // Urutan include sangat penting (dependency order)
 
 #include "models.cpp"          // Struct, variabel global, fungsi queue (WAJIB PERTAMA)
+#include "utils.cpp"           // clearScreen() lintas platform
 #include "search_sort.cpp"     // cariTim(), urutkanKlasemen()
 
 // Modul fitur (semua bergantung pada models.cpp)
@@ -45,6 +46,7 @@ using namespace std;
 // BAGIAN 3: Helper — Tampilkan Header
 // ==========================================
 void tampilkanHeader() {
+    clearScreen();
     cout << "\n" << string(50, '=') << endl;
     cout << "      SISTEM MANAJEMEN TURNAMEN GAME" << endl;
     cout << string(50, '=') << endl;
