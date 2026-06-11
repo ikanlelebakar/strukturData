@@ -1,17 +1,35 @@
 /*
  * File: cari_lawan.cpp
- * Deskripsi: File ini berisi fungsi bagi pemain untuk memantau profil tim kompetitor/lawan berdasarkan input nama.
- * 
- * Tugas Tim/Mahasiswa:
- * 1. Implementasikan fungsi cari profil tim lawan:
- *    - Nama Fungsi: cariLawan
- *    - Parameter: tidak ada
- *    - Return: void
- *    - Kebutuhan Teknis:
- *      * Minta input string berupa Nama Tim lawan yang ingin dicari profilnya.
- *      * Panggil fungsi 'cariIndeksTim(namaTimLawan)' dari file 'search_sort.cpp' untuk melakukan pencarian linear.
- *      * Jika indeks yang dikembalikan bernilai >= 0:
- *        - Tampilkan nama tim, poin saat ini, status eliminasi, dan daftar anggota tim tersebut ke layar.
- *      * Jika indeks bernilai -1 (tidak ketemu):
- *        - Tampilkan pesan informatif bahwa tim lawan tersebut tidak ditemukan di dalam sistem turnamen.
+ * Deskripsi: Mencari profil tim berdasarkan nama (linear search via cariTim).
+ *            Bisa digunakan oleh tim untuk melihat profil lawan.
  */
+
+/*
+ * cariLawan: Input nama tim, cari di linked list, tampilkan detail profil.
+ */
+void cariLawan() {
+    if (headTim == nullptr) {
+        cout << "[INFO] Belum ada tim yang terdaftar." << endl;
+        return;
+    }
+
+    string namaCari;
+    cout << "\n=== CARI PROFIL TIM LAWAN ===" << endl;
+    cout << "Masukkan nama tim yang dicari: ";
+    cin.ignore();
+    getline(cin, namaCari);
+
+    Tim* hasil = cariTim(namaCari);  // linear search via pointer
+
+    if (hasil == nullptr) {
+        cout << "[INFO] Tim \"" << namaCari << "\" tidak ditemukan dalam sistem." << endl;
+        return;
+    }
+
+    cout << "\n--- Profil Tim ---" << endl;
+    cout << "Nama Tim       : " << hasil->namaTim << endl;
+    cout << "Jumlah Pemain  : " << hasil->jumlahPemain << endl;
+    cout << "Poin           : " << hasil->poin << endl;
+    cout << "Status         : " << (hasil->isEliminated ? "Tereliminasi" : "Aktif") << endl;
+    cout << string(30, '-') << endl;
+}

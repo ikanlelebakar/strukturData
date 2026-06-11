@@ -1,14 +1,44 @@
 /*
  * File: lihat_klasemen.cpp
- * Deskripsi: File ini berisi fungsi untuk menampilkan klasemen papan peringkat sementara dari seluruh tim yang terdaftar.
- * 
- * Tugas Tim/Mahasiswa:
- * 1. Implementasikan fungsi untuk menampilkan papan klasemen:
- *    - Nama Fungsi: lihatKlasemen
- *    - Parameter: tidak ada (mengakses langsung array global 'daftarTim')
- *    - Return: void
- *    - Kebutuhan Teknis:
- *      * Panggil fungsi 'urutkanKlasemen()' terlebih dahulu yang ada di file 'search_sort.cpp' agar data tim terurut secara descending berdasarkan poin tertinggi.
- *      * Tampilkan tabel klasemen dengan kolom: Peringkat, Nama Tim, Poin, Status (Aktif/Tereliminasi).
- *      * Lakukan perulangan untuk menampilkan semua data tim yang telah terurut.
+ * Deskripsi: Menampilkan papan klasemen berdasarkan poin (descending).
+ *            Memanggil urutkanKlasemen() dari search_sort.cpp terlebih dahulu.
  */
+
+/*
+ * lihatKlasemen: Sort linked list by poin descending, lalu tampilkan tabel.
+ */
+void lihatKlasemen() {
+    cout << "\n=== KLASEMEN TURNAMEN ===" << endl;
+
+    if (headTim == nullptr) {
+        cout << "(Belum ada tim yang terdaftar)" << endl;
+        return;
+    }
+
+    // Sort terlebih dahulu (bubble sort descending)
+    urutkanKlasemen();
+
+    // Header tabel
+    cout << left
+         << setw(5)  << "No"
+         << setw(20) << "Nama Tim"
+         << setw(8)  << "Poin"
+         << setw(15) << "Status"
+         << endl;
+    cout << string(50, '-') << endl;
+
+    int  no   = 1;
+    Tim* curr = headTim;
+    while (curr != nullptr) {
+        string status = curr->isEliminated ? "Tereliminasi" : "Aktif";
+        cout << left
+             << setw(5)  << no
+             << setw(20) << curr->namaTim
+             << setw(8)  << curr->poin
+             << setw(15) << status
+             << endl;
+        curr = curr->next;
+        no++;
+    }
+    cout << string(50, '-') << endl;
+}

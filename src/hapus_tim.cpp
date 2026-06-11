@@ -1,18 +1,50 @@
 /*
  * File: hapus_tim.cpp
- * Deskripsi: File ini berisi fungsi untuk menghapus tim dari daftar turnamen dan merapatkan kembali indeks array.
- * 
- * Tugas Tim/Mahasiswa:
- * 1. Implementasikan fungsi hapus tim:
- *    - Nama Fungsi: hapusTim
- *    - Parameter: tidak ada (mengakses langsung array global 'daftarTim' dan 'jumlahTimAktif')
- *    - Return: void
- *    - Kebutuhan Teknis:
- *      * Meminta input nama tim yang ingin dihapus.
- *      * Cari indeks tim menggunakan fungsi 'cariIndeksTim'.
- *      * Jika ditemukan:
- *        - Lakukan perulangan (loop) untuk menggeser elemen-elemen array ke arah kiri (indeks i diisi oleh indeks i+1) mulai dari indeks yang ditemukan hingga indeks 'jumlahTimAktif - 2'.
- *        - Kurangi nilai variabel global 'jumlahTimAktif' sebanyak 1 (jumlahTimAktif--).
- *        - Tampilkan pesan sukses bahwa tim berhasil dihapus.
- *      * Jika tidak ditemukan, tampilkan pesan bahwa tim tidak ada di dalam daftar.
+ * Deskripsi: Menghapus tim dari linked list (admin only).
+ *            Hanya bisa dilakukan sebelum braket dibuat.
  */
+
+/*
+ * hapusTim: Cari tim berdasarkan nama, lalu hapus node dari linked list.
+ *           Menyambung kembali pointer prev->next agar list tetap utuh.
+ */
+void hapusTim() {
+    if (headTim == nullptr) {
+        cout << "[INFO] Belum ada tim yang terdaftar." << endl;
+        return;
+    }
+
+    if (bracketSudahDibuat) {
+        cout << "[DITOLAK] Tidak bisa hapus tim setelah braket dibuat." << endl;
+        return;
+    }
+
+    string namaCari;
+    cout << "\nMasukkan nama tim yang ingin dihapus: ";
+    cin.ignore();
+    getline(cin, namaCari);
+
+    Tim* curr = headTim;
+    Tim* prev = nullptr;
+
+    while (curr != nullptr) {
+        if (curr->namaTim == namaCari) {
+            // Sambungkan prev ke node sesudah curr
+            if (prev == nullptr) {
+                // Hapus node head
+                headTim = curr->next;
+            } else {
+                prev->next = curr->next;
+            }
+            delete curr;
+            jumlahTimAktif--;
+            cout << "[SUKSES] Tim \"" << namaCari << "\" berhasil dihapus. "
+                 << "Sisa tim: " << jumlahTimAktif << endl;
+            return;
+        }
+        prev = curr;
+        curr = curr->next;
+    }
+
+    cout << "[ERROR] Tim \"" << namaCari << "\" tidak ditemukan." << endl;
+}

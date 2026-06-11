@@ -1,24 +1,105 @@
 /*
  * File: edit_tim.cpp
- * Deskripsi: File ini berisi fungsi untuk mengubah informasi tim (nama tim / anggota) menggunakan konsep pointer.
- * 
- * Tugas Tim/Mahasiswa:
- * 1. Implementasikan fungsi edit data tim menggunakan pointer:
- *    - Nama Fungsi: editDataTim
- *    - Parameter: Tim* ptrTim (Pointer yang menunjuk ke objek Tim asli pada array global 'daftarTim')
- *    - Return: void
- *    - Kebutuhan Teknis:
- *      * Melalui pointer 'ptrTim', ubah isi atribut 'namaTim' sesuai dengan inputan user baru.
- *      * Melalui pointer 'ptrTim', lakukan perulangan untuk mengupdate/mengubah nama-nama 'anggota[i].namaPemain' jika diinginkan admin.
- *      * Wajib menggunakan operator panah (->) atau operator dereference (*) untuk memanipulasi atribut di dalam struct Tim yang ditunjuk.
- * 
- * 2. Implementasikan fungsi menu pemicu edit:
- *    - Nama Fungsi: menuEditTim
- *    - Parameter: tidak ada
- *    - Return: void
- *    - Kebutuhan Teknis:
- *      * Menerima input nama tim yang ingin diedit.
- *      * Cari indeks tim menggunakan fungsi 'cariIndeksTim'.
- *      * Jika ditemukan, panggil fungsi 'editDataTim' dengan mengirimkan alamat memori asli tim tersebut (menggunakan operator &).
- *      * Jika tidak ditemukan, tampilkan pesan error.
+ * Deskripsi: Mengubah data tim menggunakan pointer.
+ *            Tim hanya bisa edit data dirinya sendiri.
  */
+
+/*
+ * editDataTim: Edit nama tim dan/atau jumlah pemain melalui pointer.
+ *              Wajib menggunakan operator -> untuk memanipulasi struct.
+ */
+void editDataTim(Tim* ptrTim) {
+    if (ptrTim == nullptr) {
+        cout << "[ERROR] Pointer tim tidak valid." << endl;
+        return;
+    }
+
+    int pilihan;
+    cout << "\n=== EDIT DATA TIM: " << ptrTim->namaTim << " ===" << endl;
+    cout << "1. Ubah Nama Tim" << endl;
+    cout << "2. Ubah Jumlah Pemain" << endl;
+    cout << "3. Ubah Password" << endl;
+    cout << "0. Batal" << endl;
+    cout << "Pilihan: ";
+    cin >> pilihan;
+
+    switch (pilihan) {
+        case 1: {
+            string namaBaru;
+            cout << "Nama Tim Baru: ";
+            cin.ignore();
+            getline(cin, namaBaru);
+
+            // Cek duplikat (tidak boleh sama dengan tim lain)
+            Tim* existing = cariTim(namaBaru);
+            if (existing != nullptr && existing != ptrTim) {
+                cout << "[DITOLAK] Nama \"" << namaBaru << "\" sudah dipakai tim lain." << endl;
+            } else {
+                ptrTim->namaTim = namaBaru;  // operator -> untuk akses via pointer
+                cout << "[SUKSES] Nama tim berhasil diubah menjadi \"" << namaBaru << "\"." << endl;
+            }
+            break;
+        }
+        case 2: {
+            int jumlahBaru;
+            do {
+                cout << "Jumlah Pemain Baru (" << MIN_PEMAIN << "-" << MAX_PEMAIN << "): ";
+                cin >> jumlahBaru;
+                if (jumlahBaru < MIN_PEMAIN || jumlahBaru > MAX_PEMAIN) {
+                    cout << "[ERROR] Harus antara " << MIN_PEMAIN << " dan " << MAX_PEMAIN << "." << endl;
+                }
+            } while (jumlahBaru < MIN_PEMAIN || jumlahBaru > MAX_PEMAIN);
+
+            ptrTim->jumlahPemain = jumlahBaru;  // operator -> untuk akses via pointer
+            cout << "[SUKSES] Jumlah pemain berhasil diubah menjadi " << jumlahBaru << "." << endl;
+            break;
+        }
+        case 3: {
+            string passBaru;
+            cout << "Password Baru: ";
+            cin.ignore();
+            getline(cin, passBaru);
+            ptrTim->password = passBaru;
+            cout << "[SUKSES] Password berhasil diubah." << endl;
+            break;
+        }
+        case 0:
+            cout << "Edit dibatalkan." << endl;
+            break;
+        default:
+            cout << "[ERROR] Pilihan tidak valid." << endl;
+    }
+}
+
+/*
+ * menuEditTim: Admin memilih tim yang ingin diedit berdasarkan nama.
+ *              Dipanggil dari menu admin tanpa tim yang login.
+ */
+void menuEditTim() {
+    if (headTim == nullptr) {
+        cout << "[INFO] Belum ada tim yang terdaftar." << endl;
+        return;
+    }
+
+    string namaCari;
+    cout << "\nMasukkan nama tim yang ingin diedit: ";
+    cin.ignore();
+    getline(cin, namaCari);
+
+    Tim* target = cariTim(namaCari);  // cari via pointer
+    if (target == nullptr) {
+        cout << "[ERROR] Tim \"" << namaCari << "\" tidak ditemukan." << endl;
+        return;
+    }
+
+    editDataTim(target);  // kirim pointer langsung (akses ke objek asli)
+}
+
+/*
+ * editTimSendiri: Tim yang sedang login mengedit data dirinya sendiri.
+ *                Dipanggil dari menu tim dengan pointer timLogin.
+ */
+void editTimSendiri(Tim* timLogin) {
+    if (timLogin == nullptr) return;
+    editDataTim(timLogin);
+}

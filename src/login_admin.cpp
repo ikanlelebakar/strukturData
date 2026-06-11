@@ -1,15 +1,27 @@
 /*
  * File: login_admin.cpp
- * Deskripsi: File ini berisi fungsi untuk menangani autentikasi masuk (login) akun administrator.
- * 
- * Tugas Tim/Mahasiswa:
- * 1. Implementasikan fungsi login admin:
- *    - Nama Fungsi: loginAdmin
- *    - Parameter: tidak ada
- *    - Return: bool (true jika login sukses, false jika login gagal atau dibatalkan)
- *    - Kebutuhan Teknis:
- *      * Menerima input string username dan password dari admin.
- *      * Lakukan pencocokan nilai dengan data statis, contoh: username = "admin", password = "123" atau "turnamen2026".
- *      * Berikan feedback teks jika login berhasil atau salah.
- *      * Kembalikan nilai status boolean ke menu utama.
+ * Deskripsi: Autentikasi administrator.
+ *            Username: "admin" | Password: "turnamen2026"
  */
+
+/*
+ * loginAdmin: Minta username + password, cocokkan dengan kredensial statis.
+ *             Return true jika berhasil, false jika gagal/dibatalkan.
+ */
+bool loginAdmin() {
+    string username, password;
+
+    cout << "\n=== LOGIN ADMIN ===" << endl;
+    cout << "Username: ";
+    cin >> username;
+    cout << "Password: ";
+    cin >> password;
+
+    if (username == "admin" && password == "turnamen2026") {
+        cout << "[OK] Login admin berhasil. Selamat datang, Admin!" << endl;
+        return true;
+    }
+
+    cout << "[GAGAL] Username atau password salah." << endl;
+    return false;
+}

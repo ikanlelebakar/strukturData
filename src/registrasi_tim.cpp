@@ -1,29 +1,76 @@
 /*
  * File: registrasi_tim.cpp
- * Deskripsi: File ini berisi fungsi untuk mendaftarkan tim baru ke sistem.
- *            Pendaftaran hanya bisa dilakukan selama Admin belum menutup pendaftaran.
- *
- * Tugas Tim/Mahasiswa:
- * 1. Implementasikan fungsi registrasi tim baru:
- *    - Nama Fungsi: registrasiTimBaru
- *    - Parameter: tidak ada (mengakses langsung variabel global headTim, jumlahTimAktif)
- *    - Return: void
- *    - Kebutuhan Teknis:
- *      * Cek flag 'pendaftaranDitutup'. Jika true, tolak pendaftaran dengan pesan error.
- *      * Cek apakah jumlahTimAktif >= MAX_TIM. Jika penuh, tolak pendaftaran.
- *      * Minta input nama tim (string) -> disimpan sebagai namaTim sekaligus username login.
- *      * Cek apakah nama tim sudah terdaftar (traverse linked list). Jika duplikat, tolak.
- *      * Minta input password (string) untuk login tim.
- *      * Minta input jumlah pemain (int, valid: MIN_PEMAIN s.d. MAX_PEMAIN = 1-7).
- *        Validasi input, tolak jika di luar range.
- *      * Buat node Tim baru dengan:
- *        - namaTim = input nama tim
- *        - password = input password
- *        - jumlahPemain = input jumlah pemain
- *        - poin = 0
- *        - isEliminated = false
- *        - next = nullptr
- *      * Tambahkan node baru ke akhir linked list (tail insertion).
- *      * Increment jumlahTimAktif.
- *      * Tampilkan pesan sukses bahwa tim berhasil terdaftar.
+ * Deskripsi: Mendaftarkan tim baru ke sistem (tail insertion ke linked list).
+ *            Pendaftaran hanya bisa dilakukan selama pendaftaran belum ditutup admin.
  */
+
+/*
+ * registrasiTimBaru: Input nama tim, password, jumlah pemain.
+ *                    Tambahkan ke akhir linked list.
+ */
+void registrasiTimBaru() {
+    // Cek flag pendaftaran
+    if (pendaftaranDitutup) {
+        cout << "[DITOLAK] Pendaftaran sudah ditutup oleh Admin." << endl;
+        return;
+    }
+
+    // Cek kuota maksimum
+    if (jumlahTimAktif >= MAX_TIM) {
+        cout << "[DITOLAK] Jumlah tim sudah mencapai batas maksimum (" << MAX_TIM << " tim)." << endl;
+        return;
+    }
+
+    string namaTim, password;
+    int    jumlahPemain;
+
+    cout << "\n=== REGISTRASI TIM BARU ===" << endl;
+
+    // Input nama tim
+    cout << "Nama Tim  : ";
+    cin.ignore();
+    getline(cin, namaTim);
+
+    // Cek duplikat nama tim
+    if (cariTim(namaTim) != nullptr) {
+        cout << "[DITOLAK] Nama tim \"" << namaTim << "\" sudah terdaftar. Pilih nama lain." << endl;
+        return;
+    }
+
+    // Input password
+    cout << "Password  : ";
+    getline(cin, password);
+
+    // Input jumlah pemain dengan validasi
+    do {
+        cout << "Jumlah Pemain (" << MIN_PEMAIN << "-" << MAX_PEMAIN << "): ";
+        cin >> jumlahPemain;
+        if (jumlahPemain < MIN_PEMAIN || jumlahPemain > MAX_PEMAIN) {
+            cout << "[ERROR] Jumlah pemain harus antara " << MIN_PEMAIN << " dan " << MAX_PEMAIN << "." << endl;
+        }
+    } while (jumlahPemain < MIN_PEMAIN || jumlahPemain > MAX_PEMAIN);
+
+    // Buat node Tim baru
+    Tim* baru        = new Tim;
+    baru->namaTim    = namaTim;
+    baru->password   = password;
+    baru->jumlahPemain = jumlahPemain;
+    baru->poin       = 0;
+    baru->isEliminated = false;
+    baru->next       = nullptr;
+
+    // Tail insertion ke linked list
+    if (headTim == nullptr) {
+        headTim = baru;
+    } else {
+        Tim* curr = headTim;
+        while (curr->next != nullptr) {
+            curr = curr->next;
+        }
+        curr->next = baru;
+    }
+
+    jumlahTimAktif++;
+    cout << "[SUKSES] Tim \"" << namaTim << "\" berhasil terdaftar! (Total: "
+         << jumlahTimAktif << "/" << MAX_TIM << " tim)" << endl;
+}

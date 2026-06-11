@@ -1,19 +1,40 @@
 /*
  * File: login_tim.cpp
- * Deskripsi: File ini berisi fungsi untuk autentikasi login tim.
- *            Tim login menggunakan nama tim (sebagai username) dan password.
- *
- * Tugas Tim/Mahasiswa:
- * 1. Implementasikan fungsi login tim:
- *    - Nama Fungsi: loginTim
- *    - Parameter: tidak ada
- *    - Return: Tim* -> pointer ke node Tim yang berhasil login, atau nullptr jika gagal
- *    - Kebutuhan Teknis:
- *      * Minta input username (nama tim) dan password dari pengguna.
- *      * Traverse linked list (mulai dari headTim) untuk mencari tim dengan namaTim yang cocok.
- *      * Jika ditemukan, bandingkan password yang diinput dengan password yang tersimpan.
- *      * Jika cocok, return pointer ke node Tim tersebut (login sukses).
- *      * Jika nama tim tidak ditemukan atau password salah, tampilkan pesan error dan return nullptr.
- *      * Catatan: Tim yang sudah tereliminasi (isEliminated = true) tetap bisa login
- *        untuk melihat data, namun tidak bisa edit (pembatasan dilakukan di menu, bukan di sini).
+ * Deskripsi: Autentikasi login tim menggunakan nama tim (username) + password.
+ *            Traverse linked list untuk mencari tim yang cocok.
  */
+
+/*
+ * loginTim: Minta input nama tim + password, cari di linked list.
+ *           Return pointer ke node Tim jika sukses, nullptr jika gagal.
+ *
+ * Catatan: Tim yang sudah tereliminasi tetap bisa login untuk melihat data,
+ *          pembatasan operasi edit dilakukan di level menu.
+ */
+Tim* loginTim() {
+    string namaTim, password;
+
+    cout << "\n=== LOGIN TIM ===" << endl;
+    cout << "Nama Tim (Username): ";
+    cin.ignore();
+    getline(cin, namaTim);
+    cout << "Password          : ";
+    getline(cin, password);
+
+    Tim* curr = headTim;
+    while (curr != nullptr) {
+        if (curr->namaTim == namaTim) {
+            if (curr->password == password) {
+                cout << "[OK] Login berhasil. Selamat datang, Tim " << namaTim << "!" << endl;
+                return curr;
+            } else {
+                cout << "[GAGAL] Password salah." << endl;
+                return nullptr;
+            }
+        }
+        curr = curr->next;
+    }
+
+    cout << "[GAGAL] Tim dengan nama \"" << namaTim << "\" tidak ditemukan." << endl;
+    return nullptr;
+}
