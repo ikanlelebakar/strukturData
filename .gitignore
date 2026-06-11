@@ -68,3 +68,6 @@ vcpkg_installed/
 Testing/
 .cache/
 graphify-out/
+.agents/
+sistem_turnamen
+test_clear

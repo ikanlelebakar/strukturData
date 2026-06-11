@@ -18,7 +18,7 @@ void lihatBracketTree() {
     }
 
     // Kumpulkan semua tim ke array untuk menampilkan bracket
-    Tim* arrTim[MAX_TIM];
+    Tim** arrTim = new Tim*[MAX_TIM];
     int  n = 0;
     Tim* curr = headTim;
     while (curr != nullptr) {
@@ -53,4 +53,6 @@ void lihatBracketTree() {
     } else {
         cout << "\nTurnamen selesai! Lihat klasemen untuk melihat juara." << endl;
     }
+
+    delete[] arrTim;
 }

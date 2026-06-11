@@ -73,4 +73,8 @@ void registrasiTimBaru() {
     jumlahTimAktif++;
     cout << "[SUKSES] Tim \"" << namaTim << "\" berhasil terdaftar! (Total: "
          << jumlahTimAktif << "/" << MAX_TIM << " tim)" << endl;
+
+    cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
+    cin.ignore();
+    cin.get();
 }

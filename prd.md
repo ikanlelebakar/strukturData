@@ -21,71 +21,73 @@ g++ src/main.cpp -o sistem_turnamen
 ./sistem_turnamen
 ```
 
-Akun Admin: `username=admin` | `password=turnamen2026`
-
 ---
 
 # Alur Penggunaan Program
 
-## 1. Menu Utama (Tanpa Login)
-Saat program pertama kali dijalankan, langsung muncul **Menu Utama** dengan 3 pilihan:
+## 1. Pertama Kali Dijalankan (Registrasi Admin)
+Saat program pertama kali dibuka, pengguna diharuskan mendaftarkan akun Administrator baru. Admin memasukkan:
+- Username Admin
+- Password Admin
+- Nama Turnamen
+- Kapasitas Maksimal Tim (`MAX_TIM`): Harus angka pangkat 2 (min 2, contoh: 2, 4, 8, 16, 32...)
+
+## 2. Menu Utama Dinamis (Berdasarkan Status Registrasi)
+
+Setelah registrasi admin selesai, program akan menampilkan Menu Utama. Opsi menu ini berubah secara otomatis berdasarkan kondisi pendaftaran:
+
+### Fase A: Pendaftaran Terbuka (Tim < MAX_TIM & belum ditutup oleh Admin)
 ```
-1. Masuk Sebagai Admin
-2. Masuk Sebagai Tim / Registrasi Tim
-3. Lihat Sebagai Penonton
+1. Registrasi Tim
+2. Login Tim
+3. Login Admin
 0. Keluar Program
 ```
+- **1. Registrasi Tim**: Memasukkan nama tim (username login), password, dan jumlah pemain (1-7).
+- **2. Login Tim**: Masuk ke menu tim menggunakan kredensial tim.
+- **3. Login Admin**: Masuk ke menu admin menggunakan kredensial admin dinamis.
 
-## 2. Fase Registrasi Tim
-- Pilih **2 → Registrasi Tim Baru**
-- Input: nama tim (sekaligus username login), password, jumlah pemain (1–7)
-- Pendaftaran terbuka selama Admin belum menutup dan kuota belum penuh (MAX: 8 tim)
-- Duplikat nama tim otomatis ditolak
+### Fase B: Pendaftaran Ditutup / Penuh (Tim >= MAX_TIM atau ditutup secara manual oleh Admin)
+```
+1. Login Tim
+2. Penonton
+3. Login Admin
+0. Keluar Program
+```
+- Opsi registrasi tim menghilang dan diganti dengan opsi **2. Penonton** untuk melihat jadwal, braket, dan klasemen tanpa login.
 
-## 3. Admin Tutup Pendaftaran
-- Pilih **1 (Admin)** → login → pilih **4. Tutup Pendaftaran**
-- Sistem validasi: jumlah tim **harus pangkat 2** (4, 8, 16...)
-- Setelah ditutup, registrasi baru tidak bisa dilakukan
+## 3. Admin Menutup Pendaftaran & Membuat Jadwal
+- Admin login -> pilih **4. Tutup Pendaftaran** (opsional jika kuota belum penuh).
+- Admin -> pilih **5. Buat Jadwal Pertandingan**.
+- Admin memasukkan tanggal mulai Ronde 1 (`YYYY-MM-DD`). Sistem otomatis memasangkan tim secara *head-vs-tail* (Tim 1 vs Tim N, dst.) dan memasukkannya ke antrian pertandingan (Queue).
 
-## 4. Buat Braket Ronde 1
-- Admin → pilih **5. Buat Jadwal Pertandingan**
-- Admin input tanggal mulai Ronde 1 (format: `YYYY-MM-DD`)
-- Sistem otomatis pasangkan tim (head vs tail) dan masukkan ke antrian (Queue)
+## 4. Input Hasil Pertandingan (Ronde per Ronde)
+- Admin -> pilih **7. Input Hasil Pertandingan**.
+- Admin memilih tim pemenang pada pertandingan terdepan di antrian. Sistem otomatis menandai tim kalah sebagai tereliminasi dan memberikan +1 poin kemenangan kepada pemenang.
+- Pertandingan dikeluarkan dari antrian (dequeue).
 
-## 5. Input Hasil Pertandingan (Ronde per Ronde)
-- Admin → pilih **7. Input Hasil Pertandingan**
-- Input skor Tim A dan Tim B (tidak boleh seri, tidak boleh negatif)
-- Sistem otomatis tentukan pemenang (+1 poin) dan eliminasi yang kalah
-- Ulangi sampai semua match di ronde selesai (antrian kosong)
+## 5. Buat Jadwal Ronde Berikutnya
+- Setelah semua pertandingan pada satu ronde selesai (antrian kosong), Admin membuat jadwal ronde berikutnya via menu admin:
+  - Ronde biasa: +3 hari dari pertandingan terakhir.
+  - Semifinal: +4 hari dari pertandingan terakhir.
+  - Final: +5 hari dari pertandingan terakhir.
+  - Perebutan Juara ke-3: Hari Final - 1 (otomatis masuk antrian setelah semifinal selesai).
 
-## 6. Buat Jadwal Ronde Berikutnya
-- Admin → pilih **6. Buat Jadwal Ronde Berikutnya**
-- Tanggal otomatis dihitung:
-  - Ronde biasa        : +3 hari dari match terakhir
-  - Semifinal          : +4 hari dari match terakhir
-  - Final              : +5 hari dari match terakhir
-  - Perebutan Juara ke-3: Hari Final − 1 (otomatis di-enqueue setelah 2 semifinal selesai)
-
-## 7. Logika Semifinal & Juara ke-3
-- Setelah 2 match Semifinal selesai:
-  - Dua semifinalis yang kalah **belum di-eliminate**
-  - Sistem otomatis enqueue **Pertandingan Perebutan Juara ke-3**
-- Setelah match ke-3 selesai, keduanya baru di-eliminate
-- Final diproses setelah match ke-3 rampung
-
-## 8. Turnamen Selesai
-- Semua antrian kosong → lihat **Klasemen** untuk melihat Juara 1, 2, 3
+## 6. Logika Juara ke-3 & Final
+- Setelah semifinal selesai, pertandingan perebutan juara ke-3 dimainkan terlebih dahulu sebelum Final.
+- Pemenang perebutan juara ke-3 menduduki peringkat ke-3.
+- Pemenang Final menjadi Juara 1, dan yang kalah menjadi Juara 2.
 
 ---
 
 # Hak Akses
 
 ## Admin
-Login dengan `admin` / `turnamen2026`. Memiliki akses penuh:
+Login dengan akun admin yang dibuat pada awal program berjalan. Hak akses meliputi:
 - Lihat daftar tim
 - Edit data tim (semua tim)
-- Hapus tim (hanya sebelum braket dibuat)
-- Tutup pendaftaran
+- Hapus tim (sebelum braket dibuat)
+- Tutup pendaftaran secara manual
 - Buat jadwal pertandingan (Ronde 1)
 - Buat jadwal ronde berikutnya
 - Input hasil pertandingan
@@ -93,19 +95,18 @@ Login dengan `admin` / `turnamen2026`. Memiliki akses penuh:
 - Lihat bracket/bagan
 
 ## Tim
-Login menggunakan nama tim (username) + password. Memiliki akses:
-- Registrasi tim baru
-- Edit data tim sendiri (hanya jika belum tereliminasi)
+Login menggunakan nama tim (username) + password. Hak akses meliputi:
+- Edit data tim sendiri (selama belum tereliminasi)
 - Lihat jadwal pertandingan
 - Cari profil tim lawan
 - Lihat klasemen
 - Lihat bracket
 
 ## Penonton
-Tanpa login. Hanya bisa melihat:
-- Jadwal pertandingan
-- Bracket/bagan turnamen
-- Klasemen
+Tanpa login. Muncul setelah pendaftaran ditutup/penuh. Hak akses meliputi:
+- Lihat jadwal pertandingan
+- Lihat bracket/bagan turnamen
+- Lihat klasemen
 
 ---
 
@@ -114,12 +115,13 @@ Tanpa login. Hanya bisa melihat:
 | File | Fungsi |
 |------|--------|
 | `main.cpp` | Driver utama — menu Admin/Tim/Penonton |
-| `models.cpp` | Struct `Tim`, `NodeAntrian`, variabel global, queue |
+| `models.cpp` | Struct `Tim`, `NodeAntrian`, variabel global, queue, helper `isPowerOfTwo` |
 | `utils.cpp` | `clearScreen()` lintas platform (Windows/Linux/macOS) |
 | `search_sort.cpp` | `cariTim()` linear search, `urutkanKlasemen()` bubble sort |
-| `login_admin.cpp` | `loginAdmin()` |
+| `registrasi_admin.cpp` | `registrasiAdmin()` — Pendaftaran akun admin dan setelan turnamen pertama kali |
+| `login_admin.cpp` | `loginAdmin()` — Autentikasi administrator dinamis |
 | `login_tim.cpp` | `loginTim()` → return `Tim*` |
-| `registrasi_tim.cpp` | `registrasiTimBaru()` |
+| `registrasi_tim.cpp` | `registrasiTimBaru()` — Pendaftaran tim |
 | `lihat_tim.cpp` | `lihatDaftarTim()` |
 | `edit_tim.cpp` | `editDataTim()`, `menuEditTim()`, `editTimSendiri()` |
 | `hapus_tim.cpp` | `hapusTim()` |
@@ -139,4 +141,4 @@ Tanpa login. Hanya bisa melihat:
 3. Setiap perubahan harus melakukan commit ke branch saat ini
 4. Setelah semua program dan test selesai harus mengupdate `/graphify`
 5. Data tidak persisten — semua hilang saat program ditutup (no file I/O)
-6. Jumlah tim harus selalu pangkat 2 (4, 8, 16, 32...)
+6. Kapasitas maksimum tim (`MAX_TIM`) di-set secara dinamis oleh admin dan harus merupakan pangkat 2.

@@ -19,9 +19,7 @@
 /*
  * isPowerOfTwo: Cek apakah n adalah pangkat 2
  */
-bool isPowerOfTwo(int n) {
-    return n > 0 && (n & (n - 1)) == 0;
-}
+
 
 /*
  * tambahHari: Tambahkan 'hari' hari ke string tanggal "YYYY-MM-DD".
@@ -98,7 +96,7 @@ void buatJadwalPertandingan() {
     } while (!validasiTanggal(tanggalMulai));
 
     // Kumpulkan semua tim aktif ke array sementara (untuk pairing)
-    Tim* arrTim[MAX_TIM];
+    Tim** arrTim = new Tim*[MAX_TIM];
     int  n = 0;
     Tim* curr = headTim;
     while (curr != nullptr) {
@@ -120,4 +118,5 @@ void buatJadwalPertandingan() {
     bracketSudahDibuat = true;
 
     cout << "[SUKSES] Jadwal Ronde 1 berhasil dibuat. Braket siap!" << endl;
+    delete[] arrTim;
 }

@@ -17,7 +17,7 @@ bool loginAdmin() {
     cout << "Password: ";
     cin >> password;
 
-    if (username == "admin" && password == "turnamen2026") {
+    if (username == adminUsername && password == adminPassword) {
         cout << "[OK] Login admin berhasil. Selamat datang, Admin!" << endl;
         return true;
     }

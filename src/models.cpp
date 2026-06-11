@@ -13,11 +13,24 @@
 using namespace std;
 
 // ==========================================
-// KONSTANTA GLOBAL
+// KONSTANTA GLOBAL & STATE UTAMA
 // ==========================================
-const int MAX_TIM    = 8;  // harus pangkat 2: 4, 8, 16, 32...
+int MAX_TIM          = 8;  // Di-set dinamis saat registrasi admin (harus pangkat 2)
 const int MIN_PEMAIN = 1;
 const int MAX_PEMAIN = 7;
+
+// ==========================================
+// VARIABEL GLOBAL — STATE ADMIN
+// ==========================================
+string adminUsername = "";
+string adminPassword = "";
+string namaTurnamen   = "";
+bool adminSudahDibuat = false;
+
+// Helper pangkat 2
+bool isPowerOfTwo(int n) {
+    return n > 0 && (n & (n - 1)) == 0;
+}
 
 // ==========================================
 // STRUCT TIM (node singly linked list)

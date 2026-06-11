@@ -192,7 +192,7 @@ void buatJadwalBerikutnya() {
     }
 
     // Kumpulkan tim yang masih aktif (belum eliminate)
-    Tim* timAktif[MAX_TIM];
+    Tim** timAktif = new Tim*[MAX_TIM];
     int  n = 0;
     Tim* curr = headTim;
     while (curr != nullptr) {
@@ -234,4 +234,5 @@ void buatJadwalBerikutnya() {
     }
 
     cout << "[SUKSES] Jadwal " << namaRonde << " berhasil dibuat!" << endl;
+    delete[] timAktif;
 }
