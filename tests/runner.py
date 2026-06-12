@@ -11,9 +11,11 @@ def strip_ansi(text):
     return ansi_escape.sub('', text)
 
 class CLIAppRunner:
-    def __init__(self, binary_path="./sistem_turnamen", verbose=True, delay=0.4):
+    def __init__(self, binary_path="./sistem_turnamen", verbose=True, delay=0.4, interactive=None):
         self.verbose = verbose
         self.delay = delay
+        import os
+        self.interactive = interactive if interactive is not None else (os.environ.get("INTERACTIVE") == "1")
         self.proc = subprocess.Popen(
             [binary_path],
             stdin=subprocess.PIPE,
@@ -79,7 +81,10 @@ class CLIAppRunner:
         self.proc.stdin.flush()
 
     def write_line(self, line):
-        if self.delay > 0:
+        if self.interactive:
+            print(f"\n\033[33m[TEST: Press ENTER to send '{line}']\033[0m", end="", flush=True)
+            input()
+        elif self.delay > 0:
             time.sleep(self.delay)
         self.write(line + "\n")
 
