@@ -14,7 +14,9 @@ class TestTournament(unittest.TestCase):
         # Build binary if not exists
         if not os.path.exists("./sistem_turnamen"):
             subprocess.run(["g++", "src/main.cpp", "-o", "sistem_turnamen"], check=True)
-        self.runner = CLIAppRunner("./sistem_turnamen")
+        # verbose=True: echoes C++ CLI stream to the console
+        # delay=0.4: adds 400ms delay between inputs for screen-clear readability
+        self.runner = CLIAppRunner("./sistem_turnamen", verbose=True, delay=0.4)
 
     def tearDown(self):
         if hasattr(self, 'runner') and self.runner:
@@ -109,10 +111,69 @@ class TestTournament(unittest.TestCase):
         self.assertIn("Tim \"Team Beta\" berhasil terdaftar!", out)
         self.runner.write_line("") # Press ENTER
         
-        # Register Team 3
+        # ----------------------------------------------------
+        # Admin Operations (Pre-bracket: Hapus Tim, Edit Tim, Lihat Daftar Tim)
+        # ----------------------------------------------------
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("3") # Login Admin
+        out = self.runner.read_until("Username: ")
+        self.runner.write_line("admin")
+        out = self.runner.read_until("Password: ")
+        self.runner.write_line("adminpwd")
+        
+        # Select 1. Lihat Daftar Tim
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("1")
+        out = self.runner.read_until("Tekan ENTER untuk lanjut...")
+        self.assertIn("Team Alpha", out)
+        self.assertIn("Team Beta", out)
+        self.runner.write_line("") # Continue
+        
+        # Select 2. Edit Data Tim (Admin edits Team Alpha)
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("2")
+        out = self.runner.read_until("Masukkan nama tim yang ingin diedit: ")
+        self.runner.write_line("Team Alpha")
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("2") # Change Player Count
+        out = self.runner.read_until("Jumlah Pemain Baru (1-7): ")
+        self.runner.write_line("7")
+        out = self.runner.read_until("Tekan ENTER untuk lanjut...")
+        self.assertIn("[SUKSES] Jumlah pemain berhasil diubah menjadi 7.", out)
+        self.runner.write_line("") # Continue
+        
+        # Select 3. Hapus Tim (Admin deletes Team Beta)
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("3")
+        out = self.runner.read_until("Masukkan nama tim yang ingin dihapus: ")
+        self.runner.write_line("Team Beta")
+        out = self.runner.read_until("Tekan ENTER untuk lanjut...")
+        self.assertIn("[SUKSES] Tim \"Team Beta\" berhasil dihapus.", out)
+        self.runner.write_line("") # Continue
+        
+        # Select 1. Lihat Daftar Tim again to verify changes
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("1")
+        out = self.runner.read_until("Tekan ENTER untuk lanjut...")
+        self.assertNotIn("Team Beta", out)
+        self.assertIn("Team Alpha", out)
+        self.assertIn("Jumlah Pemain : 7", out)
+        self.runner.write_line("") # Continue
+        
+        # Select 0. Logout Admin
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("0")
+        
+        # ----------------------------------------------------
+        # Back in Main Menu, complete registration
+        # ----------------------------------------------------
+        # Register Team Beta again
+        self.register_team("Team Beta", "beta123", "6")
+        
+        # Register Team 3 (Gamma)
         self.register_team("Team Gamma", "gamma123", "5")
         
-        # Register Team 4 (this should auto-close registration as quota 4 is met)
+        # Register Team 4 (Delta) - this should auto-close registration as quota 4 is met
         out = self.runner.read_until("Pilihan: ")
         self.runner.write_line("1")
         out = self.runner.read_until("Nama Tim  : ")
@@ -164,30 +225,91 @@ class TestTournament(unittest.TestCase):
         self.runner.write_line("2026-06-15") # valid format
         out = self.runner.read_until("Tekan ENTER untuk lanjut...")
         self.assertIn("Jadwal Semifinal berhasil dibuat. Braket siap!", out)
+        self.runner.write_line("") # Continue
+        
+        # Logout Admin to verify schedules and brackets as Tim and Penonton
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("0")
+        
+        # ----------------------------------------------------
+        # Verify Schedules & Brackets as Team
+        # ----------------------------------------------------
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("1") # Login Tim
+        out = self.runner.read_until("Username Tim: ")
+        self.runner.write_line("Alpha")
+        out = self.runner.read_until("Password Tim: ")
+        self.runner.write_line("a")
+        
+        # Check Schedule
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("2")
+        out = self.runner.read_until("Tekan ENTER untuk lanjut...")
         self.assertIn("Alpha vs Delta", out)
         self.assertIn("Beta vs Gamma", out)
-        self.runner.write_line("") # Continue
+        self.runner.write_line("")
+        
+        # Check Bracket
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("5")
+        out = self.runner.read_until("Tekan ENTER untuk lanjut...")
+        self.assertIn("BAGAN TURNAMEN", out)
+        self.runner.write_line("")
+        
+        # Logout Tim
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("0")
+        
+        # ----------------------------------------------------
+        # Verify Schedules & Brackets as Spectator
+        # ----------------------------------------------------
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("2") # Penonton
+        
+        # Check Schedule
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("1")
+        out = self.runner.read_until("Tekan ENTER untuk lanjut...")
+        self.assertIn("Alpha vs Delta", out)
+        self.runner.write_line("")
+        
+        # Check Bracket
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("2")
+        out = self.runner.read_until("Tekan ENTER untuk lanjut...")
+        self.assertIn("BAGAN TURNAMEN", out)
+        self.runner.write_line("")
+        
+        # Exit Penonton
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("0")
+        
+        # ----------------------------------------------------
+        # Login Admin and Play Tournament Matches
+        # ----------------------------------------------------
+        out = self.runner.read_until("Pilihan: ")
+        self.runner.write_line("3") # Login Admin
+        out = self.runner.read_until("Username: ")
+        self.runner.write_line("admin")
+        out = self.runner.read_until("Password: ")
+        self.runner.write_line("adminpwd")
         
         # 3. Input Semifinal Match 1 (Alpha vs Delta)
         out = self.runner.read_until("Pilihan: ")
         self.runner.write_line("2") # Input Hasil
         
-        # Test negative score validation: must enter both scores before validation checks
+        # Test negative score validation
         out = self.runner.read_until("Skor Alpha: ")
         self.runner.write_line("-1") 
         out = self.runner.read_until("Skor Delta: ")
         self.runner.write_line("2")
-        
-        # Check that negative score error triggers and prompts again
         out = self.runner.read_until("Skor Alpha: ")
         self.assertIn("[ERROR] Skor tidak boleh negatif.", out)
         
-        # Test tie score validation: must enter both scores before validation checks
+        # Test tie score validation
         self.runner.write_line("3")
         out = self.runner.read_until("Skor Delta: ")
         self.runner.write_line("3")
-        
-        # Check that tie score error triggers and prompts again
         out = self.runner.read_until("Skor Alpha: ")
         self.assertIn("[ERROR] Skor tidak boleh seri dalam sistem eliminasi.", out)
         

@@ -3,6 +3,7 @@ import threading
 import queue
 import time
 import re
+import sys
 
 def strip_ansi(text):
     """Removes ANSI escape codes (e.g., clear screen, color codes) from string."""
@@ -10,7 +11,9 @@ def strip_ansi(text):
     return ansi_escape.sub('', text)
 
 class CLIAppRunner:
-    def __init__(self, binary_path="./sistem_turnamen"):
+    def __init__(self, binary_path="./sistem_turnamen", verbose=True, delay=0.4):
+        self.verbose = verbose
+        self.delay = delay
         self.proc = subprocess.Popen(
             [binary_path],
             stdin=subprocess.PIPE,
@@ -36,6 +39,9 @@ class CLIAppRunner:
                 char = out.read(1)
                 if not char:
                     break
+                if self.verbose:
+                    sys.stdout.write(char)
+                    sys.stdout.flush()
                 q.put(char)
             except Exception:
                 break
@@ -66,10 +72,15 @@ class CLIAppRunner:
 
     def write(self, data):
         self.log.append(f"WRITE: {data}")
+        if self.verbose:
+            sys.stdout.write(data)
+            sys.stdout.flush()
         self.proc.stdin.write(data)
         self.proc.stdin.flush()
 
     def write_line(self, line):
+        if self.delay > 0:
+            time.sleep(self.delay)
         self.write(line + "\n")
 
     def close(self):
