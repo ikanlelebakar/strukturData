@@ -71,3 +71,7 @@ graphify-out/
 .agents/
 sistem_turnamen
 docs/
+
+# Python cache
+__pycache__/
+*.pyc
