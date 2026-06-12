@@ -28,7 +28,6 @@ void registrasiTimBaru() {
 
     // Input nama tim
     cout << "Nama Tim  : ";
-    cin.ignore();
     getline(cin, namaTim);
 
     // Cek duplikat nama tim
@@ -45,6 +44,7 @@ void registrasiTimBaru() {
     do {
         cout << "Jumlah Pemain (" << MIN_PEMAIN << "-" << MAX_PEMAIN << "): ";
         cin >> jumlahPemain;
+        cin.ignore(10000, '\n');
         if (jumlahPemain < MIN_PEMAIN || jumlahPemain > MAX_PEMAIN) {
             cout << "[ERROR] Jumlah pemain harus antara " << MIN_PEMAIN << " dan " << MAX_PEMAIN << "." << endl;
         }
@@ -74,7 +74,12 @@ void registrasiTimBaru() {
     cout << "[SUKSES] Tim \"" << namaTim << "\" berhasil terdaftar! (Total: "
          << jumlahTimAktif << "/" << MAX_TIM << " tim)" << endl;
 
+    // Otomatis tutup pendaftaran jika kuota sudah penuh
+    if (jumlahTimAktif >= MAX_TIM) {
+        pendaftaranDitutup = true;
+        cout << "[INFO] Kuota tim sudah penuh. Pendaftaran otomatis ditutup!" << endl;
+    }
+
     cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
-    cin.ignore();
     cin.get();
 }

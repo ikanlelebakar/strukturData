@@ -82,6 +82,26 @@ Tim* semifinalisKalah2 = nullptr;
 bool matchKetiga       = false;  // flag: pertandingan berikutnya adalah juara ke-3
 
 // ==========================================
+// STRUCT & ARRAY — RIWAYAT HASIL MATCH
+// ==========================================
+/*
+ * MatchResult: menyimpan hasil satu pertandingan yang sudah selesai
+ *   - timA, timB    : dua tim yang bertanding
+ *   - pemenang      : pointer ke tim yang menang (nullptr = belum dimainkan)
+ *   - ronde         : label ronde pertandingan ini
+ */
+struct MatchResult {
+    Tim*   timA;
+    Tim*   timB;
+    Tim*   pemenang;   // nullptr jika belum ada hasil
+    string ronde;
+};
+
+const int MAX_MATCHES = 64;           // lebih dari cukup untuk turnamen hingga 32 tim
+MatchResult matchResults[MAX_MATCHES];
+int jumlahMatchResult = 0;           // berapa match yang sudah dicatat
+
+// ==========================================
 // FUNGSI QUEUE — ANTRIAN PERTANDINGAN
 // ==========================================
 
@@ -124,4 +144,36 @@ void popAntrian() {
  */
 bool isAntrianKosong() {
     return frontAntrian == nullptr;
+}
+
+// ==========================================
+// FUNGSI RIWAYAT MATCH
+// ==========================================
+
+/*
+ * daftarkanMatch: catat match baru (belum ada pemenang) ke matchResults.
+ *                 Dipanggil setiap kali pushAntrian dijalankan.
+ */
+void daftarkanMatch(Tim* timA, Tim* timB, string ronde) {
+    if (jumlahMatchResult >= MAX_MATCHES) return;
+    matchResults[jumlahMatchResult].timA     = timA;
+    matchResults[jumlahMatchResult].timB     = timB;
+    matchResults[jumlahMatchResult].pemenang = nullptr;
+    matchResults[jumlahMatchResult].ronde    = ronde;
+    jumlahMatchResult++;
+}
+
+/*
+ * updatePemenangMatch: cari match di matchResults berdasarkan timA+timB,
+ *                      lalu set pemenangnya.
+ */
+void updatePemenangMatch(Tim* timA, Tim* timB, Tim* pemenang) {
+    for (int i = 0; i < jumlahMatchResult; i++) {
+        bool cocok = (matchResults[i].timA == timA && matchResults[i].timB == timB) ||
+                     (matchResults[i].timA == timB && matchResults[i].timB == timA);
+        if (cocok && matchResults[i].pemenang == nullptr) {
+            matchResults[i].pemenang = pemenang;
+            return;
+        }
+    }
 }

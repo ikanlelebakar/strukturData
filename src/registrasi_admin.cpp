@@ -15,15 +15,16 @@ void registrasiAdmin() {
 
     cout << "Password Admin: ";
     cin >> adminPassword;
+    cin.ignore(10000, '\n');
 
     cout << "Nama Turnamen : ";
-    cin.ignore();
     getline(cin, namaTurnamen);
 
     // Minta input kapasitas tim (harus pangkat 2)
     do {
         cout << "Maksimal Tim (harus pangkat 2, min 2): ";
         cin >> MAX_TIM;
+        cin.ignore(10000, '\n');
         if (!isPowerOfTwo(MAX_TIM) || MAX_TIM < 2) {
             cout << "[ERROR] Kapasitas tim harus merupakan angka pangkat 2 (2, 4, 8, 16, 32, dst.)." << endl;
         }
@@ -36,6 +37,5 @@ void registrasiAdmin() {
     cout << "Maksimal Tim : " << MAX_TIM << endl;
     cout << string(50, '=') << endl;
     cout << "Tekan ENTER untuk lanjut ke Menu Utama...";
-    cin.ignore();
     cin.get();
 }

@@ -16,7 +16,6 @@ Tim* loginTim() {
 
     cout << "\n=== LOGIN TIM ===" << endl;
     cout << "Nama Tim (Username): ";
-    cin.ignore();
     getline(cin, namaTim);
     cout << "Password          : ";
     getline(cin, password);

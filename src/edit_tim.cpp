@@ -22,12 +22,12 @@ void editDataTim(Tim* ptrTim) {
     cout << "0. Batal" << endl;
     cout << "Pilihan: ";
     cin >> pilihan;
+    cin.ignore(10000, '\n');
 
     switch (pilihan) {
         case 1: {
             string namaBaru;
             cout << "Nama Tim Baru: ";
-            cin.ignore();
             getline(cin, namaBaru);
 
             // Cek duplikat (tidak boleh sama dengan tim lain)
@@ -45,6 +45,7 @@ void editDataTim(Tim* ptrTim) {
             do {
                 cout << "Jumlah Pemain Baru (" << MIN_PEMAIN << "-" << MAX_PEMAIN << "): ";
                 cin >> jumlahBaru;
+                cin.ignore(10000, '\n');
                 if (jumlahBaru < MIN_PEMAIN || jumlahBaru > MAX_PEMAIN) {
                     cout << "[ERROR] Harus antara " << MIN_PEMAIN << " dan " << MAX_PEMAIN << "." << endl;
                 }
@@ -57,7 +58,6 @@ void editDataTim(Tim* ptrTim) {
         case 3: {
             string passBaru;
             cout << "Password Baru: ";
-            cin.ignore();
             getline(cin, passBaru);
             ptrTim->password = passBaru;
             cout << "[SUKSES] Password berhasil diubah." << endl;
@@ -83,7 +83,6 @@ void menuEditTim() {
 
     string namaCari;
     cout << "\nMasukkan nama tim yang ingin diedit: ";
-    cin.ignore();
     getline(cin, namaCari);
 
     Tim* target = cariTim(namaCari);  // cari via pointer

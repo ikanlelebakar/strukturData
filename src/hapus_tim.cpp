@@ -21,7 +21,6 @@ void hapusTim() {
 
     string namaCari;
     cout << "\nMasukkan nama tim yang ingin dihapus: ";
-    cin.ignore();
     getline(cin, namaCari);
 
     Tim* curr = headTim;

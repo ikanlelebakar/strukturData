@@ -90,6 +90,7 @@ void buatJadwalPertandingan() {
     do {
         cout << "Masukkan tanggal mulai Ronde 1 (format YYYY-MM-DD): ";
         cin >> tanggalMulai;
+        cin.ignore(10000, '\n');
         if (!validasiTanggal(tanggalMulai)) {
             cout << "[ERROR] Format tanggal tidak valid. Gunakan YYYY-MM-DD." << endl;
         }
@@ -104,19 +105,25 @@ void buatJadwalPertandingan() {
         curr = curr->next;
     }
 
+    // Tentukan label ronde: jika hanya 4 tim, langsung "Semifinal"
+    string labelRonde = (n == 4) ? "Semifinal" : "Ronde 1";
+
     // Pasang tim: [0] vs [n-1], [1] vs [n-2], dst. (pairing head vs tail)
-    cout << "\n=== JADWAL RONDE 1 ===" << endl;
+    // Setiap match berjeda 1 hari dari match sebelumnya
+    cout << "\n=== JADWAL " << labelRonde << " ==="  << endl;
     for (int i = 0; i < n / 2; i++) {
-        string tgl = tanggalMulai;  // semua match ronde 1 di tanggal yang sama
-        pushAntrian(arrTim[i], arrTim[n - 1 - i], tgl, "Ronde 1");
+        string tgl = tambahHari(tanggalMulai, i);  // +i hari per match
+        pushAntrian(arrTim[i], arrTim[n - 1 - i], tgl, labelRonde);
+        daftarkanMatch(arrTim[i], arrTim[n - 1 - i], labelRonde);
         cout << "  " << arrTim[i]->namaTim << " vs " << arrTim[n-1-i]->namaTim
              << " (" << tgl << ")" << endl;
     }
 
-    tanggalTerakhir    = tanggalMulai;
+    // tanggalTerakhir = tanggal match terakhir ronde ini
+    tanggalTerakhir    = tambahHari(tanggalMulai, n / 2 - 1);
     rondeSekarang      = 1;
     bracketSudahDibuat = true;
 
-    cout << "[SUKSES] Jadwal Ronde 1 berhasil dibuat. Braket siap!" << endl;
+    cout << "[SUKSES] Jadwal " << labelRonde << " berhasil dibuat. Braket siap!" << endl;
     delete[] arrTim;
 }

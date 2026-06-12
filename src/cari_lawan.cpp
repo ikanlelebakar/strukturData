@@ -16,7 +16,6 @@ void cariLawan() {
     string namaCari;
     cout << "\n=== CARI PROFIL TIM LAWAN ===" << endl;
     cout << "Masukkan nama tim yang dicari: ";
-    cin.ignore();
     getline(cin, namaCari);
 
     Tim* hasil = cariTim(namaCari);  // linear search via pointer
