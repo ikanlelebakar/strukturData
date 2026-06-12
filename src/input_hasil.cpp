@@ -75,13 +75,26 @@ void inputSkorPertandingan() {
     Tim* kalah    = (skorA > skorB) ? timB : timA;
 
     bool iniMatchKetiga = matchKetiga;  // snapshot sebelum pop
+    string rondeMatch   = match->ronde;
+
+    // Hitung bobot poin berdasarkan level pertandingan
+    int tambahPoin = 1;
+    if (rondeMatch == "Perebutan Juara ke-3") {
+        tambahPoin = 5;
+    } else if (rondeMatch == "Final") {
+        tambahPoin = 20;
+    } else if (rondeMatch == "Semifinal") {
+        tambahPoin = 10;
+    } else {
+        tambahPoin = 1 << (rondeSekarang - 1);
+    }
 
     // Logika match perebutan juara ke-3
     if (iniMatchKetiga) {
         // Match ke-3 selesai: baru sekarang keduanya di-eliminate
         kalah->isEliminated    = true;
         pemenang->isEliminated = true; // eliminasi agar tidak masuk pool finalis
-        pemenang->poin        += 1;
+        pemenang->poin        += tambahPoin;
         matchKetiga            = false;
         updatePemenangMatch(timA, timB, pemenang);  // catat pemenang ke riwayat bracket
 
@@ -99,10 +112,9 @@ void inputSkorPertandingan() {
     }
 
     // Pertandingan normal (bukan match ketiga)
-    pemenang->poin += 1;
+    pemenang->poin += tambahPoin;
     updatePemenangMatch(timA, timB, pemenang);  // catat pemenang ke riwayat bracket
     string tanggalMatch = match->tanggalTanding;
-    string rondeMatch   = match->ronde;
     popAntrian();
 
     // Update tanggal terakhir untuk menghitung tanggal ronde berikutnya
