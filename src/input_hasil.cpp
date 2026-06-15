@@ -46,6 +46,8 @@ void inputHasil() {
 
         if (skorA < 0 || skorB < 0) {
             cout << "[ERROR] Skor tidak boleh negatif." << endl;
+        } else if (skorA > 3 || skorB > 3) {
+            cout << "[ERROR] Skor tidak boleh lebih dari 3." << endl;
         } else if (skorA == skorB) {
             cout << "[ERROR] Skor tidak boleh seri dalam sistem eliminasi. Masukkan ulang." << endl;
         } else {

@@ -312,6 +312,13 @@ class TestTournament(unittest.TestCase):
         self.runner.write_line("3")
         out = self.runner.read_until("Skor Alpha: ")
         self.assertIn("[ERROR] Skor tidak boleh seri dalam sistem eliminasi.", out)
+
+        # Test score > 3 validation
+        self.runner.write_line("4")
+        out = self.runner.read_until("Skor Delta: ")
+        self.runner.write_line("2")
+        out = self.runner.read_until("Skor Alpha: ")
+        self.assertIn("[ERROR] Skor tidak boleh lebih dari 3.", out)
         
         # Enter valid scores
         self.runner.write_line("3") # Alpha wins
@@ -329,7 +336,7 @@ class TestTournament(unittest.TestCase):
         out = self.runner.read_until("Skor Beta: ")
         self.runner.write_line("1")
         out = self.runner.read_until("Skor Gamma: ")
-        self.runner.write_line("4") # Gamma wins
+        self.runner.write_line("3") # Gamma wins
         
         out = self.runner.read_until("Tekan ENTER untuk lanjut...")
         self.assertIn("Gamma menang", out)
@@ -342,12 +349,12 @@ class TestTournament(unittest.TestCase):
         out = self.runner.read_until("Pilihan: ")
         self.runner.write_line("2") # Input Hasil
         out = self.runner.read_until("Skor Delta: ")
-        self.runner.write_line("5")
+        self.runner.write_line("3")
         out = self.runner.read_until("Skor Beta: ")
         self.runner.write_line("2") # Delta wins 3rd place
         
         out = self.runner.read_until("Tekan ENTER untuk lanjut...")
-        self.assertIn("Delta menang 5-2 dan meraih JUARA KE-3!", out)
+        self.assertIn("Delta menang 3-2 dan meraih JUARA KE-3!", out)
         self.runner.write_line("")
         
         # 6. Admin creates schedule for Final
@@ -361,9 +368,9 @@ class TestTournament(unittest.TestCase):
         out = self.runner.read_until("Pilihan: ")
         self.runner.write_line("2") # Input Hasil
         out = self.runner.read_until("Skor Alpha: ")
-        self.runner.write_line("10")
+        self.runner.write_line("3")
         out = self.runner.read_until("Skor Gamma: ")
-        self.runner.write_line("8") # Alpha wins 1st place, Gamma 2nd
+        self.runner.write_line("2") # Alpha wins 1st place, Gamma 2nd
         
         out = self.runner.read_until("Tekan ENTER untuk lanjut...")
         self.assertIn("Alpha menang", out)
