@@ -1,39 +1,30 @@
-/*
- * File: login_tim.cpp
- * Deskripsi: Autentikasi login tim menggunakan nama tim (username) + password.
- *            Traverse linked list untuk mencari tim yang cocok.
- */
+// File: login_tim.cpp
+// Deskripsi: Fungsi login tim menggunakan nama tim dan password
 
-/*
- * loginTim: Minta input nama tim + password, cari di linked list.
- *           Return pointer ke node Tim jika sukses, nullptr jika gagal.
- *
- * Catatan: Tim yang sudah tereliminasi tetap bisa login untuk melihat data,
- *          pembatasan operasi edit dilakukan di level menu.
- */
-Tim* loginTim() {
-    string namaTim, password;
+// Fungsi masuk tim
+Tim *masukTim() {
+    string nama, password;
 
     cout << "\n=== LOGIN TIM ===" << endl;
     cout << "Nama Tim (Username): ";
-    getline(cin, namaTim);
+    getline(cin, nama);
     cout << "Password          : ";
     getline(cin, password);
 
-    Tim* curr = headTim;
-    while (curr != nullptr) {
-        if (curr->namaTim == namaTim) {
+    Tim *curr = kepala;
+    while (curr != NULL) {
+        if (curr->nama == nama) {
             if (curr->password == password) {
-                cout << "[OK] Login berhasil. Selamat datang, Tim " << namaTim << "!" << endl;
+                cout << "Login berhasil. Selamat datang, Tim " << nama << "!" << endl;
                 return curr;
             } else {
-                cout << "[GAGAL] Password salah." << endl;
-                return nullptr;
+                cout << "Password salah." << endl;
+                return NULL;
             }
         }
-        curr = curr->next;
+        curr = curr->berikutnya;
     }
 
-    cout << "[GAGAL] Tim dengan nama \"" << namaTim << "\" tidak ditemukan." << endl;
-    return nullptr;
+    cout << "Tim dengan nama \"" << nama << "\" tidak ditemukan." << endl;
+    return NULL;
 }

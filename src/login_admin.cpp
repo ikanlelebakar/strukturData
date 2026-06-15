@@ -1,14 +1,8 @@
-/*
- * File: login_admin.cpp
- * Deskripsi: Autentikasi administrator.
- *            Username: "admin" | Password: "turnamen2026"
- */
+// File: login_admin.cpp
+// Deskripsi: Fungsi login/autentikasi administrator
 
-/*
- * loginAdmin: Minta username + password, cocokkan dengan kredensial statis.
- *             Return true jika berhasil, false jika gagal/dibatalkan.
- */
-bool loginAdmin() {
+// Fungsi masuk admin
+bool masukAdmin() {
     string username, password;
 
     cout << "\n=== LOGIN ADMIN ===" << endl;
@@ -18,10 +12,10 @@ bool loginAdmin() {
     cin >> password;
 
     if (username == adminUsername && password == adminPassword) {
-        cout << "[OK] Login admin berhasil. Selamat datang, Admin!" << endl;
+        cout << "Login admin berhasil. Selamat datang, Admin!" << endl;
         return true;
     }
 
-    cout << "[GAGAL] Username atau password salah." << endl;
+    cout << "Username atau password salah." << endl;
     return false;
 }

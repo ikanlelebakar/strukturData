@@ -1,31 +1,27 @@
-/*
- * File: lihat_tim.cpp
- * Deskripsi: Menampilkan seluruh tim yang terdaftar dengan traverse linked list.
- */
+// File: lihat_tim.cpp
+// Deskripsi: Fungsi untuk menampilkan seluruh tim yang terdaftar
 
-/*
- * lihatDaftarTim: Traversal linked list dan tampilkan detail setiap tim.
- */
-void lihatDaftarTim() {
+// Fungsi tampilkan daftar tim
+void tampilkanTim() {
     cout << "\n=== DAFTAR TIM TERDAFTAR ===" << endl;
 
-    if (headTim == nullptr) {
+    if (kepala == NULL) {
         cout << "(Belum ada tim yang terdaftar)" << endl;
         return;
     }
 
-    cout << "Total tim: " << jumlahTimAktif << endl;
+    cout << "Total tim: " << jumlahTim << endl;
     cout << string(50, '-') << endl;
 
-    int no   = 1;
-    Tim* curr = headTim;
-    while (curr != nullptr) {
-        cout << no << ". " << curr->namaTim << endl;
+    int no = 1;
+    Tim *curr = kepala;
+    while (curr != NULL) {
+        cout << no << ". " << curr->nama << endl;
         cout << "   Jumlah Pemain : " << curr->jumlahPemain << endl;
         cout << "   Poin          : " << curr->poin << endl;
-        cout << "   Status        : " << (curr->isEliminated ? "Tereliminasi" : "Aktif") << endl;
+        cout << "   Status        : " << (curr->tereleminasi ? "Tereliminasi" : "Aktif") << endl;
         cout << string(50, '-') << endl;
-        curr = curr->next;
+        curr = curr->berikutnya;
         no++;
     }
 }

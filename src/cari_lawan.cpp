@@ -1,15 +1,10 @@
-/*
- * File: cari_lawan.cpp
- * Deskripsi: Mencari profil tim berdasarkan nama (linear search via cariTim).
- *            Bisa digunakan oleh tim untuk melihat profil lawan.
- */
+// File: cari_lawan.cpp
+// Deskripsi: Fungsi untuk mencari profil tim berdasarkan nama
 
-/*
- * cariLawan: Input nama tim, cari di linked list, tampilkan detail profil.
- */
-void cariLawan() {
-    if (headTim == nullptr) {
-        cout << "[INFO] Belum ada tim yang terdaftar." << endl;
+// Fungsi cari profil tim lawan
+void cariTim() {
+    if (kepala == NULL) {
+        cout << "Belum ada tim yang terdaftar." << endl;
         return;
     }
 
@@ -18,17 +13,17 @@ void cariLawan() {
     cout << "Masukkan nama tim yang dicari: ";
     getline(cin, namaCari);
 
-    Tim* hasil = cariTim(namaCari);  // linear search via pointer
+    Tim *hasil = cariTim(namaCari);
 
-    if (hasil == nullptr) {
-        cout << "[INFO] Tim \"" << namaCari << "\" tidak ditemukan dalam sistem." << endl;
+    if (hasil == NULL) {
+        cout << "Tim \"" << namaCari << "\" tidak ditemukan dalam sistem." << endl;
         return;
     }
 
     cout << "\n--- Profil Tim ---" << endl;
-    cout << "Nama Tim       : " << hasil->namaTim << endl;
+    cout << "Nama Tim       : " << hasil->nama << endl;
     cout << "Jumlah Pemain  : " << hasil->jumlahPemain << endl;
     cout << "Poin           : " << hasil->poin << endl;
-    cout << "Status         : " << (hasil->isEliminated ? "Tereliminasi" : "Aktif") << endl;
+    cout << "Status         : " << (hasil->tereleminasi ? "Tereliminasi" : "Aktif") << endl;
     cout << string(30, '-') << endl;
 }

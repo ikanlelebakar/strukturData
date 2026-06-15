@@ -1,21 +1,15 @@
-/*
- * File: hapus_tim.cpp
- * Deskripsi: Menghapus tim dari linked list (admin only).
- *            Hanya bisa dilakukan sebelum braket dibuat.
- */
+// File: hapus_tim.cpp
+// Deskripsi: Fungsi untuk menghapus tim dari linked list (Admin)
 
-/*
- * hapusTim: Cari tim berdasarkan nama, lalu hapus node dari linked list.
- *           Menyambung kembali pointer prev->next agar list tetap utuh.
- */
+// Fungsi hapus data tim
 void hapusTim() {
-    if (headTim == nullptr) {
-        cout << "[INFO] Belum ada tim yang terdaftar." << endl;
+    if (kepala == NULL) {
+        cout << "Belum ada tim yang terdaftar." << endl;
         return;
     }
 
-    if (bracketSudahDibuat) {
-        cout << "[DITOLAK] Tidak bisa hapus tim setelah braket dibuat." << endl;
+    if (jadwalSudahDibuat) {
+        cout << "Tidak bisa hapus tim setelah braket dibuat." << endl;
         return;
     }
 
@@ -23,27 +17,26 @@ void hapusTim() {
     cout << "\nMasukkan nama tim yang ingin dihapus: ";
     getline(cin, namaCari);
 
-    Tim* curr = headTim;
-    Tim* prev = nullptr;
+    Tim *curr = kepala;
+    Tim *prev = NULL;
 
-    while (curr != nullptr) {
-        if (curr->namaTim == namaCari) {
-            // Sambungkan prev ke node sesudah curr
-            if (prev == nullptr) {
-                // Hapus node head
-                headTim = curr->next;
+    while (curr != NULL) {
+        if (curr->nama == namaCari) {
+            // Sambungkan pointer node sebelum ke node sesudah
+            if (prev == NULL) {
+                kepala = curr->berikutnya;
             } else {
-                prev->next = curr->next;
+                prev->berikutnya = curr->berikutnya;
             }
             delete curr;
-            jumlahTimAktif--;
-            cout << "[SUKSES] Tim \"" << namaCari << "\" berhasil dihapus. "
-                 << "Sisa tim: " << jumlahTimAktif << endl;
+            jumlahTim--;
+            cout << "Tim \"" << namaCari << "\" berhasil dihapus. "
+                 << "Sisa tim: " << jumlahTim << endl;
             return;
         }
         prev = curr;
-        curr = curr->next;
+        curr = curr->berikutnya;
     }
 
-    cout << "[ERROR] Tim \"" << namaCari << "\" tidak ditemukan." << endl;
+    cout << "Tim \"" << namaCari << "\" tidak ditemukan." << endl;
 }

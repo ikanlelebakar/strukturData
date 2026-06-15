@@ -1,83 +1,65 @@
-/*
- * File: input_hasil.cpp
- * Deskripsi: Input hasil skor pertandingan, update poin, eliminasi tim yang kalah,
- *            dan handle logika khusus semifinal + perebutan juara ke-3.
- *
- * Aturan poin:
- *   - Tim yang menang mendapat +1 poin (jumlah kemenangan)
- *   - Tim yang kalah: isEliminated = true
- *
- * Logika semifinal & juara ke-3:
- *   - Saat ronde semifinal (tersisa 4 tim, match menghasilkan 2 pemenang):
- *     * Dua semifinalis yang kalah disimpan di semifinalisKalah1/2
- *     * Mereka BELUM di-eliminate sampai pertandingan juara ke-3 selesai
- *   - Setelah dua semifinal selesai, otomatis enqueue pertandingan juara ke-3
- *   - Setelah match juara ke-3 selesai, barulah keduanya di-eliminate
- */
+// File: input_hasil.cpp
+// Deskripsi: Fungsi untuk menginput hasil pertandingan dan membuat jadwal ronde berikutnya
 
-/*
- * hitungTimAktif: Hitung berapa tim yang belum tereliminasi di linked list.
- */
+// Fungsi menghitung tim yang masih aktif (belum tereliminasi)
 int hitungTimAktif() {
     int count = 0;
-    Tim* curr = headTim;
-    while (curr != nullptr) {
-        if (!curr->isEliminated) count++;
-        curr = curr->next;
+    Tim *curr = kepala;
+    while (curr != NULL) {
+        if (!curr->tereleminasi) count++;
+        curr = curr->berikutnya;
     }
     return count;
 }
 
-/*
- * inputSkorPertandingan: Proses pertandingan terdepan di antrian.
- */
-void inputSkorPertandingan() {
-    if (isAntrianKosong()) {
-        if (!bracketSudahDibuat) {
-            cout << "[INFO] Braket belum dibuat. Silakan buat jadwal terlebih dahulu." << endl;
+// Fungsi input hasil skor pertandingan
+void inputHasil() {
+    if (antrianKosong()) {
+        if (!jadwalSudahDibuat) {
+            cout << "Braket belum dibuat. Silakan buat jadwal terlebih dahulu." << endl;
         } else {
-            cout << "[INFO] Tidak ada pertandingan yang tersisa. Turnamen selesai!" << endl;
+            cout << "Tidak ada pertandingan yang tersisa. Turnamen selesai!" << endl;
         }
         return;
     }
 
-    NodeAntrian* match = frontAntrian;
-    Tim* timA = match->timA;
-    Tim* timB = match->timB;
+    NodeAntrian *match = depanAntrian;
+    Tim *timA = match->timA;
+    Tim *timB = match->timB;
 
     cout << "\n=== INPUT HASIL PERTANDINGAN ===" << endl;
     cout << "Ronde    : " << match->ronde << endl;
     cout << "Tanggal  : " << match->tanggalTanding << endl;
     cout << string(40, '-') << endl;
-    cout << "Tim A    : " << timA->namaTim << endl;
-    cout << "Tim B    : " << timB->namaTim << endl;
+    cout << "Tim A    : " << timA->nama << endl;
+    cout << "Tim B    : " << timB->nama << endl;
     cout << string(40, '-') << endl;
 
     int skorA, skorB;
     bool inputValid = false;
     while (!inputValid) {
-        cout << "Skor " << timA->namaTim << ": ";
+        cout << "Skor " << timA->nama << ": ";
         cin >> skorA;
-        cout << "Skor " << timB->namaTim << ": ";
+        cout << "Skor " << timB->nama << ": ";
         cin >> skorB;
         cin.ignore(10000, '\n');
 
         if (skorA < 0 || skorB < 0) {
-            cout << "[ERROR] Skor tidak boleh negatif." << endl;
+            cout << "Skor tidak boleh negatif." << endl;
         } else if (skorA == skorB) {
-            cout << "[ERROR] Skor tidak boleh seri dalam sistem eliminasi. Masukkan ulang." << endl;
+            cout << "Skor tidak boleh seri dalam sistem eliminasi. Masukkan ulang." << endl;
         } else {
             inputValid = true;
         }
     }
 
-    Tim* pemenang = (skorA > skorB) ? timA : timB;
-    Tim* kalah    = (skorA > skorB) ? timB : timA;
+    Tim *pemenang = (skorA > skorB) ? timA : timB;
+    Tim *kalah = (skorA > skorB) ? timB : timA;
 
-    bool iniMatchKetiga = matchKetiga;  // snapshot sebelum pop
-    string rondeMatch   = match->ronde;
+    bool iniMatchKetiga = matchKetiga;
+    string rondeMatch = match->ronde;
 
-    // Hitung bobot poin berdasarkan level pertandingan
+    // Tentukan penambahan poin berdasarkan tipe ronde
     int tambahPoin = 1;
     if (rondeMatch == "Perebutan Juara ke-3") {
         tambahPoin = 5;
@@ -91,96 +73,70 @@ void inputSkorPertandingan() {
 
     // Logika match perebutan juara ke-3
     if (iniMatchKetiga) {
-        // Match ke-3 selesai: baru sekarang keduanya di-eliminate
-        kalah->isEliminated    = true;
-        pemenang->isEliminated = true; // eliminasi agar tidak masuk pool finalis
-        pemenang->poin        += tambahPoin;
-        matchKetiga            = false;
-        updatePemenangMatch(timA, timB, pemenang);  // catat pemenang ke riwayat bracket
+        kalah->tereleminasi = true;
+        pemenang->tereleminasi = true;
+        pemenang->poin += tambahPoin;
+        matchKetiga = false;
+        updatePemenang(timA, timB, pemenang);
 
-        cout << "\n[HASIL] " << pemenang->namaTim << " menang " << skorA
+        cout << "\n" << pemenang->nama << " menang " << skorA
              << "-" << skorB << " dan meraih JUARA KE-3!" << endl;
-        cout << "[ELIMINASI] " << kalah->namaTim << " tereliminasi." << endl;
+        cout << kalah->nama << " tereliminasi." << endl;
 
-        popAntrian();
+        hapusAntrian();
 
-        // Cek apakah final sudah ada di antrian
-        if (!isAntrianKosong()) {
-            cout << "[INFO] Pertandingan Final siap dimulai!" << endl;
+        if (!antrianKosong()) {
+            cout << "Pertandingan Final siap dimulai!" << endl;
         }
         return;
     }
 
-    // Pertandingan normal (bukan match ketiga)
     pemenang->poin += tambahPoin;
-    updatePemenangMatch(timA, timB, pemenang);  // catat pemenang ke riwayat bracket
+    updatePemenang(timA, timB, pemenang);
     string tanggalMatch = match->tanggalTanding;
-    popAntrian();
+    hapusAntrian();
 
-    // Update tanggal terakhir untuk menghitung tanggal ronde berikutnya
     tanggalTerakhir = tanggalMatch;
 
-    // Cek apakah ini pertandingan semifinal (tersisa 4 tim aktif sebelum match ini)
-
-    // Logika deteksi semifinal: jika kalah adalah semifinalis
-    // Semifinal terjadi ketika tersisa 4 tim dan match menghasilkan 2 finalis
-    // Kita deteksi: jika setelah pop antrian masih ada match lagi di ronde yang sama
-    // dan setelah match ini tersisa 3 tim (2 aktif + 1 yang akan kalah di match berikutnya)
-    // Pendekatan sederhana: cek apakah frontAntrian->ronde == "Semifinal"
     bool iniSemifinal = (rondeMatch == "Semifinal");
 
     if (iniSemifinal) {
-        // Semifinalis yang kalah belum di-eliminate
-        if (semifinalisKalah1 == nullptr) {
+        if (semifinalisKalah1 == NULL) {
             semifinalisKalah1 = kalah;
-            cout << "[INFO] Semifinalis pertama yang kalah: " << kalah->namaTim
+            cout << "Semifinalis pertama yang kalah: " << kalah->nama
                  << " (menunggu pertandingan juara ke-3)" << endl;
         } else {
             semifinalisKalah2 = kalah;
 
-            // Kedua semifinal selesai: buat pertandingan juara ke-3
-            // Tanggal juara ke-3 = Hari Final - 1
-            // Final = +5 hari dari tanggalTerakhir semifinal
-            string tanggalFinal   = tambahHari(tanggalTerakhir, 5);
-            string tanggalJuara3  = tambahHari(tanggalFinal, -1);
+            // Buat pertandingan juara ke-3
+            string tanggalFinal = tambahHari(tanggalTerakhir, 5);
+            string tanggalJuara3 = tambahHari(tanggalFinal, -1);
 
-            pushAntrian(semifinalisKalah1, semifinalisKalah2, tanggalJuara3, "Perebutan Juara ke-3");
-            daftarkanMatch(semifinalisKalah1, semifinalisKalah2, "Perebutan Juara ke-3");
+            tambahAntrian(semifinalisKalah1, semifinalisKalah2, tanggalJuara3, "Perebutan Juara ke-3");
+            catatPertandingan(semifinalisKalah1, semifinalisKalah2, "Perebutan Juara ke-3");
             matchKetiga = true;
 
-            // Enqueue Final setelah match ke-3 (akan diproses setelah match ke-3 selesai)
-            // Final = +5 hari dari tanggal pertandingan semifinal terakhir
-            // Cari dua pemenang semifinal untuk final
-            // Pemenang sudah ada di antrian berikutnya (diatur oleh enqueue berikutnya)
-
-            cout << "[INFO] Semifinalis kedua yang kalah: " << kalah->namaTim
+            cout << "Semifinalis kedua yang kalah: " << kalah->nama
                  << " (akan bertanding perebutan juara ke-3 pada " << tanggalJuara3 << ")" << endl;
-            cout << "[INFO] Pertandingan Perebutan Juara ke-3 otomatis terjadwal!" << endl;
+            cout << "Pertandingan Perebutan Juara ke-3 otomatis terjadwal!" << endl;
         }
     } else {
-        // Match normal: langsung eliminate yang kalah
-        kalah->isEliminated = true;
-        cout << "[ELIMINASI] " << kalah->namaTim << " tereliminasi." << endl;
+        kalah->tereleminasi = true;
+        cout << kalah->nama << " tereliminasi." << endl;
     }
 
-    cout << "\n[HASIL] " << pemenang->namaTim << " menang (" << skorA << "-" << skorB << ")!"
+    cout << "\n" << pemenang->nama << " menang (" << skorA << "-" << skorB << ")!"
          << " Poin: " << pemenang->poin << endl;
 
-
-
-    // Deteksi jika antrian saat ini kosong: mungkin perlu enqueue ronde berikutnya
-    // Logika: setelah ronde beres (antrian kosong tapi masih ada tim aktif > 1),
-    // admin harus menjalankan buatJadwalBerikutnya (akan di-handle dari main.cpp)
-    if (isAntrianKosong()) {
+    if (antrianKosong()) {
         int timMasihAktif = hitungTimAktif();
-        // Tambah semifinalis yang belum di-eliminate ke hitungan jika ada
-        if (semifinalisKalah1 != nullptr && !semifinalisKalah1->isEliminated) timMasihAktif++;
-        if (semifinalisKalah2 != nullptr && !semifinalisKalah2->isEliminated) timMasihAktif++;
+        if (semifinalisKalah1 != NULL && !semifinalisKalah1->tereleminasi) timMasihAktif++;
+        if (semifinalisKalah2 != NULL && !semifinalisKalah2->tereleminasi) timMasihAktif++;
 
         if (timMasihAktif > 1) {
-            cout << "\n[RONDE SELESAI] Semua pertandingan ronde ini selesai." << endl;
-            cout << "[INFO] Tim aktif tersisa: " << hitungTimAktif() << endl;
-            cout << "[INFO] Admin: Gunakan menu 'Buat Jadwal Ronde Berikutnya' untuk lanjut." << endl;
+            cout << "\nSemua pertandingan ronde ini selesai." << endl;
+            cout << "Tim aktif tersisa: " << hitungTimAktif() << endl;
+            cout << "Admin: Gunakan menu 'Buat Jadwal Ronde Berikutnya' untuk lanjut." << endl;
         } else {
             cout << "\n=== TURNAMEN SELESAI! ===" << endl;
             cout << "Lihat Klasemen untuk melihat Juara 1, 2, dan 3." << endl;
@@ -188,43 +144,39 @@ void inputSkorPertandingan() {
     }
 }
 
-/*
- * buatJadwalBerikutnya: Enqueue pertandingan ronde berikutnya
- *                        berdasarkan pemenang ronde sebelumnya.
- *                        Dipanggil dari main setelah satu ronde selesai.
- */
+// Fungsi buat jadwal ronde berikutnya
 void buatJadwalBerikutnya() {
-    if (!bracketSudahDibuat) {
-        cout << "[ERROR] Braket belum dibuat." << endl;
+    if (!jadwalSudahDibuat) {
+        cout << "Braket belum dibuat." << endl;
         return;
     }
 
-    if (!isAntrianKosong()) {
-        cout << "[INFO] Masih ada pertandingan yang belum selesai di ronde ini." << endl;
+    if (!antrianKosong()) {
+        cout << "Masih ada pertandingan yang belum selesai di ronde ini." << endl;
         return;
     }
 
-    // Kumpulkan tim yang masih aktif (belum eliminate)
-    Tim** timAktif = new Tim*[MAX_TIM];
-    int  n = 0;
-    Tim* curr = headTim;
-    while (curr != nullptr) {
-        if (!curr->isEliminated) {
+    // Kumpulkan tim yang masih aktif
+    Tim **timAktif = new Tim*[MAX_TIM];
+    int n = 0;
+    Tim *curr = kepala;
+    while (curr != NULL) {
+        if (!curr->tereleminasi) {
             timAktif[n++] = curr;
         }
-        curr = curr->next;
+        curr = curr->berikutnya;
     }
 
     if (n < 2) {
-        cout << "[INFO] Tidak cukup tim aktif untuk ronde berikutnya." << endl;
+        cout << "Tidak cukup tim aktif untuk ronde berikutnya." << endl;
+        delete[] timAktif;
         return;
     }
 
     rondeSekarang++;
 
-    // Tentukan nama ronde dan offset hari
     string namaRonde;
-    int    offsetHari;
+    int offsetHari;
 
     if (n == 4) {
         namaRonde  = "Semifinal";
@@ -241,12 +193,12 @@ void buatJadwalBerikutnya() {
 
     cout << "\n=== JADWAL " << namaRonde << " ===" << endl;
     for (int i = 0; i < n / 2; i++) {
-        pushAntrian(timAktif[i], timAktif[n-1-i], tanggalRonde, namaRonde);
-        daftarkanMatch(timAktif[i], timAktif[n-1-i], namaRonde);
-        cout << "  " << timAktif[i]->namaTim << " vs " << timAktif[n-1-i]->namaTim
+        tambahAntrian(timAktif[i], timAktif[n - 1 - i], tanggalRonde, namaRonde);
+        catatPertandingan(timAktif[i], timAktif[n - 1 - i], namaRonde);
+        cout << "  " << timAktif[i]->nama << " vs " << timAktif[n - 1 - i]->nama
              << " (" << tanggalRonde << ")" << endl;
     }
 
-    cout << "[SUKSES] Jadwal " << namaRonde << " berhasil dibuat!" << endl;
+    cout << "Jadwal " << namaRonde << " berhasil dibuat!" << endl;
     delete[] timAktif;
 }

@@ -1,28 +1,24 @@
-/*
- * File: lihat_jadwal.cpp
- * Deskripsi: Menampilkan seluruh antrian jadwal pertandingan (FIFO traversal).
- */
+// File: lihat_jadwal.cpp
+// Deskripsi: Fungsi untuk menampilkan seluruh antrian jadwal pertandingan
 
-/*
- * lihatJadwalAntrian: Traverse antrian dari front ke back dan tampilkan tiap match.
- */
-void lihatJadwalAntrian() {
+// Fungsi tampilkan jadwal antrian pertandingan
+void tampilJadwal() {
     cout << "\n=== JADWAL ANTRIAN PERTANDINGAN ===" << endl;
 
-    if (isAntrianKosong()) {
+    if (antrianKosong()) {
         cout << "(Belum ada jadwal pertandingan)" << endl;
         return;
     }
 
     int no = 1;
-    NodeAntrian* curr = frontAntrian;
-    while (curr != nullptr) {
+    NodeAntrian *curr = depanAntrian;
+    while (curr != NULL) {
         cout << no << ". [" << curr->ronde << "] "
-             << curr->timA->namaTim << " vs " << curr->timB->namaTim
+             << curr->timA->nama << " vs " << curr->timB->nama
              << "  |  Tanggal: " << curr->tanggalTanding;
         if (no == 1) cout << "  <-- SEDANG BERLANGSUNG";
         cout << endl;
-        curr = curr->next;
+        curr = curr->berikutnya;
         no++;
     }
 }

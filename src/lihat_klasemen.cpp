@@ -1,64 +1,59 @@
-/*
- * File: lihat_klasemen.cpp
- * Deskripsi: Menampilkan papan klasemen berdasarkan poin (descending).
- *            Memanggil urutkanKlasemen() dari search_sort.cpp terlebih dahulu.
- */
+// File: lihat_klasemen.cpp
+// Deskripsi: Fungsi untuk menampilkan klasemen turnamen
 
-/*
- * lihatKlasemen: Sort linked list by poin descending, lalu tampilkan tabel.
- */
-void lihatKlasemen() {
+// Fungsi tampilkan papan klasemen
+void tampilKlasemen() {
     cout << "\n=== KLASEMEN TURNAMEN ===" << endl;
 
-    if (headTim == nullptr) {
+    if (kepala == NULL) {
         cout << "(Belum ada tim yang terdaftar)" << endl;
         return;
     }
 
-    // Deteksi apakah turnamen sudah selesai secara penuh
-    bool turnamenSelesai = bracketSudahDibuat && isAntrianKosong() && (hitungTimAktif() <= 1);
+    // Deteksi apakah turnamen sudah selesai
+    bool turnamenSelesai = jadwalSudahDibuat && antrianKosong() && (hitungTimAktif() <= 1);
 
-    // Buat struct temporary untuk menampung salinan data tim
+    // Struktur data sementara untuk salinan linked list (untuk diurutkan)
     struct NodeTemp {
-        string namaTim;
+        string nama;
         int poin;
-        bool isEliminated;
-        NodeTemp* next;
+        bool tereleminasi;
+        NodeTemp *next;
     };
 
-    NodeTemp* headTemp = nullptr;
-    NodeTemp* tailTemp = nullptr;
+    NodeTemp *headTemp = NULL;
+    NodeTemp *tailTemp = NULL;
 
-    // Salin data dari linked list asli
-    Tim* curr = headTim;
-    while (curr != nullptr) {
-        NodeTemp* baru = new NodeTemp;
-        baru->namaTim = curr->namaTim;
+    // Salin data ke list sementara
+    Tim *curr = kepala;
+    while (curr != NULL) {
+        NodeTemp *baru = new NodeTemp;
+        baru->nama = curr->nama;
         baru->poin = curr->poin;
-        baru->isEliminated = curr->isEliminated;
-        baru->next = nullptr;
+        baru->tereleminasi = curr->tereleminasi;
+        baru->next = NULL;
 
-        if (headTemp == nullptr) {
+        if (headTemp == NULL) {
             headTemp = baru;
             tailTemp = baru;
         } else {
             tailTemp->next = baru;
             tailTemp = baru;
         }
-        curr = curr->next;
+        curr = curr->berikutnya;
     }
 
-    // Urutkan salinan sementara (bubble sort descending berdasarkan poin)
-    if (headTemp != nullptr && headTemp->next != nullptr) {
+    // Urutkan list sementara berdasarkan poin descending (Bubble Sort)
+    if (headTemp != NULL && headTemp->next != NULL) {
         bool swapped = true;
         while (swapped) {
             swapped = false;
-            NodeTemp* c = headTemp;
-            while (c->next != nullptr) {
+            NodeTemp *c = headTemp;
+            while (c->next != NULL) {
                 if (c->poin < c->next->poin) {
-                    swap(c->namaTim,      c->next->namaTim);
-                    swap(c->poin,         c->next->poin);
-                    swap(c->isEliminated, c->next->isEliminated);
+                    swap(c->nama, c->next->nama);
+                    swap(c->poin, c->next->poin);
+                    swap(c->tereleminasi, c->next->tereleminasi);
                     swapped = true;
                 }
                 c = c->next;
@@ -66,7 +61,7 @@ void lihatKlasemen() {
         }
     }
 
-    // Header tabel
+    // Cetak klasemen
     cout << left
          << setw(5)  << "No"
          << setw(20) << "Nama Tim"
@@ -76,8 +71,8 @@ void lihatKlasemen() {
     cout << string(50, '-') << endl;
 
     int no = 1;
-    NodeTemp* tCurr = headTemp;
-    while (tCurr != nullptr) {
+    NodeTemp *tCurr = headTemp;
+    while (tCurr != NULL) {
         string statusStr = "";
         if (turnamenSelesai) {
             if (no == 1) {
@@ -92,12 +87,12 @@ void lihatKlasemen() {
                 statusStr = "Peringkat " + to_string(no);
             }
         } else {
-            statusStr = tCurr->isEliminated ? "Tereliminasi" : "Aktif";
+            statusStr = tCurr->tereleminasi ? "Tereliminasi" : "Aktif";
         }
 
         cout << left
              << setw(5)  << no
-             << setw(20) << tCurr->namaTim
+             << setw(20) << tCurr->nama
              << setw(8)  << tCurr->poin
              << setw(15) << statusStr
              << endl;
@@ -107,10 +102,10 @@ void lihatKlasemen() {
     }
     cout << string(50, '-') << endl;
 
-    // Bebaskan memori linked list salinan sementara
-    NodeTemp* del = headTemp;
-    while (del != nullptr) {
-        NodeTemp* tempNext = del->next;
+    // Bebaskan memori list sementara
+    NodeTemp *del = headTemp;
+    while (del != NULL) {
+        NodeTemp *tempNext = del->next;
         delete del;
         del = tempNext;
     }

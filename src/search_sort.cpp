@@ -1,47 +1,37 @@
-/*
- * File: search_sort.cpp
- * Deskripsi: Fungsi utilitas pencarian linear dan pengurutan
- *            klasemen berdasarkan poin (linked list).
- */
+// File: search_sort.cpp
+// Deskripsi: Fungsi utilitas pencarian linear dan pengurutan tim
 
-/*
- * cariTim: Linear search pada linked list, return pointer ke node Tim
- *           yang namaTim-nya cocok, atau nullptr jika tidak ditemukan.
- */
-Tim* cariTim(const string& namaTimCari) {
-    Tim* curr = headTim;
-    while (curr != nullptr) {
-        if (curr->namaTim == namaTimCari) {
+// Fungsi untuk mencari tim berdasarkan nama (Linear Search)
+Tim *cariTim(const string& namaTimCari) {
+    Tim *curr = kepala;
+    while (curr != NULL) {
+        if (curr->nama == namaTimCari) {
             return curr;
         }
-        curr = curr->next;
+        curr = curr->berikutnya;
     }
-    return nullptr;
+    return NULL;
 }
 
-/*
- * urutkanKlasemen: Bubble sort linked list descending berdasarkan poin.
- *                  Swap hanya nilai data (bukan pointer), sehingga
- *                  struktur linked list tetap utuh.
- */
+// Fungsi untuk mengurutkan klasemen tim berdasarkan poin (Bubble Sort)
 void urutkanKlasemen() {
-    if (headTim == nullptr || headTim->next == nullptr) return;
+    if (kepala == NULL || kepala->berikutnya == NULL) return;
 
     bool swapped = true;
     while (swapped) {
-        swapped  = false;
-        Tim* curr = headTim;
-        while (curr->next != nullptr) {
-            if (curr->poin < curr->next->poin) {
-                // Swap data (bukan pointer)
-                swap(curr->namaTim,      curr->next->namaTim);
-                swap(curr->password,     curr->next->password);
-                swap(curr->jumlahPemain, curr->next->jumlahPemain);
-                swap(curr->poin,         curr->next->poin);
-                swap(curr->isEliminated, curr->next->isEliminated);
+        swapped = false;
+        Tim *curr = kepala;
+        while (curr->berikutnya != NULL) {
+            if (curr->poin < curr->berikutnya->poin) {
+                // Swap data tim (bukan pointernya)
+                swap(curr->nama, curr->berikutnya->nama);
+                swap(curr->password, curr->berikutnya->password);
+                swap(curr->jumlahPemain, curr->berikutnya->jumlahPemain);
+                swap(curr->poin, curr->berikutnya->poin);
+                swap(curr->tereleminasi, curr->berikutnya->tereleminasi);
                 swapped = true;
             }
-            curr = curr->next;
+            curr = curr->berikutnya;
         }
     }
 }

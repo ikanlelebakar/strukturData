@@ -1,10 +1,7 @@
-/*
- * File: registrasi_admin.cpp
- * Deskripsi: Alur registrasi admin pertama kali program dijalankan.
- *            Admin membuat username, password, nama turnamen, dan jumlah maksimal tim.
- */
+// File: registrasi_admin.cpp
+// Deskripsi: Fungsi registrasi admin pertama kali dijalankan
 
-void registrasiAdmin() {
+void daftarAdmin() {
     cout << "\n" << string(50, '=') << endl;
     cout << "      REGISTRASI ADMINISTRATOR TURNAMEN" << endl;
     cout << string(50, '=') << endl;
@@ -25,14 +22,14 @@ void registrasiAdmin() {
         cout << "Maksimal Tim (harus pangkat 2, min 2): ";
         cin >> MAX_TIM;
         cin.ignore(10000, '\n');
-        if (!isPowerOfTwo(MAX_TIM) || MAX_TIM < 2) {
-            cout << "[ERROR] Kapasitas tim harus merupakan angka pangkat 2 (2, 4, 8, 16, 32, dst.)." << endl;
+        if (!adalahPangkatDua(MAX_TIM) || MAX_TIM < 2) {
+            cout << "Kapasitas tim harus merupakan angka pangkat 2 (2, 4, 8, 16, 32, dst.)." << endl;
         }
-    } while (!isPowerOfTwo(MAX_TIM) || MAX_TIM < 2);
+    } while (!adalahPangkatDua(MAX_TIM) || MAX_TIM < 2);
 
     adminSudahDibuat = true;
 
-    cout << "\n[SUKSES] Akun Admin berhasil dibuat!" << endl;
+    cout << "\nAkun Admin berhasil dibuat!" << endl;
     cout << "Nama Turnamen: " << namaTurnamen << endl;
     cout << "Maksimal Tim : " << MAX_TIM << endl;
     cout << string(50, '=') << endl;

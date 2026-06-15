@@ -1,177 +1,128 @@
-/*
- * File: models.cpp
- * Deskripsi: Definisi struct, variabel global, dan fungsi queue
- *            yang digunakan di seluruh sistem turnamen.
- *
- * Struktur data utama:
- *   - Tim          : Singly Linked List node untuk daftar tim
- *   - NodeAntrian  : Singly Linked List node untuk antrian pertandingan (Queue)
- */
+// File: models.cpp
+// Deskripsi: Definisi struct, variabel global, dan fungsi queue
 
 #include <iostream>
 #include <string>
 using namespace std;
 
-// ==========================================
-// KONSTANTA GLOBAL & STATE UTAMA
-// ==========================================
-int MAX_TIM          = 8;  // Di-set dinamis saat registrasi admin (harus pangkat 2)
+// Konstanta global
+int MAX_TIM = 8;
 const int MIN_PEMAIN = 1;
 const int MAX_PEMAIN = 7;
 
-// ==========================================
-// VARIABEL GLOBAL — STATE ADMIN
-// ==========================================
+// Variabel global admin
 string adminUsername = "";
 string adminPassword = "";
-string namaTurnamen   = "";
+string namaTurnamen = "";
 bool adminSudahDibuat = false;
 
-// Helper pangkat 2
-bool isPowerOfTwo(int n) {
+// Fungsi cek pangkat 2
+bool adalahPangkatDua(int n) {
     return n > 0 && (n & (n - 1)) == 0;
 }
 
-// ==========================================
-// STRUCT TIM (node singly linked list)
-// ==========================================
+// Struktur data Tim
 struct Tim {
-    string namaTim;       // nama tim, juga sebagai username login
-    string password;      // untuk autentikasi login tim
-    int    jumlahPemain;  // jumlah anggota tim, valid: 1-7
-    int    poin;          // jumlah kemenangan, untuk sorting klasemen
-    bool   isEliminated;  // status eliminasi tim
-    Tim*   next;          // pointer ke node berikutnya
+    string nama;
+    string password;
+    int jumlahPemain;
+    int poin;
+    bool tereleminasi;
+    Tim *berikutnya;
 };
 
-// ==========================================
-// STRUCT NODE ANTRIAN PERTANDINGAN
-// ==========================================
+// Struktur data Node Antrian Pertandingan
 struct NodeAntrian {
-    Tim*         timA;          // pointer ke tim pertama
-    Tim*         timB;          // pointer ke tim kedua
-    string       tanggalTanding; // format: "YYYY-MM-DD"
-    string       ronde;         // label ronde (misal: "Ronde 1", "Semifinal", dll.)
-    NodeAntrian* next;
+    Tim *timA;
+    Tim *timB;
+    string tanggalTanding;
+    string ronde;
+    NodeAntrian *berikutnya;
 };
 
-// ==========================================
-// VARIABEL GLOBAL — STATE LINKED LIST TIM
-// ==========================================
-Tim* headTim          = nullptr;  // head linked list tim
-int  jumlahTimAktif   = 0;        // counter jumlah tim yang terdaftar
-bool pendaftaranDitutup  = false; // false = masih bisa daftar
-bool bracketSudahDibuat  = false; // true = braket sudah terbentuk
+// Variabel global tim
+Tim *kepala = NULL;
+int jumlahTim = 0;
+bool pendaftaranDitutup = false;
+bool jadwalSudahDibuat = false;
 
-// ==========================================
-// VARIABEL GLOBAL — ANTRIAN PERTANDINGAN
-// ==========================================
-NodeAntrian* frontAntrian = nullptr;  // kepala antrian (FIFO)
-NodeAntrian* backAntrian  = nullptr;  // ekor antrian
+// Variabel global antrian pertandingan
+NodeAntrian *depanAntrian = NULL;
+NodeAntrian *belakangAntrian = NULL;
 
-// ==========================================
-// VARIABEL GLOBAL — BRACKET & RONDE
-// ==========================================
-int rondeSekarang  = 0;    // ronde yang sedang berjalan
-int matchDiRonde   = 0;    // jumlah match yang sudah terjadi di ronde ini
-string tanggalTerakhir = ""; // tanggal pertandingan terakhir di ronde ini
+// Variabel global ronde
+int rondeSekarang = 0;
+int matchDiRonde = 0;
+string tanggalTerakhir = "";
 
-// Untuk logika juara ke-3: semi-finalis yang kalah
-Tim* semifinalisKalah1 = nullptr;
-Tim* semifinalisKalah2 = nullptr;
-bool matchKetiga       = false;  // flag: pertandingan berikutnya adalah juara ke-3
+// Variabel global untuk perebutan juara 3
+Tim *semifinalisKalah1 = NULL;
+Tim *semifinalisKalah2 = NULL;
+bool matchKetiga = false;
 
-// ==========================================
-// STRUCT & ARRAY — RIWAYAT HASIL MATCH
-// ==========================================
-/*
- * MatchResult: menyimpan hasil satu pertandingan yang sudah selesai
- *   - timA, timB    : dua tim yang bertanding
- *   - pemenang      : pointer ke tim yang menang (nullptr = belum dimainkan)
- *   - ronde         : label ronde pertandingan ini
- */
+// Struktur data hasil pertandingan
 struct MatchResult {
-    Tim*   timA;
-    Tim*   timB;
-    Tim*   pemenang;   // nullptr jika belum ada hasil
+    Tim *timA;
+    Tim *timB;
+    Tim *pemenang;
     string ronde;
 };
 
-const int MAX_MATCHES = 64;           // lebih dari cukup untuk turnamen hingga 32 tim
+const int MAX_MATCHES = 64;
 MatchResult matchResults[MAX_MATCHES];
-int jumlahMatchResult = 0;           // berapa match yang sudah dicatat
+int jumlahHasil = 0;
 
-// ==========================================
-// FUNGSI QUEUE — ANTRIAN PERTANDINGAN
-// ==========================================
+// Fungsi tambah antrian pertandingan (Enqueue)
+void tambahAntrian(Tim *timA, Tim *timB, string tanggal, string ronde) {
+    NodeAntrian *baru = new NodeAntrian;
+    baru->timA = timA;
+    baru->timB = timB;
+    baru->tanggalTanding = tanggal;
+    baru->ronde = ronde;
+    baru->berikutnya = NULL;
 
-/*
- * pushAntrian: enqueue satu match ke belakang antrian
- */
-void pushAntrian(Tim* timA, Tim* timB, string tanggal, string ronde) {
-    NodeAntrian* node  = new NodeAntrian;
-    node->timA          = timA;
-    node->timB          = timB;
-    node->tanggalTanding = tanggal;
-    node->ronde         = ronde;
-    node->next          = nullptr;
-
-    if (backAntrian == nullptr) {
-        frontAntrian = node;
-        backAntrian  = node;
+    if (belakangAntrian == NULL) {
+        depanAntrian = baru;
+        belakangAntrian = baru;
     } else {
-        backAntrian->next = node;
-        backAntrian       = node;
+        belakangAntrian->berikutnya = baru;
+        belakangAntrian = baru;
     }
 }
 
-/*
- * popAntrian: dequeue pertandingan paling depan
- */
-void popAntrian() {
-    if (frontAntrian == nullptr) return;
+// Fungsi hapus antrian pertandingan (Dequeue)
+void hapusAntrian() {
+    if (depanAntrian == NULL) return;
 
-    NodeAntrian* temp = frontAntrian;
-    frontAntrian      = frontAntrian->next;
-    if (frontAntrian == nullptr) {
-        backAntrian = nullptr;
+    NodeAntrian *temp = depanAntrian;
+    depanAntrian = depanAntrian->berikutnya;
+    if (depanAntrian == NULL) {
+        belakangAntrian = NULL;
     }
     delete temp;
 }
 
-/*
- * isAntrianKosong: cek apakah antrian kosong
- */
-bool isAntrianKosong() {
-    return frontAntrian == nullptr;
+// Fungsi cek apakah antrian kosong
+bool antrianKosong() {
+    return depanAntrian == NULL;
 }
 
-// ==========================================
-// FUNGSI RIWAYAT MATCH
-// ==========================================
-
-/*
- * daftarkanMatch: catat match baru (belum ada pemenang) ke matchResults.
- *                 Dipanggil setiap kali pushAntrian dijalankan.
- */
-void daftarkanMatch(Tim* timA, Tim* timB, string ronde) {
-    if (jumlahMatchResult >= MAX_MATCHES) return;
-    matchResults[jumlahMatchResult].timA     = timA;
-    matchResults[jumlahMatchResult].timB     = timB;
-    matchResults[jumlahMatchResult].pemenang = nullptr;
-    matchResults[jumlahMatchResult].ronde    = ronde;
-    jumlahMatchResult++;
+// Fungsi catat pertandingan baru ke riwayat
+void catatPertandingan(Tim *timA, Tim *timB, string ronde) {
+    if (jumlahHasil >= MAX_MATCHES) return;
+    matchResults[jumlahHasil].timA = timA;
+    matchResults[jumlahHasil].timB = timB;
+    matchResults[jumlahHasil].pemenang = NULL;
+    matchResults[jumlahHasil].ronde = ronde;
+    jumlahHasil++;
 }
 
-/*
- * updatePemenangMatch: cari match di matchResults berdasarkan timA+timB,
- *                      lalu set pemenangnya.
- */
-void updatePemenangMatch(Tim* timA, Tim* timB, Tim* pemenang) {
-    for (int i = 0; i < jumlahMatchResult; i++) {
+// Fungsi update pemenang pertandingan di riwayat
+void updatePemenang(Tim *timA, Tim *timB, Tim *pemenang) {
+    for (int i = 0; i < jumlahHasil; i++) {
         bool cocok = (matchResults[i].timA == timA && matchResults[i].timB == timB) ||
                      (matchResults[i].timA == timB && matchResults[i].timB == timA);
-        if (cocok && matchResults[i].pemenang == nullptr) {
+        if (cocok && matchResults[i].pemenang == NULL) {
             matchResults[i].pemenang = pemenang;
             return;
         }
