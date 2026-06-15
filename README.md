@@ -1,141 +1,93 @@
 # 🏆 Proyek: Sistem Manajemen & Penjadwalan Turnamen
 
-Proyek ini adalah aplikasi berbasis *Command Line Interface* (CLI) C++ untuk mengelola jalannya turnamen kompetitif menggunakan sistem eliminasi (sistem gugur). Proyek ini dibagi menjadi berkas-berkas `*.cpp` terpisah tanpa file header (`*.h`) untuk mempermudah pengerjaan tim. Keterhubungan antar-berkas diatur melalui `#include` di dalam berkas [main.cpp](file:///home/fais/Documents/strukturData/src/main.cpp).
+Proyek ini adalah aplikasi berbasis *Command Line Interface* (CLI) C++ untuk mengelola jalannya turnamen kompetitif menggunakan sistem eliminasi (sistem gugur) tunggal (*single elimination*) ditambah dengan babak perebutan juara ke-3.
+
+Proyek ini dibagi menjadi berkas-berkas `*.cpp` terpisah tanpa file header (`*.h`) untuk mempermudah pengerjaan tim. Keterhubungan antar-berkas diatur melalui `#include` di dalam berkas [main.cpp](file:///home/fais/Documents/strukturData/src/main.cpp).
 
 ---
 
 ## 📂 Struktur Berkas Proyek
 
-Semua berkas berada di dalam satu folder dan harus dikerjakan sesuai spesifikasinya:
+Semua berkas modul modular terorganisir di dalam folder `src/`:
 
-1. **[models.cpp](file:///home/fais/Documents/strukturData/src/models.cpp)**: Definisi struktur data (struct) dan variabel global.
-2. **[search_sort.cpp](file:///home/fais/Documents/strukturData/src/search_sort.cpp)**: Fungsi pencarian tim dan pengurutan klasemen.
-3. **[main.cpp](file:///home/fais/Documents/strukturData/src/main.cpp)**: Menu utama program CLI dan penggabung seluruh file.
+1. **[src/main.cpp](file:///home/fais/Documents/strukturData/src/main.cpp)**: Driver utama program CLI, memuat menu utama untuk Admin, Tim, dan Penonton, serta menyatukan seluruh berkas modul.
+2. **[src/umum/models.cpp](file:///home/fais/Documents/strukturData/src/umum/models.cpp)**: Definisi struktur data (struct), antrian pertandingan (Queue berbasis Linked List), variabel global, dan fungsi pembantu (seperti cek pangkat dua).
+3. **[src/umum/search_sort.cpp](file:///home/fais/Documents/strukturData/src/umum/search_sort.cpp)**: Implementasi pencarian tim menggunakan *Linear Search* dan pengurutan klasemen menggunakan *Bubble Sort*.
+4. **[src/hapus_terminal/utils.cpp](file:///home/fais/Documents/strukturData/src/hapus_terminal/utils.cpp)**: Fungsi utilitas untuk membersihkan layar terminal (`clearScreen()`) secara lintas platform (Windows/Linux/macOS).
 
 ### 🛡️ Fitur Menu Admin (Admin Access)
-4. **[login_admin.cpp](file:///home/fais/Documents/strukturData/src/login_admin.cpp)**: Logika login akses Admin.
-5. **[lihat_tim.cpp](file:///home/fais/Documents/strukturData/src/lihat_tim.cpp)**: Menampilkan seluruh tim terdaftar dan anggotanya.
-6. **[edit_tim.cpp](file:///home/fais/Documents/strukturData/src/edit_tim.cpp)**: Mengubah nama tim/anggota menggunakan pointer.
-7. **[hapus_tim.cpp](file:///home/fais/Documents/strukturData/src/hapus_tim.cpp)**: Menghapus tim dari array (shifting index).
-8. **[buat_jadwal.cpp](file:///home/fais/Documents/strukturData/src/buat_jadwal.cpp)**: Mengacak bagan tanding dan memasukkannya ke Queue.
-9. **[input_hasil.cpp](file:///home/fais/Documents/strukturData/src/input_hasil.cpp)**: Memasukkan skor, update klasemen (poin), eliminasi tim, dan dequeue (pop).
-10. **[lihat_klasemen.cpp](file:///home/fais/Documents/strukturData/src/lihat_klasemen.cpp)**: Menampilkan tabel papan peringkat klasemen.
-11. **[lihat_bracket.cpp](file:///home/fais/Documents/strukturData/src/lihat_bracket.cpp)**: Menampilkan visualisasi bagan eliminasi turnamen.
+5. **[src/admin/registrasi_admin.cpp](file:///home/fais/Documents/strukturData/src/admin/registrasi_admin.cpp)**: Pendaftaran akun administrator dinamis pertama kali beserta konfigurasi maksimal tim (`MAX_TIM`).
+6. **[src/admin/login_admin.cpp](file:///home/fais/Documents/strukturData/src/admin/login_admin.cpp)**: Autentikasi untuk masuk sebagai Admin.
+7. **[src/admin/hapus_tim.cpp](file:///home/fais/Documents/strukturData/src/admin/hapus_tim.cpp)**: Menghapus pendaftaran tim sebelum jadwal/braket dibuat.
+8. **[src/admin/buat_jadwal.cpp](file:///home/fais/Documents/strukturData/src/admin/buat_jadwal.cpp)**: Logika pengacakan braket awal turnamen (Ronde 1) dengan mempertemukan tim secara *head-vs-tail*.
+9. **[src/admin/input_hasil.cpp](file:///home/fais/Documents/strukturData/src/admin/input_hasil.cpp)**: Memasukkan skor pertandingan saat ini, mengeliminasi tim yang kalah, memberikan poin kemenangan (+1), dan menjadwalkan ronde berikutnya (termasuk final dan juara 3).
 
 ### 👥 Fitur Menu Tim / Pemain (Restricted Access)
-12. **[registrasi_tim.cpp](file:///home/fais/Documents/strukturData/src/registrasi_tim.cpp)**: Mendaftarkan nama tim baru beserta 5 anggota.
-13. **[lihat_jadwal.cpp](file:///home/fais/Documents/strukturData/src/lihat_jadwal.cpp)**: Melihat antrian jadwal tanding.
-14. **[cari_lawan.cpp](file:///home/fais/Documents/strukturData/src/cari_lawan.cpp)**: Mencari profil/anggota tim lain dengan algoritma pencarian.
+10. **[src/tim/registrasi_tim.cpp](file:///home/fais/Documents/strukturData/src/tim/registrasi_tim.cpp)**: Mendaftarkan tim baru dengan nama, password, dan jumlah pemain (1-7).
+11. **[src/tim/login_tim.cpp](file:///home/fais/Documents/strukturData/src/tim/login_tim.cpp)**: Autentikasi bagi tim terdaftar untuk masuk ke Menu Tim.
+12. **[src/tim/edit_tim.cpp](file:///home/fais/Documents/strukturData/src/tim/edit_tim.cpp)**: Mengubah nama/password/jumlah pemain dari tim sendiri (selama belum tereliminasi).
+13. **[src/tim/lihat_tim.cpp](file:///home/fais/Documents/strukturData/src/tim/lihat_tim.cpp)**: Menampilkan seluruh tim terdaftar beserta info dasarnya.
+14. **[src/tim/cari_lawan.cpp](file:///home/fais/Documents/strukturData/src/tim/cari_lawan.cpp)**: Mencari dan melihat detail profil tim lawan.
+
+### 👁️ Fitur Umum & Penonton (Public Access)
+15. **[src/umum/lihat_jadwal.cpp](file:///home/fais/Documents/strukturData/src/umum/lihat_jadwal.cpp)**: Menampilkan antrian jadwal tanding saat ini.
+16. **[src/umum/lihat_bracket.cpp](file:///home/fais/Documents/strukturData/src/umum/lihat_bracket.cpp)**: Menampilkan visualisasi bagan eliminasi turnamen (Bracket).
+17. **[src/umum/lihat_klasemen.cpp](file:///home/fais/Documents/strukturData/src/umum/lihat_klasemen.cpp)**: Menampilkan klasemen tim terurut berdasarkan jumlah kemenangan (poin).
 
 ---
 
-## 📝 Detail Spesifikasi Fitur yang Harus Ditambahkan
-
-Berikut adalah daftar fungsi dan kebutuhan logika yang perlu diisi di dalam masing-masing file `*.cpp`:
+## 📝 Detail Spesifikasi Struktur Data & Logika
 
 ### 1. `models.cpp`
-*   **Struct `Pemain`**:
-    *   `string namaPemain;`
-*   **Struct `Tim`**:
-    *   `string namaTim;`
-    *   `Pemain anggota[5];`
-    *   `int poin;`
-    *   `bool isEliminated;`
-*   **Variabel Global**:
-    *   `const int MAX_TIM = 16;`
-    *   `Tim daftarTim[MAX_TIM];`
-    *   `int jumlahTimAktif = 0;`
-*   **Struct `AntrianTanding` (Queue berbasis Array/Linked List)**:
-    *   Implementasikan variabel pendukung antrian (`depan`, `belakang`).
-    *   Fungsi-fungsi Queue:
-        *   `void push(int indexTimA, int indexTimB)`: Memasukkan pasangan tanding ke antrian.
-        *   `void pop()`: Mengeluarkan pertandingan terdepan jika sudah selesai.
-        *   `bool isEmpty()`: Mengecek apakah antrian kosong.
-        *   `bool isFull()`: Mengecek apakah antrian penuh.
+*   **Struct `Tim` (Node Singly Linked List)**:
+    ```cpp
+    struct Tim {
+        string nama;
+        string password;
+        int jumlahPemain; // Nilai valid: 1–7
+        int poin;         // Poin bertambah +1 per kemenangan
+        bool tereleminasi;
+        Tim *berikutnya;
+    };
+    ```
+*   **Struct `NodeAntrian` (Node Queue Pertandingan)**:
+    ```cpp
+    struct NodeAntrian {
+        Tim *timA;
+        Tim *timB;
+        string tanggalTanding;
+        string ronde;
+        NodeAntrian *berikutnya;
+    };
+    ```
+*   **Fungsi Queue**:
+    *   `void tambahAntrian(Tim *timA, Tim *timB, string tanggal, string ronde)` (Enqueue)
+    *   `void hapusAntrian()` (Dequeue)
+    *   `bool antrianKosong()` (Pengecekan kekosongan antrian)
 
-### 2. `search_sort.cpp`
-*   **Fungsi `int cariIndeksTim(string nama)`**:
-    *   Melakukan pencarian linier (*Linear Search*) pada `daftarTim` dari indeks 0 s.d. `jumlahTimAktif - 1`.
-    *   Mengembalikan indeks tim jika nama tim cocok, atau `-1` jika tidak ditemukan.
-*   **Fungsi `void urutkanKlasemen()`**:
-    *   Mengurutkan `daftarTim` menggunakan algoritma *Bubble Sort* atau *Selection Sort* secara *descending* (menurun) berdasarkan nilai `poin`.
-
-### 3. `login_admin.cpp`
-*   **Fungsi `bool loginAdmin()`**:
-    *   Meminta input username dan password.
-    *   Mencocokkan dengan data statis (contoh: admin / 123).
-    *   Mengembalikan `true` jika cocok, `false` jika salah.
-
-### 4. `lihat_tim.cpp`
-*   **Fungsi `void lihatDaftarTim()`**:
-    *   Melakukan iterasi dan menampilkan nama tim, poin, status eliminasi, beserta nama ke-5 anggotanya.
-
-### 5. `edit_tim.cpp`
-*   **Fungsi `void editDataTim(Tim* ptrTim)`**:
-    *   Menerima pointer ke objek `Tim`.
-    *   Mengubah data `namaTim` atau data `anggota` secara langsung pada memori asli menggunakan operator panah (`->`).
-*   **Fungsi `void menuEditTim()`**:
-    *   Mencari tim dengan `cariIndeksTim()`, jika ketemu panggil `editDataTim(&daftarTim[indeks])`.
-
-### 6. `hapus_tim.cpp`
-*   **Fungsi `void hapusTim()`**:
-    *   Mencari tim dengan `cariIndeksTim()`.
-    *   Jika ketemu, geser (*shift*) semua elemen array di sebelah kanan indeks tersebut ke kiri.
-    *   Kurangi `jumlahTimAktif` dengan 1.
-
-### 7. `buat_jadwal.cpp`
-*   **Fungsi `void buatJadwalPertandingan()`**:
-    *   Memasangkan tim-tim aktif yang belum tereliminasi untuk bertanding.
-    *   Memasukkan indeks pasangan tanding tersebut ke dalam queue `antrian` menggunakan `push()`.
-
-### 8. `input_hasil.cpp`
-*   **Fungsi `void inputSkorPertandingan()`**:
-    *   Mengambil pasangan pertandingan terdepan di queue.
-    *   Meminta input skor masing-masing tim.
-    *   Menambahkan poin (misal +3) pada tim yang menang.
-    *   Mengubah status `isEliminated` menjadi `true` pada tim yang kalah.
-    *   Mengeluarkan pertandingan dari antrian menggunakan `pop()`.
-
-### 9. `lihat_klasemen.cpp`
-*   **Fungsi `void lihatKlasemen()`**:
-    *   Memanggil `urutkanKlasemen()` agar data terurut.
-    *   Menampilkan daftar tim terurut beserta poinnya dalam format tabel CLI.
-
-### 10. `lihat_bracket.cpp`
-*   **Fungsi `void lihatBracketTree()`**:
-    *   Menggambar bagan turnamen sistem gugur secara visual menggunakan karakter teks CLI (seperti `|`, `\`, `---`).
-
-### 11. `registrasi_tim.cpp`
-*   **Fungsi `void registrasiTimBaru()`**:
-    *   Meminta input nama tim baru dan nama 5 anggotanya.
-    *   Memasukkan data ke `daftarTim[jumlahTimAktif]` dan menginkremen `jumlahTimAktif`.
-
-### 12. `lihat_jadwal.cpp`
-*   **Fungsi `void lihatJadwalAntrian()`**:
-    *   Melakukan traversal queue dari indeks `depan` sampai `belakang` untuk menampilkan daftar antrian tanding.
-
-### 13. `cari_lawan.cpp`
-*   **Fungsi `void cariLawan()`**:
-    *   Meminta input nama tim lawan.
-    *   Mencari menggunakan `cariIndeksTim()`.
-    *   Menampilkan profil lengkap tim jika ditemukan.
-
-### 14. `main.cpp`
-*   Berisi fungsi `main()`.
-*   Menjalankan menu loop utama program:
-    *   Akses Admin (memvalidasi dengan `loginAdmin()`, jika berhasil menampilkan sub-menu admin 1-8).
-    *   Akses Tim (menampilkan sub-menu tim 1-5).
-    *   Keluar program.
+### 2. Aturan Bisnis Turnamen
+*   **Kapasitas Maksimal Tim (`MAX_TIM`)**: Di-set dinamis oleh Admin pertama kali berjalan, dan nilainya harus merupakan pangkat 2 (misal: 2, 4, 8, 16, 32...).
+*   **Batas Pemain**: Jumlah pemain minimal 1 dan maksimal 7 orang.
+*   **Aturan Penjadwalan Tanggal**:
+    *   Ronde 1: Input tanggal manual pertama kali oleh Admin (`YYYY-MM-DD`).
+    *   Ronde Biasa Selanjutnya: +3 hari dari pertandingan terakhir ronde sebelumnya.
+    *   Semifinal: +4 hari dari pertandingan terakhir.
+    *   Perebutan Juara ke-3: Hari Final - 1 hari (dijadwalkan otomatis setelah semifinal berakhir).
+    *   Final: +5 hari dari pertandingan terakhir.
+*   **Skor & Poin**:
+    *   Skor maksimal per tim dalam pertandingan adalah 3 (skor valid: 0-3).
+    *   Tidak boleh ada skor negatif atau seri (karena sistem gugur).
+    *   Tim pemenang mendapatkan +1 poin ke dalam klasemen.
 
 ---
 
 ## 🛠️ Cara Kompilasi dan Menjalankan Program
 
-Karena proyek ini menggunakan pendekatan Single-File Architecture yang digabungkan lewat `#include` berkas `.cpp` di `main.cpp`, Anda **tidak perlu** melakukan kompilasi terhadap semua berkas secara manual. Anda cukup melakukan kompilasi pada **[main.cpp](file:///home/fais/Documents/strukturData/src/main.cpp)** saja.
+Karena proyek ini menggunakan pendekatan Single-File Architecture yang digabungkan lewat `#include` berkas `.cpp` di `main.cpp`, Anda cukup melakukan kompilasi pada **[src/main.cpp](file:///home/fais/Documents/strukturData/src/main.cpp)** saja.
 
 ### Menggunakan g++ (GCC) di Terminal Linux/Windows:
 
 ```bash
 g++ src/main.cpp -o sistem_turnamen
-./sistem_turnamen atau sistem_turnamen.exe
+./sistem_turnamen
 ```

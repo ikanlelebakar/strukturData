@@ -67,3 +67,15 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# Python cache
+__pycache__/
+*.pyc
+tests/
+
+
+graphify-out/
+.agents/
+sistem_turnamen
+docs/
+contoh_code/
