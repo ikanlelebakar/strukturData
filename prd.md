@@ -132,5 +132,3 @@ Tanpa login. Muncul setelah pendaftaran ditutup/penuh. Hak akses meliputi:
 | `src/umum/lihat_bracket.cpp` | `tampilBracket()` |
 | `src/umum/lihat_klasemen.cpp` | `tampilKlasemen()` |
 | `src/tim/cari_lawan.cpp` | `cariTim()` |
-
----
