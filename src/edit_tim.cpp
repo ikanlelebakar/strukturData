@@ -46,7 +46,7 @@ void editDataTim(Tim *ptrTim) {
             } while (jumlahBaru < MIN_PEMAIN || jumlahBaru > MAX_PEMAIN);
 
             ptrTim->jumlahPemain = jumlahBaru;
-            cout << "Jumlah pemain berhasil diubah menjadi " << jumlahBaru << "." << endl;
+            cout << "[SUKSES] Jumlah pemain berhasil diubah menjadi " << jumlahBaru << "." << endl;
             break;
         }
         case 3: {
@@ -54,7 +54,7 @@ void editDataTim(Tim *ptrTim) {
             cout << "Password Baru: ";
             getline(cin, passBaru);
             ptrTim->password = passBaru;
-            cout << "Password berhasil diubah." << endl;
+            cout << "[SUKSES] Password berhasil diubah." << endl;
             break;
         }
         case 0:

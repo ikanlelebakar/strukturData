@@ -23,13 +23,13 @@ void daftarAdmin() {
         cin >> MAX_TIM;
         cin.ignore(10000, '\n');
         if (!adalahPangkatDua(MAX_TIM) || MAX_TIM < 2) {
-            cout << "Kapasitas tim harus merupakan angka pangkat 2 (2, 4, 8, 16, 32, dst.)." << endl;
+            cout << "[ERROR] Kapasitas tim harus merupakan angka pangkat 2 (2, 4, 8, 16, 32, dst.)." << endl;
         }
     } while (!adalahPangkatDua(MAX_TIM) || MAX_TIM < 2);
 
     adminSudahDibuat = true;
 
-    cout << "\nAkun Admin berhasil dibuat!" << endl;
+    cout << "\n[SUKSES] Akun Admin berhasil dibuat!" << endl;
     cout << "Nama Turnamen: " << namaTurnamen << endl;
     cout << "Maksimal Tim : " << MAX_TIM << endl;
     cout << string(50, '=') << endl;

@@ -45,9 +45,9 @@ void inputHasil() {
         cin.ignore(10000, '\n');
 
         if (skorA < 0 || skorB < 0) {
-            cout << "Skor tidak boleh negatif." << endl;
+            cout << "[ERROR] Skor tidak boleh negatif." << endl;
         } else if (skorA == skorB) {
-            cout << "Skor tidak boleh seri dalam sistem eliminasi. Masukkan ulang." << endl;
+            cout << "[ERROR] Skor tidak boleh seri dalam sistem eliminasi. Masukkan ulang." << endl;
         } else {
             inputValid = true;
         }

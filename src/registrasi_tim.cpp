@@ -26,7 +26,7 @@ void daftarTim() {
 
     // Cek duplikat nama tim
     if (cariTim(nama) != NULL) {
-        cout << "Nama tim \"" << nama << "\" sudah terdaftar. Pilih nama lain." << endl;
+        cout << "[DITOLAK] Nama tim \"" << nama << "\" sudah terdaftar. Pilih nama lain." << endl;
         return;
     }
 
@@ -40,7 +40,7 @@ void daftarTim() {
         cin >> jumlahPemain;
         cin.ignore(10000, '\n');
         if (jumlahPemain < MIN_PEMAIN || jumlahPemain > MAX_PEMAIN) {
-            cout << "Jumlah pemain harus antara " << MIN_PEMAIN << " dan " << MAX_PEMAIN << "." << endl;
+            cout << "[ERROR] Jumlah pemain harus antara " << MIN_PEMAIN << " dan " << MAX_PEMAIN << "." << endl;
         }
     } while (jumlahPemain < MIN_PEMAIN || jumlahPemain > MAX_PEMAIN);
 

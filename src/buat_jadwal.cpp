@@ -62,7 +62,7 @@ void buatJadwal() {
         cin >> tanggalMulai;
         cin.ignore(10000, '\n');
         if (!validasiTanggal(tanggalMulai)) {
-            cout << "Format tanggal tidak valid. Gunakan YYYY-MM-DD." << endl;
+            cout << "[ERROR] Format tanggal tidak valid. Gunakan YYYY-MM-DD." << endl;
         }
     } while (!validasiTanggal(tanggalMulai));
 

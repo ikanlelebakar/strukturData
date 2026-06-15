@@ -30,7 +30,7 @@ void hapusTim() {
             }
             delete curr;
             jumlahTim--;
-            cout << "Tim \"" << namaCari << "\" berhasil dihapus. "
+            cout << "[SUKSES] Tim \"" << namaCari << "\" berhasil dihapus. "
                  << "Sisa tim: " << jumlahTim << endl;
             return;
         }
