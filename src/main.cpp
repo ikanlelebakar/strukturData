@@ -241,7 +241,7 @@ void menuTim() {
                 tampilJadwal();
                 break;
             case 3:
-                cariTim();
+                cariTim(timLogin);
                 break;
             case 4:
                 tampilKlasemen();

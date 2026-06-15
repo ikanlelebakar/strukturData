@@ -446,6 +446,11 @@ class TestTournament(unittest.TestCase):
         out = self.runner.read_until("Pilihan: ")
         self.runner.write_line("3") # Cari Profil Lawan
         out = self.runner.read_until("Masukkan nama tim lawan yang dicari: ")
+        self.assertIn("Daftar Tim Lawan yang Tersedia:", out)
+        self.assertIn("Knights", out)
+        self.assertIn("Ninjas", out)
+        self.assertIn("Samurais", out)
+        self.assertNotIn("Warriors", out) # Warriors is the logged-in team
         self.runner.write_line("Ninjas")
         out = self.runner.read_until("Tekan ENTER untuk lanjut...")
         self.assertIn("Nama Tim       : Ninjas", out)
