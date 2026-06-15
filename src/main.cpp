@@ -26,7 +26,7 @@ using namespace std;
 
 // Fungsi tampilkan header turnamen
 void tampilkanHeader() {
-    clearScreen();
+    clearScreen(); // Asal: utils.cpp
     cout << "\n" << string(50, '=') << endl;
     if (adminSudahDibuat && !namaTurnamen.empty()) {
         cout << "  TURNAMEN: " << namaTurnamen << endl;
@@ -40,7 +40,7 @@ void tampilkanHeader() {
         cout << "  Status: [FASE REGISTRASI] Pendaftaran masih terbuka" << endl;
     } else if (!jadwalSudahDibuat) {
         cout << "  Status: [PENDAFTARAN DITUTUP] Siap buat braket" << endl;
-    } else if (!antrianKosong()) {
+    } else if (!antrianKosong()) { // Asal: models.cpp
         cout << "  Status: [FASE PERTANDINGAN] Turnamen sedang berjalan" << endl;
     } else {
         cout << "  Status: [TURNAMEN SELESAI]" << endl;
@@ -51,7 +51,7 @@ void tampilkanHeader() {
 
 // Fungsi menu Admin
 void menuAdmin() {
-    if (!masukAdmin()) {
+    if (!masukAdmin()) { // Asal: login_admin.cpp
         cout << "\nTekan ENTER untuk kembali...";
         cin.get();
         return;
@@ -62,9 +62,9 @@ void menuAdmin() {
         tampilkanHeader();
         cout << "\n--- MENU ADMIN ---" << endl;
 
-        bool turnamenSelesai = jadwalSudahDibuat && antrianKosong() && (hitungTimAktif() <= 1);
-        bool antarRonde = jadwalSudahDibuat && antrianKosong() && !turnamenSelesai;
-        bool fasePertandingan = jadwalSudahDibuat && !antrianKosong();
+        bool turnamenSelesai = jadwalSudahDibuat && antrianKosong() && (hitungTimAktif() <= 1); // Asal antrianKosong: models.cpp, hitungTimAktif: input_hasil.cpp
+        bool antarRonde = jadwalSudahDibuat && antrianKosong() && !turnamenSelesai; // Asal antrianKosong: models.cpp
+        bool fasePertandingan = jadwalSudahDibuat && !antrianKosong(); // Asal antrianKosong: models.cpp
         bool pendaftaranDitutupBelumBraket = pendaftaranDitutup && !jadwalSudahDibuat;
 
         if (turnamenSelesai) {
@@ -78,9 +78,9 @@ void menuAdmin() {
             cin >> pilihan;
             cin.ignore(10000, '\n');
             switch (pilihan) {
-                case 1: tampilkanTim(); break;
-                case 2: tampilKlasemen(); break;
-                case 3: tampilBracket(); break;
+                case 1: tampilkanTim(); break; // Asal: lihat_tim.cpp
+                case 2: tampilKlasemen(); break; // Asal: lihat_klasemen.cpp
+                case 3: tampilBracket(); break; // Asal: lihat_bracket.cpp
                 case 0:
                     cout << "Logout admin. Kembali ke menu utama." << endl;
                     exitAdmin = true;
@@ -100,10 +100,10 @@ void menuAdmin() {
             cin >> pilihan;
             cin.ignore(10000, '\n');
             switch (pilihan) {
-                case 1: tampilkanTim(); break;
-                case 2: buatJadwalBerikutnya(); break;
-                case 3: tampilKlasemen(); break;
-                case 4: tampilBracket(); break;
+                case 1: tampilkanTim(); break; // Asal: lihat_tim.cpp
+                case 2: buatJadwalBerikutnya(); break; // Asal: input_hasil.cpp
+                case 3: tampilKlasemen(); break; // Asal: lihat_klasemen.cpp
+                case 4: tampilBracket(); break; // Asal: lihat_bracket.cpp
                 case 0:
                     cout << "Logout admin. Kembali ke menu utama." << endl;
                     exitAdmin = true;
@@ -123,10 +123,10 @@ void menuAdmin() {
             cin >> pilihan;
             cin.ignore(10000, '\n');
             switch (pilihan) {
-                case 1: tampilkanTim(); break;
-                case 2: inputHasil(); break;
-                case 3: tampilKlasemen(); break;
-                case 4: tampilBracket(); break;
+                case 1: tampilkanTim(); break; // Asal: lihat_tim.cpp
+                case 2: inputHasil(); break; // Asal: input_hasil.cpp
+                case 3: tampilKlasemen(); break; // Asal: lihat_klasemen.cpp
+                case 4: tampilBracket(); break; // Asal: lihat_bracket.cpp
                 case 0:
                     cout << "Logout admin. Kembali ke menu utama." << endl;
                     exitAdmin = true;
@@ -144,8 +144,8 @@ void menuAdmin() {
             cin >> pilihan;
             cin.ignore(10000, '\n');
             switch (pilihan) {
-                case 1: tampilkanTim(); break;
-                case 2: buatJadwal(); break;
+                case 1: tampilkanTim(); break; // Asal: lihat_tim.cpp
+                case 2: buatJadwal(); break; // Asal: buat_jadwal.cpp
                 case 0:
                     cout << "Logout admin. Kembali ke menu utama." << endl;
                     exitAdmin = true;
@@ -165,15 +165,15 @@ void menuAdmin() {
             cin >> pilihan;
             cin.ignore(10000, '\n');
             switch (pilihan) {
-                case 1: tampilkanTim(); break;
-                case 2: menuEditTim(); break;
-                case 3: hapusTim(); break;
+                case 1: tampilkanTim(); break; // Asal: lihat_tim.cpp
+                case 2: menuEditTim(); break; // Asal: edit_tim.cpp
+                case 3: hapusTim(); break; // Asal: hapus_tim.cpp
                 case 4:
                     if (pendaftaranDitutup) {
                         cout << "Pendaftaran sudah ditutup sebelumnya." << endl;
                     } else if (jumlahTim < 2) {
                         cout << "Minimal 2 tim harus terdaftar sebelum menutup pendaftaran." << endl;
-                    } else if (!adalahPangkatDua(jumlahTim)) {
+                    } else if (!adalahPangkatDua(jumlahTim)) { // Asal: models.cpp
                         cout << "Jumlah tim saat ini: " << jumlahTim
                              << " (bukan pangkat 2). Pastikan pangkat 2 sebelum tutup!" << endl;
                         cout << "Tetap tutup pendaftaran? (y/n): ";
@@ -207,7 +207,7 @@ void menuAdmin() {
 
 // Fungsi menu Tim
 void menuTim() {
-    Tim *timLogin = masukTim();
+    Tim *timLogin = masukTim(); // Asal: login_tim.cpp
     if (timLogin == NULL) {
         cout << "\nTekan ENTER untuk kembali...";
         cin.get();
@@ -234,20 +234,20 @@ void menuTim() {
                 if (timLogin->tereleminasi) {
                     cout << "Tim sudah tereliminasi, tidak bisa edit data." << endl;
                 } else {
-                    editTim(timLogin);
+                    editTim(timLogin); // Asal: edit_tim.cpp
                 }
                 break;
             case 2:
-                tampilJadwal();
+                tampilJadwal(); // Asal: lihat_jadwal.cpp
                 break;
             case 3:
-                cariTim(timLogin);
+                cariTim(timLogin); // Asal: cari_lawan.cpp
                 break;
             case 4:
-                tampilKlasemen();
+                tampilKlasemen(); // Asal: lihat_klasemen.cpp
                 break;
             case 5:
-                tampilBracket();
+                tampilBracket(); // Asal: lihat_bracket.cpp
                 break;
             case 0:
                 cout << "Logout tim. Kembali ke menu utama." << endl;
@@ -281,13 +281,13 @@ void menuPenonton() {
 
         switch (pilihan) {
             case 1:
-                tampilJadwal();
+                tampilJadwal(); // Asal: lihat_jadwal.cpp
                 break;
             case 2:
-                tampilBracket();
+                tampilBracket(); // Asal: lihat_bracket.cpp
                 break;
             case 3:
-                tampilKlasemen();
+                tampilKlasemen(); // Asal: lihat_klasemen.cpp
                 break;
             case 0:
                 exitPenonton = true;
@@ -306,8 +306,8 @@ void menuPenonton() {
 // Fungsi main utama
 int main() {
     if (!adminSudahDibuat) {
-        clearScreen();
-        daftarAdmin();
+        clearScreen(); // Asal: utils.cpp
+        daftarAdmin(); // Asal: registrasi_admin.cpp
     }
 
     int pilihan;
@@ -328,7 +328,7 @@ int main() {
 
             switch (pilihan) {
                 case 1:
-                    daftarTim();
+                    daftarTim(); // Asal: registrasi_tim.cpp
                     break;
                 case 2:
                     menuTim();
