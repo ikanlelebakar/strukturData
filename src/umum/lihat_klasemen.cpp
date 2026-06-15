@@ -1,112 +1,80 @@
-// File: lihat_klasemen.cpp
-// Deskripsi: Fungsi untuk menampilkan klasemen turnamen
+// =============================================================================
+// File   : lihat_klasemen.cpp
+// Tujuan : Menampilkan papan klasemen semua tim, diurutkan berdasarkan poin
+//          dari yang terbesar. Menggunakan linked list sementara agar linked
+//          list asli tidak berubah urutannya.
+//
+// Variabel global yang DIPAKAI dari models.cpp:
+//   - Tim *kepala           (kepala linked list tim asli)
+//   - bool jadwalSudahDibuat
+//   - int  MAX_TIM
+//   - antrianKosong()       (dari models.cpp)
+//   - hitungTimAktif()      (dari input_hasil.cpp — pastikan di-include duluan)
+//
+// Fungsi yang harus kamu buat di file ini:
+//   1. tampilKlasemen()
+//
+// CATATAN: Karena linked list asli tidak boleh dirusak, kamu perlu membuat
+//          salinan sementara (temporary linked list) lalu sort salinan itu.
+// =============================================================================
 
-// Fungsi tampilkan papan klasemen
-void tampilKlasemen() {
-    cout << "\n=== KLASEMEN TURNAMEN ===" << endl;
 
-    if (kepala == NULL) {
-        cout << "(Belum ada tim yang terdaftar)" << endl;
-        return;
-    }
-
-    // Deteksi apakah turnamen sudah selesai
-    bool turnamenSelesai = jadwalSudahDibuat && antrianKosong() && (hitungTimAktif() <= 1);
-
-    // Struktur data sementara untuk salinan linked list (untuk diurutkan)
-    struct NodeTemp {
-        string nama;
-        int poin;
-        bool tereleminasi;
-        NodeTemp *next;
-    };
-
-    NodeTemp *headTemp = NULL;
-    NodeTemp *tailTemp = NULL;
-
-    // Salin data ke list sementara
-    Tim *curr = kepala;
-    while (curr != NULL) {
-        NodeTemp *baru = new NodeTemp;
-        baru->nama = curr->nama;
-        baru->poin = curr->poin;
-        baru->tereleminasi = curr->tereleminasi;
-        baru->next = NULL;
-
-        if (headTemp == NULL) {
-            headTemp = baru;
-            tailTemp = baru;
-        } else {
-            tailTemp->next = baru;
-            tailTemp = baru;
-        }
-        curr = curr->berikutnya;
-    }
-
-    // Urutkan list sementara berdasarkan poin descending (Bubble Sort)
-    if (headTemp != NULL && headTemp->next != NULL) {
-        bool swapped = true;
-        while (swapped) {
-            swapped = false;
-            NodeTemp *c = headTemp;
-            while (c->next != NULL) {
-                if (c->poin < c->next->poin) {
-                    swap(c->nama, c->next->nama);
-                    swap(c->poin, c->next->poin);
-                    swap(c->tereleminasi, c->next->tereleminasi);
-                    swapped = true;
-                }
-                c = c->next;
-            }
-        }
-    }
-
-    // Cetak klasemen
-    cout << left
-         << setw(5)  << "No"
-         << setw(20) << "Nama Tim"
-         << setw(8)  << "Poin"
-         << setw(15) << (turnamenSelesai ? "Peringkat" : "Status")
-         << endl;
-    cout << string(50, '-') << endl;
-
-    int no = 1;
-    NodeTemp *tCurr = headTemp;
-    while (tCurr != NULL) {
-        string statusStr = "";
-        if (turnamenSelesai) {
-            if (no == 1) {
-                statusStr = "Juara 1";
-            } else if (no == 2) {
-                statusStr = "Juara 2";
-            } else if (no == 3 && MAX_TIM >= 4) {
-                statusStr = "Juara 3";
-            } else if (no == 4 && MAX_TIM >= 4) {
-                statusStr = "Juara 4";
-            } else {
-                statusStr = "Peringkat " + to_string(no);
-            }
-        } else {
-            statusStr = tCurr->tereleminasi ? "Tereliminasi" : "Aktif";
-        }
-
-        cout << left
-             << setw(5)  << no
-             << setw(20) << tCurr->nama
-             << setw(8)  << tCurr->poin
-             << setw(15) << statusStr
-             << endl;
-
-        tCurr = tCurr->next;
-        no++;
-    }
-    cout << string(50, '-') << endl;
-
-    // Bebaskan memori list sementara
-    NodeTemp *del = headTemp;
-    while (del != NULL) {
-        NodeTemp *tempNext = del->next;
-        delete del;
-        del = tempNext;
-    }
-}
+// -----------------------------------------------------------------------------
+// Fungsi: tampilKlasemen()
+// Tujuan: Menampilkan tabel klasemen semua tim yang sudah diurutkan berdasarkan
+//         poin. Jika turnamen sudah selesai, tampilkan peringkat (Juara 1, 2, dst).
+//         Jika belum selesai, tampilkan status (Aktif / Tereliminasi).
+//
+// Variabel yang dibutuhkan:
+//   bool turnamenSelesai         // true jika turnamen sudah berakhir
+//
+//   // Struct LOKAL untuk salinan sementara (definisikan DI DALAM fungsi ini):
+//   struct NodeTemp {
+//     string   nama;
+//     int      poin;
+//     bool     tereleminasi;
+//     NodeTemp *next;
+//   };
+//
+//   NodeTemp *headTemp  // Kepala linked list sementara
+//   NodeTemp *tailTemp  // Ekor linked list sementara (untuk tail insertion)
+//   Tim      *curr      // Pointer traversal linked list asli
+//   NodeTemp *baru      // Node sementara baru yang dibuat saat menyalin data
+//
+// Hint algoritma — ada 4 tahap besar:
+//
+//   TAHAP 1 — Cek apakah turnamen sudah selesai:
+//     turnamenSelesai = jadwalSudahDibuat && antrianKosong() && (hitungTimAktif() <= 1)
+//
+//   TAHAP 2 — Salin data dari linked list asli ke linked list sementara:
+//     Loop WHILE (curr != NULL):
+//       a. Buat NodeTemp baru dengan "new NodeTemp"
+//       b. Salin: baru->nama, baru->poin, baru->tereleminasi dari curr
+//       c. Set baru->next = NULL
+//       d. Tambahkan ke linked list sementara (tail insertion dengan headTemp & tailTemp)
+//       e. Geser curr ke curr->berikutnya
+//
+//   TAHAP 3 — Urutkan linked list sementara dengan Bubble Sort (descending by poin):
+//     Loop WHILE (swapped == true):
+//       Jika poin node saat ini LEBIH KECIL dari node berikutnya -> swap DATA
+//       (Swap: nama, poin, tereleminasi)
+//
+//   TAHAP 4 — Cetak tabel klasemen:
+//     Cetak header: "No", "Nama Tim", "Poin", "Status" atau "Peringkat"
+//     Loop melalui linked list sementara, cetak setiap baris:
+//       - Jika turnamenSelesai: tampilkan "Juara 1", "Juara 2", "Juara 3", "Juara 4", dll.
+//       - Jika belum: tampilkan "Aktif" atau "Tereliminasi"
+//
+//   TAHAP 5 — Bebaskan memori linked list sementara (jangan sampai memory leak!):
+//     Loop WHILE (del != NULL):
+//       Simpan del->next ke tempNext
+//       delete del
+//       del = tempNext
+//
+// Contoh output (turnamen belum selesai):
+//   === KLASEMEN TURNAMEN ===
+//   No   Nama Tim            Poin    Status
+//   --------------------------------------------------
+//   1    Tim Garuda          10      Aktif
+//   2    Tim Elang           5       Aktif
+//   3    Tim Harimau         1       Tereliminasi

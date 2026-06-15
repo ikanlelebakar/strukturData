@@ -1,38 +1,39 @@
-// File: registrasi_admin.cpp
-// Deskripsi: Fungsi registrasi admin pertama kali dijalankan
+// =============================================================================
+// File   : registrasi_admin.cpp
+// Tujuan : Fungsi yang dijalankan PERTAMA KALI saat program dimulai.
+//          Admin mendaftarkan akun, nama turnamen, dan kapasitas maksimum tim.
+//
+// Variabel global yang DIPAKAI dari models.cpp:
+//   - string adminUsername    (simpan username admin di sini)
+//   - string adminPassword    (simpan password admin di sini)
+//   - string namaTurnamen     (simpan nama turnamen di sini)
+//   - int    MAX_TIM          (simpan kapasitas maks tim, harus pangkat 2)
+//   - bool   adminSudahDibuat (set jadi true setelah registrasi berhasil)
+//   - adalahPangkatDua()      (fungsi dari models.cpp untuk validasi)
+//
+// Fungsi yang harus kamu buat di file ini:
+//   1. daftarAdmin()
+// =============================================================================
 
-void daftarAdmin() {
-    cout << "\n" << string(50, '=') << endl;
-    cout << "      REGISTRASI ADMINISTRATOR TURNAMEN" << endl;
-    cout << string(50, '=') << endl;
-    cout << "Selamat datang! Silakan daftarkan akun Admin dan atur turnamen Anda." << endl;
 
-    cout << "\nUsername Admin: ";
-    cin >> adminUsername;
-
-    cout << "Password Admin: ";
-    cin >> adminPassword;
-    cin.ignore(10000, '\n');
-
-    cout << "Nama Turnamen : ";
-    getline(cin, namaTurnamen);
-
-    // Minta input kapasitas tim (harus pangkat 2)
-    do {
-        cout << "Maksimal Tim (harus pangkat 2, min 2): ";
-        cin >> MAX_TIM;
-        cin.ignore(10000, '\n');
-        if (!adalahPangkatDua(MAX_TIM) || MAX_TIM < 2) {
-            cout << "[ERROR] Kapasitas tim harus merupakan angka pangkat 2 (2, 4, 8, 16, 32, dst.)." << endl;
-        }
-    } while (!adalahPangkatDua(MAX_TIM) || MAX_TIM < 2);
-
-    adminSudahDibuat = true;
-
-    cout << "\n[SUKSES] Akun Admin berhasil dibuat!" << endl;
-    cout << "Nama Turnamen: " << namaTurnamen << endl;
-    cout << "Maksimal Tim : " << MAX_TIM << endl;
-    cout << string(50, '=') << endl;
-    cout << "Tekan ENTER untuk lanjut ke Menu Utama...";
-    cin.get();
-}
+// -----------------------------------------------------------------------------
+// Fungsi: daftarAdmin()
+// Tujuan: Meminta admin mengisi username, password, nama turnamen, dan kapasitas
+//         tim (MAX_TIM). Dipanggil sekali saat program pertama kali dijalankan.
+//
+// Variabel yang dibutuhkan: tidak ada variabel lokal tambahan
+// (semua disimpan langsung ke variabel global)
+//
+// Hint algoritma:
+//   1. Cetak banner "REGISTRASI ADMINISTRATOR TURNAMEN"
+//   2. Minta input: cin >> adminUsername
+//   3. Minta input: cin >> adminPassword, lalu cin.ignore()
+//   4. Minta input nama turnamen: getline(cin, namaTurnamen)
+//   5. Loop DO-WHILE untuk input MAX_TIM yang valid:
+//      a. Tampilkan prompt "Maksimal Tim (harus pangkat 2, min 2): "
+//      b. cin >> MAX_TIM, lalu cin.ignore()
+//      c. Kondisi loop: ULANGI jika !adalahPangkatDua(MAX_TIM) || MAX_TIM < 2
+//      d. Jika tidak valid, cetak pesan error
+//   6. Set adminSudahDibuat = true
+//   7. Tampilkan ringkasan: nama turnamen dan MAX_TIM
+//   8. Cetak "Tekan ENTER untuk lanjut..." lalu cin.get()
