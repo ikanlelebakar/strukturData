@@ -1,16 +1,16 @@
 # Program Manajemen Turnamen Game (CLI C++)
 
-Program CLI C++ untuk manajemen turnamen game dengan sistem **single elimination + perebutan juara ke-3**.
-Source code ada di [src/](/src/). Struktur data utama menggunakan **Singly Linked List**.
-Referensi teknis lengkap ada di [README](README.md) dan [docs/intent/tournament-management.md](docs/intent/tournament-management.md).
+Program CLI C++ untuk manajemen turnamen game dengan sistem **single elimination (sistem gugur) + perebutan juara ke-3**.
+Source code berada di [src/](/src/). Struktur data utama menggunakan **Singly Linked List** untuk tim dan Queue berbasis Linked List untuk antrian pertandingan.
 
 ---
 
-# Yang Digunakan
+# Struktur Data yang Digunakan
 
-- **Singly Linked List** — menyimpan data tim (`struct Tim`) dan antrian pertandingan (`NodeAntrian`)
-- **Queue berbasis Linked List** — antrian jadwal pertandingan (FIFO)
-- **Bubble Sort** — mengurutkan klasemen berdasarkan poin secara descending
+- **Singly Linked List (`Tim`)** — Menyimpan data tim secara dinamis.
+- **Queue berbasis Linked List (`NodeAntrian`)** — Mengelola antrian jadwal pertandingan secara First-In-First-Out (FIFO).
+- **Bubble Sort** — Mengurutkan klasemen secara *descending* berdasarkan poin (kemenangan) tim.
+- **Linear Search** — Mencari keberadaan tim berdasarkan nama di dalam Linked List.
 
 ---
 
@@ -41,29 +41,30 @@ Setelah registrasi admin selesai, program akan menampilkan Menu Utama. Opsi menu
 1. Registrasi Tim
 2. Login Tim
 3. Login Admin
-0. Keluar Program
+4. Keluar Program (0)
 ```
 - **1. Registrasi Tim**: Memasukkan nama tim (username login), password, dan jumlah pemain (1-7).
 - **2. Login Tim**: Masuk ke menu tim menggunakan kredensial tim.
-- **3. Login Admin**: Masuk ke menu admin menggunakan kredensial admin dinamis.
+- **3. Login Admin**: Masuk ke menu admin menggunakan kredensial admin.
 
 ### Fase B: Pendaftaran Ditutup / Penuh (Tim >= MAX_TIM atau ditutup secara manual oleh Admin)
 ```
 1. Login Tim
 2. Penonton
 3. Login Admin
-0. Keluar Program
+4. Keluar Program (0)
 ```
 - Opsi registrasi tim menghilang dan diganti dengan opsi **2. Penonton** untuk melihat jadwal, braket, dan klasemen tanpa login.
 
 ## 3. Admin Menutup Pendaftaran & Membuat Jadwal
 - Admin login -> pilih **4. Tutup Pendaftaran** (opsional jika kuota belum penuh).
-- Admin -> pilih **5. Buat Jadwal Pertandingan**.
+- Admin -> pilih **2. Buat Jadwal Pertandingan**.
 - Admin memasukkan tanggal mulai Ronde 1 (`YYYY-MM-DD`). Sistem otomatis memasangkan tim secara *head-vs-tail* (Tim 1 vs Tim N, dst.) dan memasukkannya ke antrian pertandingan (Queue).
 
 ## 4. Input Hasil Pertandingan (Ronde per Ronde)
-- Admin -> pilih **7. Input Hasil Pertandingan**.
+- Admin -> pilih **2. Input Hasil Pertandingan** (saat turnamen berjalan).
 - Admin memilih tim pemenang pada pertandingan terdepan di antrian. Sistem otomatis menandai tim kalah sebagai tereliminasi dan memberikan +1 poin kemenangan kepada pemenang.
+- Skor pertandingan valid berkisar antara 0 hingga 3. Skor tidak boleh negatif, seri, atau lebih dari 3.
 - Pertandingan dikeluarkan dari antrian (dequeue).
 
 ## 5. Buat Jadwal Ronde Berikutnya
@@ -80,7 +81,7 @@ Setelah registrasi admin selesai, program akan menampilkan Menu Utama. Opsi menu
 
 ---
 
-# Hak Akses
+# Hak Akses Pengguna
 
 ## Admin
 Login dengan akun admin yang dibuat pada awal program berjalan. Hak akses meliputi:
@@ -110,27 +111,27 @@ Tanpa login. Muncul setelah pendaftaran ditutup/penuh. Hak akses meliputi:
 
 ---
 
-# Struktur File
+# Struktur File Modul
 
 | File | Fungsi |
 |------|--------|
-| `main.cpp` | Driver utama — menu Admin/Tim/Penonton |
-| `models.cpp` | Struct `Tim`, `NodeAntrian`, variabel global, queue, helper `isPowerOfTwo` |
-| `utils.cpp` | `clearScreen()` lintas platform (Windows/Linux/macOS) |
-| `search_sort.cpp` | `cariTim()` linear search, `urutkanKlasemen()` bubble sort |
-| `registrasi_admin.cpp` | `registrasiAdmin()` — Pendaftaran akun admin dan setelan turnamen pertama kali |
-| `login_admin.cpp` | `loginAdmin()` — Autentikasi administrator dinamis |
-| `login_tim.cpp` | `loginTim()` → return `Tim*` |
-| `registrasi_tim.cpp` | `registrasiTimBaru()` — Pendaftaran tim |
-| `lihat_tim.cpp` | `lihatDaftarTim()` |
-| `edit_tim.cpp` | `editDataTim()`, `menuEditTim()`, `editTimSendiri()` |
-| `hapus_tim.cpp` | `hapusTim()` |
-| `buat_jadwal.cpp` | `buatJadwalPertandingan()`, `tambahHari()` |
-| `input_hasil.cpp` | `inputSkorPertandingan()`, `buatJadwalBerikutnya()` |
-| `lihat_jadwal.cpp` | `lihatJadwalAntrian()` |
-| `lihat_bracket.cpp` | `lihatBracketTree()` |
-| `lihat_klasemen.cpp` | `lihatKlasemen()` |
-| `cari_lawan.cpp` | `cariLawan()` |
+| `src/main.cpp` | Driver utama — menu Admin/Tim/Penonton |
+| `src/umum/models.cpp` | Struct `Tim`, `NodeAntrian`, variabel global, queue, helper `adalahPangkatDua` |
+| `src/hapus_terminal/utils.cpp` | `clearScreen()` lintas platform (Windows/Linux/macOS) |
+| `src/umum/search_sort.cpp` | `cariTim()` linear search, `urutkanKlasemen()` bubble sort |
+| `src/admin/registrasi_admin.cpp` | `daftarAdmin()` — Pendaftaran akun admin dan setelan turnamen pertama kali |
+| `src/admin/login_admin.cpp` | `loginAdmin()` / `masukAdmin()` — Autentikasi administrator dinamis |
+| `src/tim/login_tim.cpp` | `masukTim()` → return `Tim*` |
+| `src/tim/registrasi_tim.cpp` | `daftarTim()` — Pendaftaran tim |
+| `src/tim/lihat_tim.cpp` | `tampilkanTim()` |
+| `src/tim/edit_tim.cpp` | `editDataTim()`, `menuEditTim()`, `editTim()` |
+| `src/admin/hapus_tim.cpp` | `hapusTim()` |
+| `src/admin/buat_jadwal.cpp` | `buatJadwal()`, `tambahHari()` |
+| `src/admin/input_hasil.cpp` | `inputHasil()`, `buatJadwalBerikutnya()` |
+| `src/umum/lihat_jadwal.cpp` | `tampilJadwal()` |
+| `src/umum/lihat_bracket.cpp` | `tampilBracket()` |
+| `src/umum/lihat_klasemen.cpp` | `tampilKlasemen()` |
+| `src/tim/cari_lawan.cpp` | `cariTim()` |
 
 ---
 
