@@ -134,12 +134,3 @@ Tanpa login. Muncul setelah pendaftaran ditutup/penuh. Hak akses meliputi:
 | `src/tim/cari_lawan.cpp` | `cariTim()` |
 
 ---
-
-# Catatan Teknis
-
-1. Setiap fitur baru harus berbeda file `*.cpp`
-2. Tidak boleh ada file `*.h` — semua via `#include *.cpp` di `main.cpp`
-3. Setiap perubahan harus melakukan commit ke branch saat ini
-4. Setelah semua program dan test selesai harus mengupdate `/graphify`
-5. Data tidak persisten — semua hilang saat program ditutup (no file I/O)
-6. Kapasitas maksimum tim (`MAX_TIM`) di-set secara dinamis oleh admin dan harus merupakan pangkat 2.
