@@ -1,9 +1,9 @@
 // =============================================================================
-// File   : input_hasil.cpp
-// Tujuan : Menginput skor pertandingan, menentukan pemenang/yang kalah,
-//          mengelola eliminasi, dan membuat jadwal ronde berikutnya.
-//          File ini adalah yang paling kompleks — baca baik-baik!
-//
+File   : input_hasil.cpp
+Tujuan : Menginput skor pertandingan, menentukan pemenang/yang kalah,
+         mengelola eliminasi, dan membuat jadwal ronde berikutnya.
+         File ini adalah yang paling kompleks — baca baik-baik!
+
 // Variabel global yang DIPAKAI dari models.cpp:
 //   - NodeAntrian *depanAntrian
 //   - bool jadwalSudahDibuat
