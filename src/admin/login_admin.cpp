@@ -8,7 +8,7 @@
 //   - string adminPassword  (password yang didaftarkan saat registrasi)
 //
 // Fungsi yang harus kamu buat di file ini:
-//   1. masukAdmin() -> bool
+  1. masukAdmin() -> bool
 // =============================================================================
 
 
