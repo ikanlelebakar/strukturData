@@ -1,94 +1,157 @@
-// =============================================================================
-// File   : lihat_bracket.cpp
-// Tujuan : Menampilkan bagan turnamen (bracket) secara visual di terminal,
-//          berbentuk tabel horizontal dari kiri (ronde awal) ke kanan (final).
-//
-// Variabel global yang DIPAKAI dari models.cpp:
-//   - bool jadwalSudahDibuat
-//   - int  jumlahHasil
-//   - MatchResult matchResults[]
-//   - NodeAntrian *depanAntrian
-//   - antrianKosong()
-//
-// Library tambahan yang dibutuhkan (sudah ada di main.cpp, tidak perlu #include lagi):
-//   - <vector>   untuk menyimpan daftar ronde dan match per ronde
-//   - <map>      untuk mengecek duplikat nama ronde
-//   - <iomanip>  untuk setw() (format tabel)
-//
-// Fungsi yang harus kamu buat di file ini:
-//   1. left_pad_str(const string& s, int w) -> string   [fungsi helper]
-//   2. tampilBracket()
-// =============================================================================
+// File: lihat_bracket.cpp
+// Deskripsi: Fungsi untuk menampilkan bagan turnamen secara horizontal
 
+#include <vector>
+#include <map>
 
-// -----------------------------------------------------------------------------
-// Fungsi: left_pad_str(const string& s, int w) -> string
-// Tujuan: Mengembalikan string s yang sudah dipadding spasi di kanan sampai
-//         lebar total w karakter (digunakan untuk merapikan tampilan grid bracket).
-//
-// Variabel yang dibutuhkan: tidak ada variabel tambahan
-//
-// Hint algoritma:
-//   - Jika panjang s >= w, potong s sampai w karakter: return s.substr(0, w)
-//   - Jika panjang s < w, tambahkan spasi di belakang:
-//     return s + string(w - s.size(), ' ')
+// Fungsi pembantu padding teks ke kiri
+string left_pad_str(const string& s, int w) {
+    if ((int)s.size() >= w) return s.substr(0, w);
+    return s + string(w - (int)s.size(), ' ');
+}
 
+// Fungsi tampilkan bagan turnamen (bracket)
+void tampilBracket() {
+    cout << "\n=== BAGAN TURNAMEN (BRACKET) ===" << endl;
 
-// -----------------------------------------------------------------------------
-// Fungsi: tampilBracket()
-// Tujuan: Menampilkan bagan turnamen secara visual di terminal.
-//         Bagan dibuat dalam bentuk "grid" 2D, lalu dicetak baris per baris.
-//
-// Variabel yang dibutuhkan:
-//   vector<string>         urutanRonde      // Semua nama ronde unik sesuai urutan
-//   map<string, bool>      sudahAda         // Untuk cek nama ronde sudah masuk atau belum
-//   vector<string>         rondeUtama       // Ronde utama (tanpa "Perebutan Juara ke-3")
-//   bool                   adaJuara3        // Flag: apakah ada pertandingan juara ke-3?
-//   int                    jumlahRondeUtama // Berapa ronde utama yang ada
-//   vector<vector<int>>    matchPerRonde    // Index match di matchResults per ronde
-//   const int              LEBAR = 28       // Lebar setiap kolom dalam grid
-//   int                    totalBaris       // Total baris grid = jumlahMatchR0 * 4
-//   vector<vector<string>> grid             // Grid 2D: grid[baris][kolom_ronde]
-//
-// Hint algoritma — ada beberapa tahap besar:
-//
-//   TAHAP 1 — Guard check:
-//     Jika !jadwalSudahDibuat, cetak pesan dan return
-//     Jika jumlahHasil == 0, cetak pesan dan return
-//
-//   TAHAP 2 — Kumpulkan nama ronde secara unik dan berurutan:
-//     Loop matchResults[0..jumlahHasil]:
-//       Jika ronde belum ada di map sudahAda, tambahkan ke urutanRonde
-//     Pisahkan "Perebutan Juara ke-3" ke flag adaJuara3, sisanya ke rondeUtama
-//
-//   TAHAP 3 — Cetak header nama ronde:
-//     Loop rondeUtama, cetak setiap nama dengan setw(28)
-//
-//   TAHAP 4 — Kumpulkan index match per ronde:
-//     matchPerRonde adalah vector 2D berukuran [jumlahRondeUtama]
-//     Loop semua matchResults, masukkan index ke matchPerRonde[ri] yang sesuai
-//
-//   TAHAP 5 — Buat grid kosong dan isi:
-//     totalBaris = matchPerRonde[0].size() * 4
-//     grid berukuran [totalBaris][jumlahRondeUtama], diisi string spasi selebar LEBAR
-//
-//     Untuk setiap ronde ri dan setiap match mi:
-//       Hitung posisi baris:
-//         jarak       = totalBaris / jumlahMatchRi
-//         offset      = 1 << ri   (pangkat 2 berdasarkan nomor ronde)
-//         barisCenter = mi * jarak + jarak/2 - 1
-//         barisA      = barisCenter - offset
-//         barisB      = barisCenter + offset
-//
-//       Isi grid[barisA][ri] = status+namaTimA + " ---\"
-//       Isi grid[barisB][ri] = status+namaTimB + " ---/"
-//       Isi grid[barisCenter][ri] = spasi + "  |-->"
-//       Jika ini kolom Final (ri == jumlahRondeUtama-1): tambahkan nama pemenang
-//
-//   TAHAP 6 — Cetak grid baris per baris
-//
-//   TAHAP 7 — Jika adaJuara3, cetak bagian Perebutan Juara ke-3 secara terpisah
-//
-// Keterangan status tim:
-//   "[O] " = tim masih Aktif
-//   "[X] " = tim sudah Tereliminasi
+    if (!jadwalSudahDibuat) {
+        cout << "(Bracket belum dibuat. Admin perlu menutup pendaftaran dan membuat jadwal)" << endl;
+        return;
+    }
+
+    if (jumlahHasil == 0) {
+        cout << "(Belum ada data match)" << endl;
+        return;
+    }
+
+    cout << string(70, '=') << endl;
+
+    // Kumpulkan ronde-ronde utama
+    vector<string> urutanRonde;
+    map<string, bool> sudahAda;
+    for (int i = 0; i < jumlahHasil; i++) {
+        string r = matchResults[i].ronde;
+        if (sudahAda.find(r) == sudahAda.end()) {
+            urutanRonde.push_back(r);
+            sudahAda[r] = true;
+        }
+    }
+
+    vector<string> rondeUtama;
+    bool adaJuara3 = false;
+    for (auto& r : urutanRonde) {
+        if (r == "Perebutan Juara ke-3") {
+            adaJuara3 = true;
+        } else {
+            rondeUtama.push_back(r);
+        }
+    }
+
+    int jumlahRondeUtama = (int)rondeUtama.size();
+
+    // Tampilkan header ronde
+    for (int ri = 0; ri < jumlahRondeUtama; ri++) {
+        cout << left << setw(28) << rondeUtama[ri];
+    }
+    cout << endl;
+    cout << string(jumlahRondeUtama * 28, '-') << endl;
+
+    // Kumpulkan index match per ronde
+    vector<vector<int>> matchPerRonde(jumlahRondeUtama);
+    for (int i = 0; i < jumlahHasil; i++) {
+        for (int ri = 0; ri < jumlahRondeUtama; ri++) {
+            if (matchResults[i].ronde == rondeUtama[ri]) {
+                matchPerRonde[ri].push_back(i);
+            }
+        }
+    }
+
+    int jumlahMatchR0 = (int)matchPerRonde[0].size();
+    int totalBaris = jumlahMatchR0 * 4;
+
+    const int LEBAR = 28;
+    vector<vector<string>> grid(totalBaris, vector<string>(jumlahRondeUtama, string(LEBAR, ' ')));
+
+    // Isi grid
+    for (int ri = 0; ri < jumlahRondeUtama; ri++) {
+        int jumlahMatchRi = (int)matchPerRonde[ri].size();
+        if (jumlahMatchRi == 0) continue;
+
+        int jarak = totalBaris / jumlahMatchRi;
+        int offset = 1 << ri;
+
+        for (int mi = 0; mi < jumlahMatchRi; mi++) {
+            int idx = matchPerRonde[ri][mi];
+            int barisCenter = mi * jarak + jarak / 2 - 1;
+            int barisA = barisCenter - offset;
+            int barisB = barisCenter + offset;
+
+            Tim *ptrA = matchResults[idx].timA;
+            Tim *ptrB = matchResults[idx].timB;
+            Tim *ptrPem = matchResults[idx].pemenang;
+
+            string namaA = ptrA ? ptrA->nama : "???";
+            string namaB = ptrB ? ptrB->nama : "???";
+            string statusA = (ptrA && ptrA->tereleminasi) ? "[X] " : "[O] ";
+            string statusB = (ptrB && ptrB->tereleminasi) ? "[X] " : "[O] ";
+
+            // Isi Tim A
+            string selA = statusA + namaA;
+            if ((int)selA.size() > LEBAR - 5) selA = selA.substr(0, LEBAR - 5);
+            grid[barisA][ri] = left_pad_str(selA, LEBAR - 5) + " ---\\";
+
+            // Isi Tim B
+            string selB = statusB + namaB;
+            if ((int)selB.size() > LEBAR - 5) selB = selB.substr(0, LEBAR - 5);
+            grid[barisB][ri] = left_pad_str(selB, LEBAR - 5) + " ---/";
+
+            // Isi konektor
+            grid[barisCenter][ri] = string(LEBAR - 5, ' ') + "  |-->";
+
+            // Tampilkan pemenang jika ini Final
+            if (ri == jumlahRondeUtama - 1) {
+                string labelJuara = ptrPem ? (ptrPem->nama + " (JUARA!)") : "???";
+                grid[barisCenter][ri] = string(LEBAR - 5, ' ') + "  |--> " + labelJuara;
+            }
+        }
+    }
+
+    // Tampilkan grid
+    for (int baris = 0; baris < totalBaris; baris++) {
+        for (int ri = 0; ri < jumlahRondeUtama; ri++) {
+            cout << grid[baris][ri];
+        }
+        cout << endl;
+    }
+
+    // Tampilkan Perebutan Juara ke-3
+    if (adaJuara3) {
+        cout << endl;
+        cout << string(70, '-') << endl;
+        cout << "Perebutan Juara ke-3:" << endl;
+        for (int i = 0; i < jumlahHasil; i++) {
+            if (matchResults[i].ronde == "Perebutan Juara ke-3") {
+                string namaA = matchResults[i].timA ? matchResults[i].timA->nama : "???";
+                string namaB = matchResults[i].timB ? matchResults[i].timB->nama : "???";
+                string sA    = (matchResults[i].timA && matchResults[i].timA->tereleminasi) ? "[X] " : "[O] ";
+                string sB    = (matchResults[i].timB && matchResults[i].timB->tereleminasi) ? "[X] " : "[O] ";
+                string pem   = matchResults[i].pemenang
+                               ? matchResults[i].pemenang->nama + " (JUARA KE-3!)"
+                               : "??? (belum dimainkan)";
+                cout << "  " << sA << namaA << " vs " << sB << namaB << endl;
+                cout << "  Pemenang: " << pem << endl;
+            }
+        }
+    }
+
+    cout << string(70, '=') << endl;
+    cout << "Keterangan: [O] = Aktif  |  [X] = Tereliminasi" << endl;
+
+    if (!antrianKosong()) {
+        cout << "\nPertandingan berikutnya: " << depanAntrian->timA->nama
+             << " vs " << depanAntrian->timB->nama
+             << " (" << depanAntrian->ronde << ")" << endl;
+    } else {
+        cout << "\nTurnamen selesai! Lihat klasemen untuk melihat juara." << endl;
+    }
+}
