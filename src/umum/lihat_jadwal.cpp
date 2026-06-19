@@ -15,7 +15,8 @@ void tampilJadwal() {
     while (curr != NULL) {
         cout << no << ". [" << curr->ronde << "] "
              << curr->timA->nama << " vs " << curr->timB->nama
-             << "  |  Tanggal: " << curr->tanggalTanding;
+             << "  |  Tanggal: " << curr->tanggalTanding
+             << " Pukul " << curr->jam;
         if (no == 1) cout << "  <-- SEDANG BERLANGSUNG";
         cout << endl;
         curr = curr->berikutnya;
