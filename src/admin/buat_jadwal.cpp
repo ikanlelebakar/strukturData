@@ -5,22 +5,19 @@
 #include <sstream>
 #include <iomanip>
 
-// Fungsi tambah hari ke tanggal YYYY-MM-DD
-string tambahHari(const string& tanggal, int hari) {
-    struct tm t = {};
-    t.tm_year = stoi(tanggal.substr(0, 4)) - 1900;
-    t.tm_mon  = stoi(tanggal.substr(5, 2)) - 1;
-    t.tm_mday = stoi(tanggal.substr(8, 2));
-
-    t.tm_mday += hari;
-    mktime(&t);
-
-    ostringstream oss;
-    oss << setfill('0')
-        << (t.tm_year + 1900) << "-"
-        << setw(2) << (t.tm_mon + 1) << "-"
-        << setw(2) << t.tm_mday;
-    return oss.str();
+// Fungsi validasi format jam HH:MM
+bool validasiJam(const string& jm) {
+    if (jm.size() != 5) return false;
+    if (jm[2] != ':') return false;
+    for (int i = 0; i < 5; i++) {
+        if (i == 2) continue;
+        if (!isdigit(jm[i])) return false;
+    }
+    int jamVal = stoi(jm.substr(0, 2));
+    int menitVal = stoi(jm.substr(3, 2));
+    if (jamVal < 0 || jamVal > 23) return false;
+    if (menitVal < 0 || menitVal > 59) return false;
+    return true;
 }
 
 // Fungsi validasi format tanggal YYYY-MM-DD
@@ -56,16 +53,6 @@ void buatJadwal() {
         return;
     }
 
-    string tanggalMulai;
-    do {
-        cout << "Masukkan tanggal mulai Ronde 1 (format YYYY-MM-DD): ";
-        cin >> tanggalMulai;
-        cin.ignore(10000, '\n');
-        if (!validasiTanggal(tanggalMulai)) {
-            cout << "[ERROR] Format tanggal tidak valid. Gunakan YYYY-MM-DD." << endl;
-        }
-    } while (!validasiTanggal(tanggalMulai));
-
     // Kumpulkan tim ke array sementara untuk pairing
     Tim **arrTim = new Tim*[MAX_TIM];
     int n = 0;
@@ -79,17 +66,34 @@ void buatJadwal() {
 
     cout << "\n=== JADWAL " << labelRonde << " ==="  << endl;
     for (int i = 0; i < n / 2; i++) {
-        string tgl = tambahHari(tanggalMulai, i);
-        tambahAntrian(arrTim[i], arrTim[n - 1 - i], tgl, labelRonde);
+        cout << "\nMatch " << i + 1 << ": " << arrTim[i]->nama << " vs " << arrTim[n - 1 - i]->nama << endl;
+
+        string tgl, jam;
+        do {
+            cout << "  Masukkan Tanggal (format YYYY-MM-DD): ";
+            cin >> tgl;
+            cin.ignore(10000, '\n');
+            if (!validasiTanggal(tgl)) {
+                cout << "  [ERROR] Format tanggal tidak valid. Gunakan YYYY-MM-DD." << endl;
+            }
+        } while (!validasiTanggal(tgl));
+
+        do {
+            cout << "  Masukkan Jam (format HH:MM): ";
+            cin >> jam;
+            cin.ignore(10000, '\n');
+            if (!validasiJam(jam)) {
+                cout << "  [ERROR] Format jam tidak valid. Gunakan HH:MM." << endl;
+            }
+        } while (!validasiJam(jam));
+
+        tambahAntrian(arrTim[i], arrTim[n - 1 - i], tgl, jam, labelRonde);
         catatPertandingan(arrTim[i], arrTim[n - 1 - i], labelRonde);
-        cout << "  " << arrTim[i]->nama << " vs " << arrTim[n - 1 - i]->nama
-             << " (" << tgl << ")" << endl;
     }
 
-    tanggalTerakhir = tambahHari(tanggalMulai, n / 2 - 1);
     rondeSekarang = 1;
     jadwalSudahDibuat = true;
 
-    cout << "Jadwal " << labelRonde << " berhasil dibuat. Braket siap!" << endl;
+    cout << "\nJadwal " << labelRonde << " berhasil dibuat. Braket siap!" << endl;
     delete[] arrTim;
 }
