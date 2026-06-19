@@ -36,6 +36,7 @@ struct NodeAntrian {
     Tim *timA;
     Tim *timB;
     string tanggalTanding;
+    string jam;
     string ronde;
     NodeAntrian *berikutnya;
 };
@@ -53,7 +54,6 @@ NodeAntrian *belakangAntrian = NULL;
 // Variabel global ronde
 int rondeSekarang = 0;
 int matchDiRonde = 0;
-string tanggalTerakhir = "";
 
 // Variabel global untuk perebutan juara 3
 Tim *semifinalisKalah1 = NULL;
@@ -73,11 +73,12 @@ MatchResult matchResults[MAX_MATCHES];
 int jumlahHasil = 0;
 
 // Fungsi tambah antrian pertandingan (Enqueue)
-void tambahAntrian(Tim *timA, Tim *timB, string tanggal, string ronde) {
+void tambahAntrian(Tim *timA, Tim *timB, string tanggal, string jam, string ronde) {
     NodeAntrian *baru = new NodeAntrian;
     baru->timA = timA;
     baru->timB = timB;
     baru->tanggalTanding = tanggal;
+    baru->jam = jam;
     baru->ronde = ronde;
     baru->berikutnya = NULL;
 
