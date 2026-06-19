@@ -95,10 +95,7 @@ void inputHasil() {
 
     pemenang->poin += tambahPoin;
     updatePemenang(timA, timB, pemenang);
-    string tanggalMatch = match->tanggalTanding;
     hapusAntrian();
-
-    tanggalTerakhir = tanggalMatch;
 
     bool iniSemifinal = (rondeMatch == "Semifinal");
 
@@ -111,16 +108,32 @@ void inputHasil() {
             semifinalisKalah2 = kalah;
 
             // Buat pertandingan juara ke-3
-            string tanggalFinal = tambahHari(tanggalTerakhir, 5);
-            string tanggalJuara3 = tambahHari(tanggalFinal, -1);
+            cout << "\n=== PENJADWALAN PEREBUTAN JUARA KE-3 ===" << endl;
+            cout << semifinalisKalah1->nama << " vs " << semifinalisKalah2->nama << endl;
+            string tgl, jam;
+            do {
+                cout << "  Masukkan Tanggal (format YYYY-MM-DD): ";
+                cin >> tgl;
+                cin.ignore(10000, '\n');
+                if (!validasiTanggal(tgl)) {
+                    cout << "  [ERROR] Format tanggal tidak valid. Gunakan YYYY-MM-DD." << endl;
+                }
+            } while (!validasiTanggal(tgl));
 
-            tambahAntrian(semifinalisKalah1, semifinalisKalah2, tanggalJuara3, "Perebutan Juara ke-3");
+            do {
+                cout << "  Masukkan Jam (format HH:MM): ";
+                cin >> jam;
+                cin.ignore(10000, '\n');
+                if (!validasiJam(jam)) {
+                    cout << "  [ERROR] Format jam tidak valid. Gunakan HH:MM." << endl;
+                }
+            } while (!validasiJam(jam));
+
+            tambahAntrian(semifinalisKalah1, semifinalisKalah2, tgl, jam, "Perebutan Juara ke-3");
             catatPertandingan(semifinalisKalah1, semifinalisKalah2, "Perebutan Juara ke-3");
             matchKetiga = true;
 
-            cout << "Semifinalis kedua yang kalah: " << kalah->nama
-                 << " (akan bertanding perebutan juara ke-3 pada " << tanggalJuara3 << ")" << endl;
-            cout << "Pertandingan Perebutan Juara ke-3 otomatis terjadwal!" << endl;
+            cout << "Pertandingan Perebutan Juara ke-3 berhasil dijadwalkan!" << endl;
         }
     } else {
         kalah->tereleminasi = true;
@@ -178,29 +191,42 @@ void buatJadwalBerikutnya() {
     rondeSekarang++;
 
     string namaRonde;
-    int offsetHari;
 
     if (n == 4) {
         namaRonde  = "Semifinal";
-        offsetHari = 4;
     } else if (n == 2) {
         namaRonde  = "Final";
-        offsetHari = 5;
     } else {
         namaRonde  = "Ronde " + to_string(rondeSekarang);
-        offsetHari = 3;
     }
-
-    string tanggalRonde = tambahHari(tanggalTerakhir, offsetHari);
 
     cout << "\n=== JADWAL " << namaRonde << " ===" << endl;
     for (int i = 0; i < n / 2; i++) {
-        tambahAntrian(timAktif[i], timAktif[n - 1 - i], tanggalRonde, namaRonde);
+        cout << "\nMatch " << i + 1 << ": " << timAktif[i]->nama << " vs " << timAktif[n - 1 - i]->nama << endl;
+
+        string tgl, jam;
+        do {
+            cout << "  Masukkan Tanggal (format YYYY-MM-DD): ";
+            cin >> tgl;
+            cin.ignore(10000, '\n');
+            if (!validasiTanggal(tgl)) {
+                cout << "  [ERROR] Format tanggal tidak valid. Gunakan YYYY-MM-DD." << endl;
+            }
+        } while (!validasiTanggal(tgl));
+
+        do {
+            cout << "  Masukkan Jam (format HH:MM): ";
+            cin >> jam;
+            cin.ignore(10000, '\n');
+            if (!validasiJam(jam)) {
+                cout << "  [ERROR] Format jam tidak valid. Gunakan HH:MM." << endl;
+            }
+        } while (!validasiJam(jam));
+
+        tambahAntrian(timAktif[i], timAktif[n - 1 - i], tgl, jam, namaRonde);
         catatPertandingan(timAktif[i], timAktif[n - 1 - i], namaRonde);
-        cout << "  " << timAktif[i]->nama << " vs " << timAktif[n - 1 - i]->nama
-             << " (" << tanggalRonde << ")" << endl;
     }
 
-    cout << "Jadwal " << namaRonde << " berhasil dibuat!" << endl;
+    cout << "\nJadwal " << namaRonde << " berhasil dibuat!" << endl;
     delete[] timAktif;
 }
