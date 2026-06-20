@@ -49,6 +49,14 @@ void daftarTim() {
     baru->nama = nama;
     baru->password = password;
     baru->jumlahPemain = jumlahPemain;
+    
+    // Input nama-nama pemain
+    cout << "\n--- Input Nama Pemain ---" << endl;
+    for (int i = 0; i < jumlahPemain; i++) {
+        cout << "Nama Pemain " << (i + 1) << ": ";
+        getline(cin, baru->pemain[i]);
+    }
+
     baru->poin = 0;
     baru->tereleminasi = false;
     baru->berikutnya = NULL;
