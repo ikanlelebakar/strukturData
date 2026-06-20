@@ -45,6 +45,12 @@ void cariTim(Tim *timLogin) {
     cout << "\n--- Profil Tim ---" << endl;
     cout << "Nama Tim       : " << hasil->nama << endl;
     cout << "Jumlah Pemain  : " << hasil->jumlahPemain << endl;
+    cout << "Daftar Pemain  : ";
+    for (int i = 0; i < hasil->jumlahPemain; i++) {
+        cout << hasil->pemain[i];
+        if (i < hasil->jumlahPemain - 1) cout << ", ";
+    }
+    cout << endl;
     cout << "Poin           : " << hasil->poin << endl;
     cout << "Status         : " << (hasil->tereleminasi ? "Tereliminasi" : "Aktif") << endl;
     cout << string(30, '-') << endl;

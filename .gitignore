@@ -69,6 +69,7 @@ Testing/
 .cache/
 
 # Python cache
+.venv
 __pycache__/
 *.pyc
 tests/

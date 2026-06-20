@@ -26,6 +26,7 @@ struct Tim {
     string nama;
     string password;
     int jumlahPemain;
+    string pemain[MAX_PEMAIN]; // nama-nama pemain
     int poin;
     bool tereleminasi;
     Tim *berikutnya;

@@ -20,8 +20,7 @@ void daftarAdmin() {
     // Minta input kapasitas tim (harus pangkat 2)
     do {
         cout << "Maksimal Tim (harus pangkat 2, min 2): ";
-        cin >> MAX_TIM;
-        cin.ignore(10000, '\n');
+        MAX_TIM = ambilInputInt();
         if (!adalahPangkatDua(MAX_TIM) || MAX_TIM < 2) {
             cout << "[ERROR] Kapasitas tim harus merupakan angka pangkat 2 (2, 4, 8, 16, 32, dst.)." << endl;
         }

@@ -8,6 +8,7 @@ using namespace std;
 
 // Hubungkan berkas modul lainnya
 #include "umum/models.cpp"
+#include "umum/input_helper.cpp"
 #include "hapus_terminal/utils.cpp"
 #include "umum/search_sort.cpp"
 #include "admin/registrasi_admin.cpp"
@@ -74,9 +75,7 @@ void menuAdmin() {
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
-            int pilihan;
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            int pilihan = ambilInputInt();
             switch (pilihan) {
                 case 1: tampilkanTim(); break; // Asal: tim/lihat_tim.cpp
                 case 2: tampilKlasemen(); break; // Asal: umum/lihat_klasemen.cpp
@@ -93,17 +92,17 @@ void menuAdmin() {
             cout << "2. Buat Jadwal Ronde Berikutnya" << endl;
             cout << "3. Lihat Klasemen" << endl;
             cout << "4. Lihat Bracket/Bagan" << endl;
+            cout << "5. Edit Data Tim" << endl;
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
-            int pilihan;
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            int pilihan = ambilInputInt();
             switch (pilihan) {
                 case 1: tampilkanTim(); break; // Asal: tim/lihat_tim.cpp
                 case 2: buatJadwalBerikutnya(); break; // Asal: admin/input_hasil.cpp
                 case 3: tampilKlasemen(); break; // Asal: umum/lihat_klasemen.cpp
                 case 4: tampilBracket(); break; // Asal: umum/lihat_bracket.cpp
+                case 5: menuEditTim(); break; // Asal: tim/edit_tim.cpp
                 case 0:
                     cout << "Logout admin. Kembali ke menu utama." << endl;
                     exitAdmin = true;
@@ -116,17 +115,17 @@ void menuAdmin() {
             cout << "2. Input Hasil Pertandingan" << endl;
             cout << "3. Lihat Klasemen" << endl;
             cout << "4. Lihat Bracket/Bagan" << endl;
+            cout << "5. Edit Data Tim" << endl;
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
-            int pilihan;
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            int pilihan = ambilInputInt();
             switch (pilihan) {
                 case 1: tampilkanTim(); break; // Asal: tim/lihat_tim.cpp
                 case 2: inputHasil(); break; // Asal: admin/input_hasil.cpp
                 case 3: tampilKlasemen(); break; // Asal: umum/lihat_klasemen.cpp
                 case 4: tampilBracket(); break; // Asal: umum/lihat_bracket.cpp
+                case 5: menuEditTim(); break; // Asal: tim/edit_tim.cpp
                 case 0:
                     cout << "Logout admin. Kembali ke menu utama." << endl;
                     exitAdmin = true;
@@ -137,15 +136,15 @@ void menuAdmin() {
         } else if (pendaftaranDitutupBelumBraket) {
             cout << "1. Lihat Daftar Tim" << endl;
             cout << "2. Buat Jadwal Pertandingan" << endl;
+            cout << "3. Edit Data Tim" << endl;
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
-            int pilihan;
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            int pilihan = ambilInputInt();
             switch (pilihan) {
                 case 1: tampilkanTim(); break; // Asal: tim/lihat_tim.cpp
                 case 2: buatJadwal(); break; // Asal: admin/buat_jadwal.cpp
+                case 3: menuEditTim(); break; // Asal: tim/edit_tim.cpp
                 case 0:
                     cout << "Logout admin. Kembali ke menu utama." << endl;
                     exitAdmin = true;
@@ -161,9 +160,7 @@ void menuAdmin() {
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
-            int pilihan;
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            int pilihan = ambilInputInt();
             switch (pilihan) {
                 case 1: tampilkanTim(); break; // Asal: tim/lihat_tim.cpp
                 case 2: menuEditTim(); break; // Asal: tim/edit_tim.cpp
@@ -174,16 +171,8 @@ void menuAdmin() {
                     } else if (jumlahTim < 2) {
                         cout << "Minimal 2 tim harus terdaftar sebelum menutup pendaftaran." << endl;
                     } else if (!adalahPangkatDua(jumlahTim)) { // Asal: umum/models.cpp
-                        cout << "Jumlah tim saat ini: " << jumlahTim
-                             << " (bukan pangkat 2). Pastikan pangkat 2 sebelum tutup!" << endl;
-                        cout << "Tetap tutup pendaftaran? (y/n): ";
-                        char konfirmasi;
-                        cin >> konfirmasi;
-                        cin.ignore(10000, '\n');
-                        if (konfirmasi == 'y' || konfirmasi == 'Y') {
-                            pendaftaranDitutup = true;
-                            cout << "Pendaftaran ditutup. Tim: " << jumlahTim << endl;
-                        }
+                        cout << "[ERROR] Jumlah tim saat ini: " << jumlahTim
+                             << " (bukan pangkat 2). Pastikan jumlah tim pangkat 2 sebelum menutup pendaftaran." << endl;
                     } else {
                         pendaftaranDitutup = true;
                         cout << "Pendaftaran ditutup! Total " << jumlahTim << " tim terdaftar." << endl;
@@ -219,42 +208,73 @@ void menuTim() {
     while (!exitTim) {
         tampilkanHeader();
         cout << "\n--- MENU TIM: " << timLogin->nama << " ---" << endl;
-        cout << "1. Edit Data Tim Saya" << endl;
-        cout << "2. Lihat Jadwal Pertandingan" << endl;
-        cout << "3. Cari Profil Lawan" << endl;
-        cout << "4. Lihat Klasemen" << endl;
-        cout << "5. Lihat Bracket" << endl;
-        cout << "0. Logout (Kembali ke Menu Utama)" << endl;
-        cout << "Pilihan: ";
-        cin >> pilihan;
-        cin.ignore(10000, '\n');
+        
+        if (!jadwalSudahDibuat) {
+            cout << "1. Edit Data Tim Saya" << endl;
+            cout << "2. Lihat Jadwal Pertandingan" << endl;
+            cout << "3. Cari Profil Lawan" << endl;
+            cout << "4. Lihat Klasemen" << endl;
+            cout << "5. Lihat Bracket" << endl;
+            cout << "0. Logout (Kembali ke Menu Utama)" << endl;
+            cout << "Pilihan: ";
+            pilihan = ambilInputInt();
 
-        switch (pilihan) {
-            case 1:
-                if (timLogin->tereleminasi) {
-                    cout << "Tim sudah tereliminasi, tidak bisa edit data." << endl;
-                } else {
-                    editTim(timLogin); // Asal: tim/edit_tim.cpp
-                }
-                break;
-            case 2:
-                tampilJadwal(); // Asal: umum/lihat_jadwal.cpp
-                break;
-            case 3:
-                cariTim(timLogin); // Asal: tim/cari_lawan.cpp
-                break;
-            case 4:
-                tampilKlasemen(); // Asal: umum/lihat_klasemen.cpp
-                break;
-            case 5:
-                tampilBracket(); // Asal: umum/lihat_bracket.cpp
-                break;
-            case 0:
-                cout << "Logout tim. Kembali ke menu utama." << endl;
-                exitTim = true;
-                break;
-            default:
-                cout << "Pilihan tidak valid. Masukkan angka 0-5." << endl;
+            switch (pilihan) {
+                case 1:
+                    if (timLogin->tereleminasi) {
+                        cout << "Tim sudah tereliminasi, tidak bisa edit data." << endl;
+                    } else {
+                        editTim(timLogin); // Asal: tim/edit_tim.cpp
+                    }
+                    break;
+                case 2:
+                    tampilJadwal(); // Asal: umum/lihat_jadwal.cpp
+                    break;
+                case 3:
+                    cariTim(timLogin); // Asal: tim/cari_lawan.cpp
+                    break;
+                case 4:
+                    tampilKlasemen(); // Asal: umum/lihat_klasemen.cpp
+                    break;
+                case 5:
+                    tampilBracket(); // Asal: umum/lihat_bracket.cpp
+                    break;
+                case 0:
+                    cout << "Logout tim. Kembali ke menu utama." << endl;
+                    exitTim = true;
+                    break;
+                default:
+                    cout << "Pilihan tidak valid. Masukkan angka 0-5." << endl;
+            }
+        } else {
+            cout << "1. Lihat Jadwal Pertandingan" << endl;
+            cout << "2. Cari Profil Lawan" << endl;
+            cout << "3. Lihat Klasemen" << endl;
+            cout << "4. Lihat Bracket" << endl;
+            cout << "0. Logout (Kembali ke Menu Utama)" << endl;
+            cout << "Pilihan: ";
+            pilihan = ambilInputInt();
+
+            switch (pilihan) {
+                case 1:
+                    tampilJadwal(); // Asal: umum/lihat_jadwal.cpp
+                    break;
+                case 2:
+                    cariTim(timLogin); // Asal: tim/cari_lawan.cpp
+                    break;
+                case 3:
+                    tampilKlasemen(); // Asal: umum/lihat_klasemen.cpp
+                    break;
+                case 4:
+                    tampilBracket(); // Asal: umum/lihat_bracket.cpp
+                    break;
+                case 0:
+                    cout << "Logout tim. Kembali ke menu utama." << endl;
+                    exitTim = true;
+                    break;
+                default:
+                    cout << "Pilihan tidak valid. Masukkan angka 0-4." << endl;
+            }
         }
 
         if (!exitTim) {
@@ -276,8 +296,7 @@ void menuPenonton() {
         cout << "3. Lihat Klasemen" << endl;
         cout << "0. Kembali ke Menu Utama" << endl;
         cout << "Pilihan: ";
-        cin >> pilihan;
-        cin.ignore(10000, '\n');
+        pilihan = ambilInputInt();
 
         switch (pilihan) {
             case 1:
@@ -323,8 +342,7 @@ int main() {
             cout << "3. Login Admin" << endl;
             cout << "0. Keluar Program" << endl;
             cout << "Pilihan: ";
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            pilihan = ambilInputInt();
 
             switch (pilihan) {
                 case 1:
@@ -351,8 +369,7 @@ int main() {
             cout << "3. Login Admin" << endl;
             cout << "0. Keluar Program" << endl;
             cout << "Pilihan: ";
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            pilihan = ambilInputInt();
 
             switch (pilihan) {
                 case 1:

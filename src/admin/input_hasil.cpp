@@ -39,10 +39,9 @@ void inputHasil() {
     bool inputValid = false;
     while (!inputValid) {
         cout << "Skor " << timA->nama << ": ";
-        cin >> skorA;
+        skorA = ambilInputInt();
         cout << "Skor " << timB->nama << ": ";
-        cin >> skorB;
-        cin.ignore(10000, '\n');
+        skorB = ambilInputInt();
 
         if (skorA < 0 || skorB < 0) {
             cout << "[ERROR] Skor tidak boleh negatif." << endl;
