@@ -11,20 +11,22 @@ string left_pad_str(const string& s, int w) {
 }
 
 // Fungsi tampilkan bagan turnamen (bracket)
+// Fungsi tampilkan bagan turnamen (bracket)
 void tampilBracket() {
-    cout << "\n=== BAGAN TURNAMEN (BRACKET) ===" << endl;
+    tampilSubjudul("BAGAN TURNAMEN (BRACKET)");
 
     if (!jadwalSudahDibuat) {
-        cout << "(Bracket belum dibuat. Admin perlu menutup pendaftaran dan membuat jadwal)" << endl;
+        pesanInfo("Bracket belum dibuat. Admin perlu menutup pendaftaran dan membuat jadwal.");
         return;
     }
 
     if (jumlahHasil == 0) {
-        cout << "(Belum ada data match)" << endl;
+        pesanInfo("Belum ada data match.");
         return;
     }
 
-    cout << string(70, '=') << endl;
+    printHorizontalLine(78, "═");
+    cout << endl;
 
     // Kumpulkan ronde-ronde utama
     vector<string> urutanRonde;
@@ -54,7 +56,8 @@ void tampilBracket() {
         cout << left << setw(28) << rondeUtama[ri];
     }
     cout << endl;
-    cout << string(jumlahRondeUtama * 28, '-') << endl;
+    printHorizontalLine(jumlahRondeUtama * 28, "─");
+    cout << endl;
 
     // Kumpulkan index match per ronde
     vector<vector<int>> matchPerRonde(jumlahRondeUtama);
@@ -98,20 +101,20 @@ void tampilBracket() {
             // Isi Tim A
             string selA = statusA + namaA;
             if ((int)selA.size() > LEBAR - 5) selA = selA.substr(0, LEBAR - 5);
-            grid[barisA][ri] = left_pad_str(selA, LEBAR - 5) + " ---\\";
+            grid[barisA][ri] = left_pad_str(selA, LEBAR - 5) + " ───┐";
 
             // Isi Tim B
             string selB = statusB + namaB;
             if ((int)selB.size() > LEBAR - 5) selB = selB.substr(0, LEBAR - 5);
-            grid[barisB][ri] = left_pad_str(selB, LEBAR - 5) + " ---/";
+            grid[barisB][ri] = left_pad_str(selB, LEBAR - 5) + " ───┘";
 
             // Isi konektor
-            grid[barisCenter][ri] = string(LEBAR - 5, ' ') + "  |-->";
+            grid[barisCenter][ri] = string(LEBAR - 5, ' ') + "  ├──>";
 
             // Tampilkan pemenang jika ini Final
             if (ri == jumlahRondeUtama - 1) {
                 string labelJuara = ptrPem ? (ptrPem->nama + " (JUARA!)") : "???";
-                grid[barisCenter][ri] = string(LEBAR - 5, ' ') + "  |--> " + labelJuara;
+                grid[barisCenter][ri] = string(LEBAR - 5, ' ') + "  ├──> " + labelJuara;
             }
         }
     }
@@ -127,7 +130,8 @@ void tampilBracket() {
     // Tampilkan Perebutan Juara ke-3
     if (adaJuara3) {
         cout << endl;
-        cout << string(70, '-') << endl;
+        printHorizontalLine(78, "─");
+        cout << endl;
         cout << "Perebutan Juara ke-3:" << endl;
         for (int i = 0; i < jumlahHasil; i++) {
             if (matchResults[i].ronde == "Perebutan Juara ke-3") {
@@ -144,14 +148,15 @@ void tampilBracket() {
         }
     }
 
-    cout << string(70, '=') << endl;
-    cout << "Keterangan: [O] = Aktif  |  [X] = Tereliminasi" << endl;
+    printHorizontalLine(78, "═");
+    cout << endl;
+    pesanInfo("Keterangan: [O] = Aktif  |  [X] = Tereliminasi");
 
     if (!antrianKosong()) {
         cout << "\nPertandingan berikutnya: " << depanAntrian->timA->nama
              << " vs " << depanAntrian->timB->nama
              << " (" << depanAntrian->ronde << ")" << endl;
     } else {
-        cout << "\nTurnamen selesai! Lihat klasemen untuk melihat juara." << endl;
+        pesanInfo("Turnamen selesai! Lihat klasemen untuk melihat juara.");
     }
 }
