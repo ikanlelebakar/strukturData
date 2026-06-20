@@ -12,7 +12,8 @@ void editDataTim(Tim *ptrTim) {
     cout << "\n=== EDIT DATA TIM: " << ptrTim->nama << " ===" << endl;
     cout << "1. Ubah Nama Tim" << endl;
     cout << "2. Ubah Jumlah Pemain" << endl;
-    cout << "3. Ubah Password" << endl;
+    cout << "3. Ubah Nama-nama Pemain" << endl;
+    cout << "4. Ubah Password" << endl;
     cout << "0. Batal" << endl;
     cout << "Pilihan: ";
     cin >> pilihan;
@@ -46,10 +47,28 @@ void editDataTim(Tim *ptrTim) {
             } while (jumlahBaru < MIN_PEMAIN || jumlahBaru > MAX_PEMAIN);
 
             ptrTim->jumlahPemain = jumlahBaru;
-            cout << "[SUKSES] Jumlah pemain berhasil diubah menjadi " << jumlahBaru << "." << endl;
+            cout << "\n--- Input Nama Pemain Baru ---" << endl;
+            for (int i = 0; i < jumlahBaru; i++) {
+                cout << "Nama Pemain " << (i + 1) << ": ";
+                getline(cin, ptrTim->pemain[i]);
+            }
+            cout << "[SUKSES] Jumlah dan nama pemain berhasil diubah." << endl;
             break;
         }
         case 3: {
+            cout << "\n--- Ubah Nama-nama Pemain ---" << endl;
+            for (int i = 0; i < ptrTim->jumlahPemain; i++) {
+                cout << "Nama Pemain " << (i + 1) << " (" << ptrTim->pemain[i] << "): ";
+                string namaBaru;
+                getline(cin, namaBaru);
+                if (!namaBaru.empty()) {
+                    ptrTim->pemain[i] = namaBaru;
+                }
+            }
+            cout << "[SUKSES] Nama-nama pemain berhasil diperbarui." << endl;
+            break;
+        }
+        case 4: {
             string passBaru;
             cout << "Password Baru: ";
             getline(cin, passBaru);
