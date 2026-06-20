@@ -11,6 +11,7 @@ using namespace std;
 #include "umum/input_helper.cpp"
 #include "hapus_terminal/utils.cpp"
 #include "umum/search_sort.cpp"
+#include "tampilan/pesan.cpp"
 #include "admin/registrasi_admin.cpp"
 #include "admin/login_admin.cpp"
 #include "tim/login_tim.cpp"
