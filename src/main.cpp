@@ -13,6 +13,7 @@ using namespace std;
 #include "umum/search_sort.cpp"
 #include "tampilan/pesan.cpp"
 #include "tampilan/tabel.cpp"
+#include "tampilan/header.cpp"
 #include "admin/registrasi_admin.cpp"
 #include "admin/login_admin.cpp"
 #include "tim/login_tim.cpp"
