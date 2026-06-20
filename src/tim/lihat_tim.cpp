@@ -18,6 +18,12 @@ void tampilkanTim() {
     while (curr != NULL) {
         cout << no << ". " << curr->nama << endl;
         cout << "   Jumlah Pemain : " << curr->jumlahPemain << endl;
+        cout << "   Daftar Pemain : ";
+        for (int i = 0; i < curr->jumlahPemain; i++) {
+            cout << curr->pemain[i];
+            if (i < curr->jumlahPemain - 1) cout << ", ";
+        }
+        cout << endl;
         cout << "   Poin          : " << curr->poin << endl;
         cout << "   Status        : " << (curr->tereleminasi ? "Tereliminasi" : "Aktif") << endl;
         cout << string(50, '-') << endl;
