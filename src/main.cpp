@@ -30,41 +30,19 @@ using namespace std;
 
 // Fungsi tampilkan header turnamen
 void tampilkanHeader() {
-    clearScreen(); // Asal: hapus_terminal/utils.cpp
-    cout << "\n" << string(50, '=') << endl;
-    if (adminSudahDibuat && !namaTurnamen.empty()) {
-        cout << "  TURNAMEN: " << namaTurnamen << endl;
-    } else {
-        cout << "      SISTEM MANAJEMEN TURNAMEN GAME" << endl;
-    }
-    cout << string(50, '=') << endl;
-
-    // Tampilkan status fase turnamen
-    if (!pendaftaranDitutup) {
-        cout << "  Status: [FASE REGISTRASI] Pendaftaran masih terbuka" << endl;
-    } else if (!jadwalSudahDibuat) {
-        cout << "  Status: [PENDAFTARAN DITUTUP] Siap buat braket" << endl;
-    } else if (!antrianKosong()) { // Asal: umum/models.cpp
-        cout << "  Status: [FASE PERTANDINGAN] Turnamen sedang berjalan" << endl;
-    } else {
-        cout << "  Status: [TURNAMEN SELESAI]" << endl;
-    }
-    cout << "  Tim terdaftar: " << jumlahTim << "/" << MAX_TIM << endl;
-    cout << string(50, '=') << endl;
+    tampilHeader();
 }
 
 // Fungsi menu Admin
 void menuAdmin() {
     if (!masukAdmin()) { // Asal: admin/login_admin.cpp
-        cout << "\nTekan ENTER untuk kembali...";
-        cin.get();
+        tampilPromptKembali();
         return;
     }
 
     bool exitAdmin = false;
     while (!exitAdmin) {
         tampilkanHeader();
-        cout << "\n--- MENU ADMIN ---" << endl;
 
         bool turnamenSelesai = jadwalSudahDibuat && antrianKosong() && (hitungTimAktif() <= 1); // Asal antrianKosong: umum/models.cpp, hitungTimAktif: admin/input_hasil.cpp
         bool antarRonde = jadwalSudahDibuat && antrianKosong() && !turnamenSelesai; // Asal antrianKosong: umum/models.cpp
@@ -72,10 +50,12 @@ void menuAdmin() {
         bool pendaftaranDitutupBelumBraket = pendaftaranDitutup && !jadwalSudahDibuat;
 
         if (turnamenSelesai) {
-            cout << "1. Lihat Daftar Tim" << endl;
-            cout << "2. Lihat Klasemen" << endl;
-            cout << "3. Lihat Bracket/Bagan" << endl;
-            cout << "0. Logout Admin" << endl;
+            tampilSubjudul("MENU ADMIN (TURNAMEN SELESAI)");
+            tampilPilihanMenu("1. Lihat Daftar Tim");
+            tampilPilihanMenu("2. Lihat Klasemen");
+            tampilPilihanMenu("3. Lihat Bracket/Bagan");
+            tampilPilihanMenu("0. Logout Admin");
+            tampilMenuBottom();
             cout << "Pilihan: ";
 
             int pilihan = ambilInputInt();
@@ -84,19 +64,21 @@ void menuAdmin() {
                 case 2: tampilKlasemen(); break; // Asal: umum/lihat_klasemen.cpp
                 case 3: tampilBracket(); break; // Asal: umum/lihat_bracket.cpp
                 case 0:
-                    cout << "Logout admin. Kembali ke menu utama." << endl;
+                    pesanInfo("Logout admin. Kembali ke menu utama.");
                     exitAdmin = true;
                     break;
                 default:
-                    cout << "Pilihan tidak valid." << endl;
+                    pesanError("Pilihan tidak valid.");
             }
         } else if (antarRonde) {
-            cout << "1. Lihat Daftar Tim" << endl;
-            cout << "2. Buat Jadwal Ronde Berikutnya" << endl;
-            cout << "3. Lihat Klasemen" << endl;
-            cout << "4. Lihat Bracket/Bagan" << endl;
-            cout << "5. Edit Data Tim" << endl;
-            cout << "0. Logout Admin" << endl;
+            tampilSubjudul("MENU ADMIN (ANTAR RONDE)");
+            tampilPilihanMenu("1. Lihat Daftar Tim");
+            tampilPilihanMenu("2. Buat Jadwal Ronde Berikutnya");
+            tampilPilihanMenu("3. Lihat Klasemen");
+            tampilPilihanMenu("4. Lihat Bracket/Bagan");
+            tampilPilihanMenu("5. Edit Data Tim");
+            tampilPilihanMenu("0. Logout Admin");
+            tampilMenuBottom();
             cout << "Pilihan: ";
 
             int pilihan = ambilInputInt();
@@ -107,19 +89,21 @@ void menuAdmin() {
                 case 4: tampilBracket(); break; // Asal: umum/lihat_bracket.cpp
                 case 5: menuEditTim(); break; // Asal: tim/edit_tim.cpp
                 case 0:
-                    cout << "Logout admin. Kembali ke menu utama." << endl;
+                    pesanInfo("Logout admin. Kembali ke menu utama.");
                     exitAdmin = true;
                     break;
                 default:
-                    cout << "Pilihan tidak valid." << endl;
+                    pesanError("Pilihan tidak valid.");
             }
         } else if (fasePertandingan) {
-            cout << "1. Lihat Daftar Tim" << endl;
-            cout << "2. Input Hasil Pertandingan" << endl;
-            cout << "3. Lihat Klasemen" << endl;
-            cout << "4. Lihat Bracket/Bagan" << endl;
-            cout << "5. Edit Data Tim" << endl;
-            cout << "0. Logout Admin" << endl;
+            tampilSubjudul("MENU ADMIN (FASE PERTANDINGAN)");
+            tampilPilihanMenu("1. Lihat Daftar Tim");
+            tampilPilihanMenu("2. Input Hasil Pertandingan");
+            tampilPilihanMenu("3. Lihat Klasemen");
+            tampilPilihanMenu("4. Lihat Bracket/Bagan");
+            tampilPilihanMenu("5. Edit Data Tim");
+            tampilPilihanMenu("0. Logout Admin");
+            tampilMenuBottom();
             cout << "Pilihan: ";
 
             int pilihan = ambilInputInt();
@@ -130,17 +114,19 @@ void menuAdmin() {
                 case 4: tampilBracket(); break; // Asal: umum/lihat_bracket.cpp
                 case 5: menuEditTim(); break; // Asal: tim/edit_tim.cpp
                 case 0:
-                    cout << "Logout admin. Kembali ke menu utama." << endl;
+                    pesanInfo("Logout admin. Kembali ke menu utama.");
                     exitAdmin = true;
                     break;
                 default:
-                    cout << "Pilihan tidak valid." << endl;
+                    pesanError("Pilihan tidak valid.");
             }
         } else if (pendaftaranDitutupBelumBraket) {
-            cout << "1. Lihat Daftar Tim" << endl;
-            cout << "2. Buat Jadwal Pertandingan" << endl;
-            cout << "3. Edit Data Tim" << endl;
-            cout << "0. Logout Admin" << endl;
+            tampilSubjudul("MENU ADMIN (PENDAFTARAN DITUTUP)");
+            tampilPilihanMenu("1. Lihat Daftar Tim");
+            tampilPilihanMenu("2. Buat Jadwal Pertandingan");
+            tampilPilihanMenu("3. Edit Data Tim");
+            tampilPilihanMenu("0. Logout Admin");
+            tampilMenuBottom();
             cout << "Pilihan: ";
 
             int pilihan = ambilInputInt();
@@ -149,18 +135,20 @@ void menuAdmin() {
                 case 2: buatJadwal(); break; // Asal: admin/buat_jadwal.cpp
                 case 3: menuEditTim(); break; // Asal: tim/edit_tim.cpp
                 case 0:
-                    cout << "Logout admin. Kembali ke menu utama." << endl;
+                    pesanInfo("Logout admin. Kembali ke menu utama.");
                     exitAdmin = true;
                     break;
                 default:
-                    cout << "Pilihan tidak valid." << endl;
+                    pesanError("Pilihan tidak valid.");
             }
         } else {
-            cout << "1. Lihat Daftar Tim" << endl;
-            cout << "2. Edit Data Tim" << endl;
-            cout << "3. Hapus Tim" << endl;
-            cout << "4. Tutup Pendaftaran" << endl;
-            cout << "0. Logout Admin" << endl;
+            tampilSubjudul("MENU ADMIN");
+            tampilPilihanMenu("1. Lihat Daftar Tim");
+            tampilPilihanMenu("2. Edit Data Tim");
+            tampilPilihanMenu("3. Hapus Tim");
+            tampilPilihanMenu("4. Tutup Pendaftaran");
+            tampilPilihanMenu("0. Logout Admin");
+            tampilMenuBottom();
             cout << "Pilihan: ";
 
             int pilihan = ambilInputInt();
@@ -170,29 +158,27 @@ void menuAdmin() {
                 case 3: hapusTim(); break; // Asal: admin/hapus_tim.cpp
                 case 4:
                     if (pendaftaranDitutup) {
-                        cout << "Pendaftaran sudah ditutup sebelumnya." << endl;
+                        pesanWarning("Pendaftaran sudah ditutup sebelumnya.");
                     } else if (jumlahTim < 2) {
-                        cout << "Minimal 2 tim harus terdaftar sebelum menutup pendaftaran." << endl;
+                        pesanError("Minimal 2 tim harus terdaftar sebelum menutup pendaftaran.");
                     } else if (!adalahPangkatDua(jumlahTim)) { // Asal: umum/models.cpp
-                        cout << "[ERROR] Jumlah tim saat ini: " << jumlahTim
-                             << " (bukan pangkat 2). Pastikan jumlah tim pangkat 2 sebelum menutup pendaftaran." << endl;
+                        pesanError("Jumlah tim saat ini: " + to_string(jumlahTim) + " (bukan pangkat 2). Pastikan jumlah tim pangkat 2 sebelum menutup pendaftaran.");
                     } else {
                         pendaftaranDitutup = true;
-                        cout << "Pendaftaran ditutup! Total " << jumlahTim << " tim terdaftar." << endl;
+                        pesanOK("Pendaftaran ditutup! Total " + to_string(jumlahTim) + " tim terdaftar.");
                     }
                     break;
                 case 0:
-                    cout << "Logout admin. Kembali ke menu utama." << endl;
+                    pesanInfo("Logout admin. Kembali ke menu utama.");
                     exitAdmin = true;
                     break;
                 default:
-                    cout << "Pilihan tidak valid." << endl;
+                    pesanError("Pilihan tidak valid.");
             }
         }
 
         if (!exitAdmin) {
-            cout << "\nTekan ENTER untuk lanjut...";
-            cin.get();
+            tampilPromptLanjut();
         }
     }
 }
@@ -201,8 +187,7 @@ void menuAdmin() {
 void menuTim() {
     Tim *timLogin = masukTim(); // Asal: tim/login_tim.cpp
     if (timLogin == NULL) {
-        cout << "\nTekan ENTER untuk kembali...";
-        cin.get();
+        tampilPromptKembali();
         return;
     }
 
@@ -210,22 +195,23 @@ void menuTim() {
     bool exitTim = false;
     while (!exitTim) {
         tampilkanHeader();
-        cout << "\n--- MENU TIM: " << timLogin->nama << " ---" << endl;
         
         if (!jadwalSudahDibuat) {
-            cout << "1. Edit Data Tim Saya" << endl;
-            cout << "2. Lihat Jadwal Pertandingan" << endl;
-            cout << "3. Cari Profil Lawan" << endl;
-            cout << "4. Lihat Klasemen" << endl;
-            cout << "5. Lihat Bracket" << endl;
-            cout << "0. Logout (Kembali ke Menu Utama)" << endl;
+            tampilSubjudul("MENU TIM: " + timLogin->nama);
+            tampilPilihanMenu("1. Edit Data Tim Saya");
+            tampilPilihanMenu("2. Lihat Jadwal Pertandingan");
+            tampilPilihanMenu("3. Cari Profil Lawan");
+            tampilPilihanMenu("4. Lihat Klasemen");
+            tampilPilihanMenu("5. Lihat Bracket");
+            tampilPilihanMenu("0. Logout (Kembali ke Menu Utama)");
+            tampilMenuBottom();
             cout << "Pilihan: ";
             pilihan = ambilInputInt();
 
             switch (pilihan) {
                 case 1:
                     if (timLogin->tereleminasi) {
-                        cout << "Tim sudah tereliminasi, tidak bisa edit data." << endl;
+                        pesanError("Tim sudah tereliminasi, tidak bisa edit data.");
                     } else {
                         editTim(timLogin); // Asal: tim/edit_tim.cpp
                     }
@@ -243,18 +229,20 @@ void menuTim() {
                     tampilBracket(); // Asal: umum/lihat_bracket.cpp
                     break;
                 case 0:
-                    cout << "Logout tim. Kembali ke menu utama." << endl;
+                    pesanInfo("Logout tim. Kembali ke menu utama.");
                     exitTim = true;
                     break;
                 default:
-                    cout << "Pilihan tidak valid. Masukkan angka 0-5." << endl;
+                    pesanError("Pilihan tidak valid.");
             }
         } else {
-            cout << "1. Lihat Jadwal Pertandingan" << endl;
-            cout << "2. Cari Profil Lawan" << endl;
-            cout << "3. Lihat Klasemen" << endl;
-            cout << "4. Lihat Bracket" << endl;
-            cout << "0. Logout (Kembali ke Menu Utama)" << endl;
+            tampilSubjudul("MENU TIM: " + timLogin->nama);
+            tampilPilihanMenu("1. Lihat Jadwal Pertandingan");
+            tampilPilihanMenu("2. Cari Profil Lawan");
+            tampilPilihanMenu("3. Lihat Klasemen");
+            tampilPilihanMenu("4. Lihat Bracket");
+            tampilPilihanMenu("0. Logout (Kembali ke Menu Utama)");
+            tampilMenuBottom();
             cout << "Pilihan: ";
             pilihan = ambilInputInt();
 
@@ -272,17 +260,16 @@ void menuTim() {
                     tampilBracket(); // Asal: umum/lihat_bracket.cpp
                     break;
                 case 0:
-                    cout << "Logout tim. Kembali ke menu utama." << endl;
+                    pesanInfo("Logout tim. Kembali ke menu utama.");
                     exitTim = true;
                     break;
                 default:
-                    cout << "Pilihan tidak valid. Masukkan angka 0-4." << endl;
+                    pesanError("Pilihan tidak valid.");
             }
         }
 
         if (!exitTim) {
-            cout << "\nTekan ENTER untuk lanjut...";
-            cin.get();
+            tampilPromptLanjut();
         }
     }
 }
@@ -293,11 +280,12 @@ void menuPenonton() {
     bool exitPenonton = false;
     while (!exitPenonton) {
         tampilkanHeader();
-        cout << "\n--- MENU PENONTON (Tanpa Login) ---" << endl;
-        cout << "1. Lihat Jadwal Pertandingan" << endl;
-        cout << "2. Lihat Bracket/Bagan" << endl;
-        cout << "3. Lihat Klasemen" << endl;
-        cout << "0. Kembali ke Menu Utama" << endl;
+        tampilSubjudul("MENU PENONTON (Tanpa Login)");
+        tampilPilihanMenu("1. Lihat Jadwal Pertandingan");
+        tampilPilihanMenu("2. Lihat Bracket/Bagan");
+        tampilPilihanMenu("3. Lihat Klasemen");
+        tampilPilihanMenu("0. Kembali ke Menu Utama");
+        tampilMenuBottom();
         cout << "Pilihan: ";
         pilihan = ambilInputInt();
 
@@ -315,12 +303,11 @@ void menuPenonton() {
                 exitPenonton = true;
                 break;
             default:
-                cout << "Pilihan tidak valid." << endl;
+                pesanError("Pilihan tidak valid.");
         }
 
         if (!exitPenonton) {
-            cout << "\nTekan ENTER untuk lanjut...";
-            cin.get();
+            tampilPromptLanjut();
         }
     }
 }
@@ -336,14 +323,15 @@ int main() {
     bool running = true;
     while (running) {
         tampilkanHeader();
-        cout << "\n--- MENU UTAMA ---" << endl;
         
         bool registrasiTutupAtauPenuh = pendaftaranDitutup || (jumlahTim >= MAX_TIM);
         if (!registrasiTutupAtauPenuh) {
-            cout << "1. Registrasi Tim" << endl;
-            cout << "2. Login Tim" << endl;
-            cout << "3. Login Admin" << endl;
-            cout << "0. Keluar Program" << endl;
+            tampilSubjudul("MENU UTAMA");
+            tampilPilihanMenu("1. Registrasi Tim");
+            tampilPilihanMenu("2. Login Tim");
+            tampilPilihanMenu("3. Login Admin");
+            tampilPilihanMenu("0. Keluar Program");
+            tampilMenuBottom();
             cout << "Pilihan: ";
             pilihan = ambilInputInt();
 
@@ -358,19 +346,20 @@ int main() {
                     menuAdmin();
                     break;
                 case 0:
-                    cout << "\nTerima kasih! Program selesai." << endl;
+                    pesanOK("Terima kasih! Program selesai.");
                     running = false;
                     break;
                 default:
-                    cout << "Pilihan tidak valid. Masukkan angka 0-3." << endl;
-                    cout << "\nTekan ENTER untuk kembali...";
-                    cin.get();
+                    pesanError("Pilihan tidak valid. Masukkan angka 0-3.");
+                    tampilPromptKembali();
             }
         } else {
-            cout << "1. Login Tim" << endl;
-            cout << "2. Penonton" << endl;
-            cout << "3. Login Admin" << endl;
-            cout << "0. Keluar Program" << endl;
+            tampilSubjudul("MENU UTAMA");
+            tampilPilihanMenu("1. Login Tim");
+            tampilPilihanMenu("2. Penonton");
+            tampilPilihanMenu("3. Login Admin");
+            tampilPilihanMenu("0. Keluar Program");
+            tampilMenuBottom();
             cout << "Pilihan: ";
             pilihan = ambilInputInt();
 
@@ -385,13 +374,12 @@ int main() {
                     menuAdmin();
                     break;
                 case 0:
-                    cout << "\nTerima kasih! Program selesai." << endl;
+                    pesanOK("Terima kasih! Program selesai.");
                     running = false;
                     break;
                 default:
-                    cout << "Pilihan tidak valid. Masukkan angka 0-3." << endl;
-                    cout << "\nTekan ENTER untuk kembali...";
-                    cin.get();
+                    pesanError("Pilihan tidak valid. Masukkan angka 0-3.");
+                    tampilPromptKembali();
             }
         }
     }
