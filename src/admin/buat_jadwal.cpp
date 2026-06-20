@@ -34,22 +34,22 @@ bool validasiTanggal(const string& tgl) {
 // Fungsi buat jadwal pertandingan Ronde 1
 void buatJadwal() {
     if (!pendaftaranDitutup) {
-        cout << "Admin harus menutup pendaftaran terlebih dahulu." << endl;
+        pesanError("Admin harus menutup pendaftaran terlebih dahulu.");
         return;
     }
 
     if (jumlahTim < 2) {
-        cout << "Minimal 2 tim dibutuhkan untuk membuat jadwal." << endl;
+        pesanError("Minimal 2 tim dibutuhkan untuk membuat jadwal.");
         return;
     }
 
     if (!adalahPangkatDua(jumlahTim)) {
-        cout << "Jumlah tim (" << jumlahTim << ") harus pangkat 2 (4, 8, 16...)." << endl;
+        pesanError("Jumlah tim (" + to_string(jumlahTim) + ") harus pangkat 2 (4, 8, 16...).");
         return;
     }
 
     if (jadwalSudahDibuat) {
-        cout << "Braket sudah pernah dibuat sebelumnya." << endl;
+        pesanWarning("Braket sudah pernah dibuat sebelumnya.");
         return;
     }
 
@@ -64,9 +64,9 @@ void buatJadwal() {
 
     string labelRonde = (n == 4) ? "Semifinal" : "Ronde 1";
 
-    cout << "\n=== JADWAL " << labelRonde << " ==="  << endl;
+    tampilSubjudul("JADWAL " + labelRonde);
     for (int i = 0; i < n / 2; i++) {
-        cout << "\nMatch " << i + 1 << ": " << arrTim[i]->nama << " vs " << arrTim[n - 1 - i]->nama << endl;
+        tampilSubjudul("MATCH " + to_string(i + 1) + ": " + arrTim[i]->nama + " vs " + arrTim[n - 1 - i]->nama);
 
         string tgl, jam;
         do {
@@ -74,7 +74,7 @@ void buatJadwal() {
             cin >> tgl;
             cin.ignore(10000, '\n');
             if (!validasiTanggal(tgl)) {
-                cout << "  [ERROR] Format tanggal tidak valid. Gunakan YYYY-MM-DD." << endl;
+                pesanError("Format tanggal tidak valid. Gunakan YYYY-MM-DD.");
             }
         } while (!validasiTanggal(tgl));
 
@@ -83,7 +83,7 @@ void buatJadwal() {
             cin >> jam;
             cin.ignore(10000, '\n');
             if (!validasiJam(jam)) {
-                cout << "  [ERROR] Format jam tidak valid. Gunakan HH:MM." << endl;
+                pesanError("Format jam tidak valid. Gunakan HH:MM.");
             }
         } while (!validasiJam(jam));
 
@@ -94,6 +94,6 @@ void buatJadwal() {
     rondeSekarang = 1;
     jadwalSudahDibuat = true;
 
-    cout << "\nJadwal " << labelRonde << " berhasil dibuat. Braket siap!" << endl;
+    pesanOK("Jadwal " + labelRonde + " berhasil dibuat. Braket siap!");
     delete[] arrTim;
 }

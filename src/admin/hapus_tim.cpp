@@ -4,12 +4,12 @@
 // Fungsi hapus data tim
 void hapusTim() {
     if (kepala == NULL) {
-        cout << "Belum ada tim yang terdaftar." << endl;
+        pesanWarning("Belum ada tim yang terdaftar.");
         return;
     }
 
     if (jadwalSudahDibuat) {
-        cout << "Tidak bisa hapus tim setelah braket dibuat." << endl;
+        pesanError("Tidak bisa hapus tim setelah braket dibuat.");
         return;
     }
 
@@ -30,13 +30,12 @@ void hapusTim() {
             }
             delete curr;
             jumlahTim--;
-            cout << "[SUKSES] Tim \"" << namaCari << "\" berhasil dihapus. "
-                 << "Sisa tim: " << jumlahTim << endl;
+            pesanOK("Tim \"" + namaCari + "\" berhasil dihapus. Sisa tim: " + to_string(jumlahTim));
             return;
         }
         prev = curr;
         curr = curr->berikutnya;
     }
 
-    cout << "Tim \"" << namaCari << "\" tidak ditemukan." << endl;
+    pesanError("Tim \"" + namaCari + "\" tidak ditemukan.");
 }

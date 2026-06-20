@@ -16,9 +16,9 @@ int hitungTimAktif() {
 void inputHasil() {
     if (antrianKosong()) {
         if (!jadwalSudahDibuat) {
-            cout << "Braket belum dibuat. Silakan buat jadwal terlebih dahulu." << endl;
+            pesanError("Braket belum dibuat. Silakan buat jadwal terlebih dahulu.");
         } else {
-            cout << "Tidak ada pertandingan yang tersisa. Turnamen selesai!" << endl;
+            pesanInfo("Tidak ada pertandingan yang tersisa. Turnamen selesai!");
         }
         return;
     }
@@ -27,13 +27,13 @@ void inputHasil() {
     Tim *timA = match->timA;
     Tim *timB = match->timB;
 
-    cout << "\n=== INPUT HASIL PERTANDINGAN ===" << endl;
-    cout << "Ronde    : " << match->ronde << endl;
-    cout << "Tanggal  : " << match->tanggalTanding << endl;
-    cout << string(40, '-') << endl;
-    cout << "Tim A    : " << timA->nama << endl;
-    cout << "Tim B    : " << timB->nama << endl;
-    cout << string(40, '-') << endl;
+    tampilSubjudul("INPUT HASIL PERTANDINGAN");
+    cout << "  Ronde    : " << match->ronde << endl;
+    cout << "  Tanggal  : " << match->tanggalTanding << endl;
+    tampilMenuBottom();
+    cout << "  Tim A    : " << timA->nama << endl;
+    cout << "  Tim B    : " << timB->nama << endl;
+    tampilMenuBottom();
 
     int skorA, skorB;
     bool inputValid = false;
@@ -44,11 +44,11 @@ void inputHasil() {
         skorB = ambilInputInt();
 
         if (skorA < 0 || skorB < 0) {
-            cout << "[ERROR] Skor tidak boleh negatif." << endl;
+            pesanError("Skor tidak boleh negatif.");
         } else if (skorA > 3 || skorB > 3) {
-            cout << "[ERROR] Skor tidak boleh lebih dari 3." << endl;
+            pesanError("Skor tidak boleh lebih dari 3.");
         } else if (skorA == skorB) {
-            cout << "[ERROR] Skor tidak boleh seri dalam sistem eliminasi. Masukkan ulang." << endl;
+            pesanError("Skor tidak boleh seri dalam sistem eliminasi. Masukkan ulang.");
         } else {
             inputValid = true;
         }
@@ -80,14 +80,13 @@ void inputHasil() {
         matchKetiga = false;
         updatePemenang(timA, timB, pemenang);
 
-        cout << "\n" << pemenang->nama << " menang " << skorA
-             << "-" << skorB << " dan meraih JUARA KE-3!" << endl;
-        cout << kalah->nama << " tereliminasi." << endl;
+        pesanOK(pemenang->nama + " menang " + to_string(skorA) + "-" + to_string(skorB) + " dan meraih JUARA KE-3!");
+        pesanInfo(kalah->nama + " tereliminasi.");
 
         hapusAntrian();
 
         if (!antrianKosong()) {
-            cout << "Pertandingan Final siap dimulai!" << endl;
+            pesanOK("Pertandingan Final siap dimulai!");
         }
         return;
     }
@@ -101,21 +100,22 @@ void inputHasil() {
     if (iniSemifinal) {
         if (semifinalisKalah1 == NULL) {
             semifinalisKalah1 = kalah;
-            cout << "Semifinalis pertama yang kalah: " << kalah->nama
-                 << " (menunggu pertandingan juara ke-3)" << endl;
+            pesanInfo("Semifinalis pertama yang kalah: " + kalah->nama + " (menunggu pertandingan juara ke-3)");
         } else {
             semifinalisKalah2 = kalah;
 
             // Buat pertandingan juara ke-3
-            cout << "\n=== PENJADWALAN PEREBUTAN JUARA KE-3 ===" << endl;
-            cout << semifinalisKalah1->nama << " vs " << semifinalisKalah2->nama << endl;
+            tampilSubjudul("PENJADWALAN PEREBUTAN JUARA KE-3");
+            cout << "  " << semifinalisKalah1->nama << " vs " << semifinalisKalah2->nama << endl;
+            tampilMenuBottom();
+            
             string tgl, jam;
             do {
                 cout << "  Masukkan Tanggal (format YYYY-MM-DD): ";
                 cin >> tgl;
                 cin.ignore(10000, '\n');
                 if (!validasiTanggal(tgl)) {
-                    cout << "  [ERROR] Format tanggal tidak valid. Gunakan YYYY-MM-DD." << endl;
+                    pesanError("Format tanggal tidak valid. Gunakan YYYY-MM-DD.");
                 }
             } while (!validasiTanggal(tgl));
 
@@ -124,7 +124,7 @@ void inputHasil() {
                 cin >> jam;
                 cin.ignore(10000, '\n');
                 if (!validasiJam(jam)) {
-                    cout << "  [ERROR] Format jam tidak valid. Gunakan HH:MM." << endl;
+                    pesanError("Format jam tidak valid. Gunakan HH:MM.");
                 }
             } while (!validasiJam(jam));
 
@@ -132,15 +132,14 @@ void inputHasil() {
             catatPertandingan(semifinalisKalah1, semifinalisKalah2, "Perebutan Juara ke-3");
             matchKetiga = true;
 
-            cout << "Pertandingan Perebutan Juara ke-3 berhasil dijadwalkan!" << endl;
+            pesanOK("Pertandingan Perebutan Juara ke-3 berhasil dijadwalkan!");
         }
     } else {
         kalah->tereleminasi = true;
-        cout << kalah->nama << " tereliminasi." << endl;
+        pesanInfo(kalah->nama + " tereliminasi.");
     }
 
-    cout << "\n" << pemenang->nama << " menang (" << skorA << "-" << skorB << ")!"
-         << " Poin: " << pemenang->poin << endl;
+    pesanOK(pemenang->nama + " menang (" + to_string(skorA) + "-" + to_string(skorB) + ")! Poin: " + to_string(pemenang->poin));
 
     if (antrianKosong()) {
         int timMasihAktif = hitungTimAktif();
@@ -148,12 +147,12 @@ void inputHasil() {
         if (semifinalisKalah2 != NULL && !semifinalisKalah2->tereleminasi) timMasihAktif++;
 
         if (timMasihAktif > 1) {
-            cout << "\nSemua pertandingan ronde ini selesai." << endl;
-            cout << "Tim aktif tersisa: " << hitungTimAktif() << endl;
-            cout << "Admin: Gunakan menu 'Buat Jadwal Ronde Berikutnya' untuk lanjut." << endl;
+            pesanOK("Semua pertandingan ronde ini selesai.");
+            cout << "  Tim aktif tersisa: " << hitungTimAktif() << endl;
+            pesanInfo("Admin: Gunakan menu 'Buat Jadwal Ronde Berikutnya' untuk lanjut.");
         } else {
-            cout << "\n=== TURNAMEN SELESAI! ===" << endl;
-            cout << "Lihat Klasemen untuk melihat Juara 1, 2, dan 3." << endl;
+            tampilSubjudul("TURNAMEN SELESAI!");
+            pesanOK("Lihat Klasemen untuk melihat Juara 1, 2, dan 3.");
         }
     }
 }
@@ -161,12 +160,12 @@ void inputHasil() {
 // Fungsi buat jadwal ronde berikutnya
 void buatJadwalBerikutnya() {
     if (!jadwalSudahDibuat) {
-        cout << "Braket belum dibuat." << endl;
+        pesanError("Braket belum dibuat.");
         return;
     }
 
     if (!antrianKosong()) {
-        cout << "Masih ada pertandingan yang belum selesai di ronde ini." << endl;
+        pesanWarning("Masih ada pertandingan yang belum selesai di ronde ini.");
         return;
     }
 
@@ -182,7 +181,7 @@ void buatJadwalBerikutnya() {
     }
 
     if (n < 2) {
-        cout << "Tidak cukup tim aktif untuk ronde berikutnya." << endl;
+        pesanError("Tidak cukup tim aktif untuk ronde berikutnya.");
         delete[] timAktif;
         return;
     }
@@ -199,9 +198,9 @@ void buatJadwalBerikutnya() {
         namaRonde  = "Ronde " + to_string(rondeSekarang);
     }
 
-    cout << "\n=== JADWAL " << namaRonde << " ===" << endl;
+    tampilSubjudul("JADWAL " + namaRonde);
     for (int i = 0; i < n / 2; i++) {
-        cout << "\nMatch " << i + 1 << ": " << timAktif[i]->nama << " vs " << timAktif[n - 1 - i]->nama << endl;
+        tampilSubjudul("MATCH " + to_string(i + 1) + ": " + timAktif[i]->nama + " vs " + timAktif[n - 1 - i]->nama);
 
         string tgl, jam;
         do {
@@ -209,7 +208,7 @@ void buatJadwalBerikutnya() {
             cin >> tgl;
             cin.ignore(10000, '\n');
             if (!validasiTanggal(tgl)) {
-                cout << "  [ERROR] Format tanggal tidak valid. Gunakan YYYY-MM-DD." << endl;
+                pesanError("Format tanggal tidak valid. Gunakan YYYY-MM-DD.");
             }
         } while (!validasiTanggal(tgl));
 
@@ -218,7 +217,7 @@ void buatJadwalBerikutnya() {
             cin >> jam;
             cin.ignore(10000, '\n');
             if (!validasiJam(jam)) {
-                cout << "  [ERROR] Format jam tidak valid. Gunakan HH:MM." << endl;
+                pesanError("Format jam tidak valid. Gunakan HH:MM.");
             }
         } while (!validasiJam(jam));
 
@@ -226,6 +225,6 @@ void buatJadwalBerikutnya() {
         catatPertandingan(timAktif[i], timAktif[n - 1 - i], namaRonde);
     }
 
-    cout << "\nJadwal " << namaRonde << " berhasil dibuat!" << endl;
+    pesanOK("Jadwal " + namaRonde + " berhasil dibuat!");
     delete[] timAktif;
 }

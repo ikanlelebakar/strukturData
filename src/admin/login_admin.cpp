@@ -5,17 +5,17 @@
 bool masukAdmin() {
     string username, password;
 
-    cout << "\n=== LOGIN ADMIN ===" << endl;
+    tampilSubjudul("LOGIN ADMIN");
     cout << "Username: ";
     cin >> username;
     cout << "Password: ";
     cin >> password;
 
     if (username == adminUsername && password == adminPassword) {
-        cout << "Login admin berhasil. Selamat datang, Admin!" << endl;
+        pesanOK("Login admin berhasil. Selamat datang, Admin!");
         return true;
     }
 
-    cout << "Username atau password salah." << endl;
+    pesanError("Username atau password salah.");
     return false;
 }

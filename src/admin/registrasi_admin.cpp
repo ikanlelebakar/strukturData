@@ -2,10 +2,8 @@
 // Deskripsi: Fungsi registrasi admin pertama kali dijalankan
 
 void daftarAdmin() {
-    cout << "\n" << string(50, '=') << endl;
-    cout << "      REGISTRASI ADMINISTRATOR TURNAMEN" << endl;
-    cout << string(50, '=') << endl;
-    cout << "Selamat datang! Silakan daftarkan akun Admin dan atur turnamen Anda." << endl;
+    tampilSubjudul("REGISTRASI ADMINISTRATOR TURNAMEN");
+    pesanInfo("Selamat datang! Silakan daftarkan akun Admin dan atur turnamen Anda.");
 
     cout << "\nUsername Admin: ";
     cin >> adminUsername;
@@ -22,16 +20,17 @@ void daftarAdmin() {
         cout << "Maksimal Tim (harus pangkat 2, min 2): ";
         MAX_TIM = ambilInputInt();
         if (!adalahPangkatDua(MAX_TIM) || MAX_TIM < 2) {
-            cout << "[ERROR] Kapasitas tim harus merupakan angka pangkat 2 (2, 4, 8, 16, 32, dst.)." << endl;
+            pesanError("Kapasitas tim harus merupakan angka pangkat 2 (2, 4, 8, 16, 32, dst.).");
         }
     } while (!adalahPangkatDua(MAX_TIM) || MAX_TIM < 2);
 
     adminSudahDibuat = true;
 
-    cout << "\n[SUKSES] Akun Admin berhasil dibuat!" << endl;
-    cout << "Nama Turnamen: " << namaTurnamen << endl;
-    cout << "Maksimal Tim : " << MAX_TIM << endl;
-    cout << string(50, '=') << endl;
-    cout << "Tekan ENTER untuk lanjut ke Menu Utama...";
-    cin.get();
+    pesanOK("Akun Admin berhasil dibuat!");
+    tampilSubjudul("DETAIL TURNAMEN");
+    cout << "  Nama Turnamen: " << namaTurnamen << endl;
+    cout << "  Maksimal Tim : " << MAX_TIM << endl;
+    tampilMenuBottom();
+    
+    tampilPromptLanjut();
 }
