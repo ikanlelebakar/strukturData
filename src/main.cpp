@@ -93,6 +93,7 @@ void menuAdmin() {
             cout << "2. Buat Jadwal Ronde Berikutnya" << endl;
             cout << "3. Lihat Klasemen" << endl;
             cout << "4. Lihat Bracket/Bagan" << endl;
+            cout << "5. Edit Data Tim" << endl;
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
@@ -104,6 +105,7 @@ void menuAdmin() {
                 case 2: buatJadwalBerikutnya(); break; // Asal: admin/input_hasil.cpp
                 case 3: tampilKlasemen(); break; // Asal: umum/lihat_klasemen.cpp
                 case 4: tampilBracket(); break; // Asal: umum/lihat_bracket.cpp
+                case 5: menuEditTim(); break; // Asal: tim/edit_tim.cpp
                 case 0:
                     cout << "Logout admin. Kembali ke menu utama." << endl;
                     exitAdmin = true;
@@ -116,6 +118,7 @@ void menuAdmin() {
             cout << "2. Input Hasil Pertandingan" << endl;
             cout << "3. Lihat Klasemen" << endl;
             cout << "4. Lihat Bracket/Bagan" << endl;
+            cout << "5. Edit Data Tim" << endl;
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
@@ -127,6 +130,7 @@ void menuAdmin() {
                 case 2: inputHasil(); break; // Asal: admin/input_hasil.cpp
                 case 3: tampilKlasemen(); break; // Asal: umum/lihat_klasemen.cpp
                 case 4: tampilBracket(); break; // Asal: umum/lihat_bracket.cpp
+                case 5: menuEditTim(); break; // Asal: tim/edit_tim.cpp
                 case 0:
                     cout << "Logout admin. Kembali ke menu utama." << endl;
                     exitAdmin = true;
@@ -137,6 +141,7 @@ void menuAdmin() {
         } else if (pendaftaranDitutupBelumBraket) {
             cout << "1. Lihat Daftar Tim" << endl;
             cout << "2. Buat Jadwal Pertandingan" << endl;
+            cout << "3. Edit Data Tim" << endl;
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
@@ -146,6 +151,7 @@ void menuAdmin() {
             switch (pilihan) {
                 case 1: tampilkanTim(); break; // Asal: tim/lihat_tim.cpp
                 case 2: buatJadwal(); break; // Asal: admin/buat_jadwal.cpp
+                case 3: menuEditTim(); break; // Asal: tim/edit_tim.cpp
                 case 0:
                     cout << "Logout admin. Kembali ke menu utama." << endl;
                     exitAdmin = true;
@@ -219,42 +225,75 @@ void menuTim() {
     while (!exitTim) {
         tampilkanHeader();
         cout << "\n--- MENU TIM: " << timLogin->nama << " ---" << endl;
-        cout << "1. Edit Data Tim Saya" << endl;
-        cout << "2. Lihat Jadwal Pertandingan" << endl;
-        cout << "3. Cari Profil Lawan" << endl;
-        cout << "4. Lihat Klasemen" << endl;
-        cout << "5. Lihat Bracket" << endl;
-        cout << "0. Logout (Kembali ke Menu Utama)" << endl;
-        cout << "Pilihan: ";
-        cin >> pilihan;
-        cin.ignore(10000, '\n');
+        
+        if (!jadwalSudahDibuat) {
+            cout << "1. Edit Data Tim Saya" << endl;
+            cout << "2. Lihat Jadwal Pertandingan" << endl;
+            cout << "3. Cari Profil Lawan" << endl;
+            cout << "4. Lihat Klasemen" << endl;
+            cout << "5. Lihat Bracket" << endl;
+            cout << "0. Logout (Kembali ke Menu Utama)" << endl;
+            cout << "Pilihan: ";
+            cin >> pilihan;
+            cin.ignore(10000, '\n');
 
-        switch (pilihan) {
-            case 1:
-                if (timLogin->tereleminasi) {
-                    cout << "Tim sudah tereliminasi, tidak bisa edit data." << endl;
-                } else {
-                    editTim(timLogin); // Asal: tim/edit_tim.cpp
-                }
-                break;
-            case 2:
-                tampilJadwal(); // Asal: umum/lihat_jadwal.cpp
-                break;
-            case 3:
-                cariTim(timLogin); // Asal: tim/cari_lawan.cpp
-                break;
-            case 4:
-                tampilKlasemen(); // Asal: umum/lihat_klasemen.cpp
-                break;
-            case 5:
-                tampilBracket(); // Asal: umum/lihat_bracket.cpp
-                break;
-            case 0:
-                cout << "Logout tim. Kembali ke menu utama." << endl;
-                exitTim = true;
-                break;
-            default:
-                cout << "Pilihan tidak valid. Masukkan angka 0-5." << endl;
+            switch (pilihan) {
+                case 1:
+                    if (timLogin->tereleminasi) {
+                        cout << "Tim sudah tereliminasi, tidak bisa edit data." << endl;
+                    } else {
+                        editTim(timLogin); // Asal: tim/edit_tim.cpp
+                    }
+                    break;
+                case 2:
+                    tampilJadwal(); // Asal: umum/lihat_jadwal.cpp
+                    break;
+                case 3:
+                    cariTim(timLogin); // Asal: tim/cari_lawan.cpp
+                    break;
+                case 4:
+                    tampilKlasemen(); // Asal: umum/lihat_klasemen.cpp
+                    break;
+                case 5:
+                    tampilBracket(); // Asal: umum/lihat_bracket.cpp
+                    break;
+                case 0:
+                    cout << "Logout tim. Kembali ke menu utama." << endl;
+                    exitTim = true;
+                    break;
+                default:
+                    cout << "Pilihan tidak valid. Masukkan angka 0-5." << endl;
+            }
+        } else {
+            cout << "1. Lihat Jadwal Pertandingan" << endl;
+            cout << "2. Cari Profil Lawan" << endl;
+            cout << "3. Lihat Klasemen" << endl;
+            cout << "4. Lihat Bracket" << endl;
+            cout << "0. Logout (Kembali ke Menu Utama)" << endl;
+            cout << "Pilihan: ";
+            cin >> pilihan;
+            cin.ignore(10000, '\n');
+
+            switch (pilihan) {
+                case 1:
+                    tampilJadwal(); // Asal: umum/lihat_jadwal.cpp
+                    break;
+                case 2:
+                    cariTim(timLogin); // Asal: tim/cari_lawan.cpp
+                    break;
+                case 3:
+                    tampilKlasemen(); // Asal: umum/lihat_klasemen.cpp
+                    break;
+                case 4:
+                    tampilBracket(); // Asal: umum/lihat_bracket.cpp
+                    break;
+                case 0:
+                    cout << "Logout tim. Kembali ke menu utama." << endl;
+                    exitTim = true;
+                    break;
+                default:
+                    cout << "Pilihan tidak valid. Masukkan angka 0-4." << endl;
+            }
         }
 
         if (!exitTim) {
