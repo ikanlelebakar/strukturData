@@ -76,6 +76,13 @@ void tampilSubjudul(const std::string& judul) {
     std::cout << "┐" << std::endl;
 }
 
+void tampilPilihanMenu(const std::string& opt) {
+    int len = (int)opt.length();
+    int pad = 74 - len; // 78 - 4 spaces padding (2 left, 2 right)
+    if (pad < 0) pad = 0;
+    std::cout << "│  " << opt << std::string(pad, ' ') << "  │" << std::endl;
+}
+
 void tampilMenuBottom() {
     std::cout << "└";
     printHorizontalLine(78, "─");
