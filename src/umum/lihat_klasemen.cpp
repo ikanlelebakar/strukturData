@@ -3,10 +3,10 @@
 
 // Fungsi tampilkan papan klasemen
 void tampilKlasemen() {
-    cout << "\n=== KLASEMEN TURNAMEN ===" << endl;
+    tampilSubjudul("KLASEMEN TURNAMEN");
 
     if (kepala == NULL) {
-        cout << "(Belum ada tim yang terdaftar)" << endl;
+        pesanInfo("Belum ada tim yang terdaftar");
         return;
     }
 
@@ -62,13 +62,13 @@ void tampilKlasemen() {
     }
 
     // Cetak klasemen
-    cout << left
-         << setw(5)  << "No"
-         << setw(20) << "Nama Tim"
-         << setw(8)  << "Poin"
-         << setw(15) << (turnamenSelesai ? "Peringkat" : "Status")
-         << endl;
-    cout << string(50, '-') << endl;
+    vector<int> lebar = {6, 34, 10, 25};
+    vector<char> alinyemen = {'C', 'L', 'C', 'L'};
+    
+    tampilGarisTabel(lebar, 'A');
+    string headerStatus = turnamenSelesai ? "Peringkat" : "Status";
+    tampilBarisTabel({"No", "Nama Tim", "Poin", headerStatus}, lebar, {'C', 'C', 'C', 'C'});
+    tampilGarisTabel(lebar, 'T');
 
     int no = 1;
     NodeTemp *tCurr = headTemp;
@@ -90,17 +90,12 @@ void tampilKlasemen() {
             statusStr = tCurr->tereleminasi ? "Tereliminasi" : "Aktif";
         }
 
-        cout << left
-             << setw(5)  << no
-             << setw(20) << tCurr->nama
-             << setw(8)  << tCurr->poin
-             << setw(15) << statusStr
-             << endl;
+        tampilBarisTabel({to_string(no), tCurr->nama, to_string(tCurr->poin), statusStr}, lebar, alinyemen);
 
         tCurr = tCurr->next;
         no++;
     }
-    cout << string(50, '-') << endl;
+    tampilGarisTabel(lebar, 'B');
 
     // Bebaskan memori list sementara
     NodeTemp *del = headTemp;
