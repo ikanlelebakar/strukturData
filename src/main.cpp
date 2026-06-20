@@ -8,6 +8,7 @@ using namespace std;
 
 // Hubungkan berkas modul lainnya
 #include "umum/models.cpp"
+#include "umum/input_helper.cpp"
 #include "hapus_terminal/utils.cpp"
 #include "umum/search_sort.cpp"
 #include "admin/registrasi_admin.cpp"
@@ -74,9 +75,7 @@ void menuAdmin() {
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
-            int pilihan;
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            int pilihan = ambilInputInt();
             switch (pilihan) {
                 case 1: tampilkanTim(); break; // Asal: tim/lihat_tim.cpp
                 case 2: tampilKlasemen(); break; // Asal: umum/lihat_klasemen.cpp
@@ -97,9 +96,7 @@ void menuAdmin() {
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
-            int pilihan;
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            int pilihan = ambilInputInt();
             switch (pilihan) {
                 case 1: tampilkanTim(); break; // Asal: tim/lihat_tim.cpp
                 case 2: buatJadwalBerikutnya(); break; // Asal: admin/input_hasil.cpp
@@ -122,9 +119,7 @@ void menuAdmin() {
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
-            int pilihan;
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            int pilihan = ambilInputInt();
             switch (pilihan) {
                 case 1: tampilkanTim(); break; // Asal: tim/lihat_tim.cpp
                 case 2: inputHasil(); break; // Asal: admin/input_hasil.cpp
@@ -145,9 +140,7 @@ void menuAdmin() {
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
-            int pilihan;
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            int pilihan = ambilInputInt();
             switch (pilihan) {
                 case 1: tampilkanTim(); break; // Asal: tim/lihat_tim.cpp
                 case 2: buatJadwal(); break; // Asal: admin/buat_jadwal.cpp
@@ -167,9 +160,7 @@ void menuAdmin() {
             cout << "0. Logout Admin" << endl;
             cout << "Pilihan: ";
 
-            int pilihan;
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            int pilihan = ambilInputInt();
             switch (pilihan) {
                 case 1: tampilkanTim(); break; // Asal: tim/lihat_tim.cpp
                 case 2: menuEditTim(); break; // Asal: tim/edit_tim.cpp
@@ -234,8 +225,7 @@ void menuTim() {
             cout << "5. Lihat Bracket" << endl;
             cout << "0. Logout (Kembali ke Menu Utama)" << endl;
             cout << "Pilihan: ";
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            pilihan = ambilInputInt();
 
             switch (pilihan) {
                 case 1:
@@ -271,8 +261,7 @@ void menuTim() {
             cout << "4. Lihat Bracket" << endl;
             cout << "0. Logout (Kembali ke Menu Utama)" << endl;
             cout << "Pilihan: ";
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            pilihan = ambilInputInt();
 
             switch (pilihan) {
                 case 1:
@@ -315,8 +304,7 @@ void menuPenonton() {
         cout << "3. Lihat Klasemen" << endl;
         cout << "0. Kembali ke Menu Utama" << endl;
         cout << "Pilihan: ";
-        cin >> pilihan;
-        cin.ignore(10000, '\n');
+        pilihan = ambilInputInt();
 
         switch (pilihan) {
             case 1:
@@ -362,8 +350,7 @@ int main() {
             cout << "3. Login Admin" << endl;
             cout << "0. Keluar Program" << endl;
             cout << "Pilihan: ";
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            pilihan = ambilInputInt();
 
             switch (pilihan) {
                 case 1:
@@ -390,8 +377,7 @@ int main() {
             cout << "3. Login Admin" << endl;
             cout << "0. Keluar Program" << endl;
             cout << "Pilihan: ";
-            cin >> pilihan;
-            cin.ignore(10000, '\n');
+            pilihan = ambilInputInt();
 
             switch (pilihan) {
                 case 1:

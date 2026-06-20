@@ -37,8 +37,7 @@ void daftarTim() {
     // Input jumlah pemain dengan validasi
     do {
         cout << "Jumlah Pemain (" << MIN_PEMAIN << "-" << MAX_PEMAIN << "): ";
-        cin >> jumlahPemain;
-        cin.ignore(10000, '\n');
+        jumlahPemain = ambilInputInt();
         if (jumlahPemain < MIN_PEMAIN || jumlahPemain > MAX_PEMAIN) {
             cout << "[ERROR] Jumlah pemain harus antara " << MIN_PEMAIN << " dan " << MAX_PEMAIN << "." << endl;
         }

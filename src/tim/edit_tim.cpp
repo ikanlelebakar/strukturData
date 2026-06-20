@@ -16,8 +16,7 @@ void editDataTim(Tim *ptrTim) {
     cout << "4. Ubah Password" << endl;
     cout << "0. Batal" << endl;
     cout << "Pilihan: ";
-    cin >> pilihan;
-    cin.ignore(10000, '\n');
+    pilihan = ambilInputInt();
 
     switch (pilihan) {
         case 1: {
@@ -39,8 +38,7 @@ void editDataTim(Tim *ptrTim) {
             int jumlahBaru;
             do {
                 cout << "Jumlah Pemain Baru (" << MIN_PEMAIN << "-" << MAX_PEMAIN << "): ";
-                cin >> jumlahBaru;
-                cin.ignore(10000, '\n');
+                jumlahBaru = ambilInputInt();
                 if (jumlahBaru < MIN_PEMAIN || jumlahBaru > MAX_PEMAIN) {
                     cout << "Harus antara " << MIN_PEMAIN << " dan " << MAX_PEMAIN << "." << endl;
                 }
