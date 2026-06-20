@@ -171,16 +171,8 @@ void menuAdmin() {
                     } else if (jumlahTim < 2) {
                         cout << "Minimal 2 tim harus terdaftar sebelum menutup pendaftaran." << endl;
                     } else if (!adalahPangkatDua(jumlahTim)) { // Asal: umum/models.cpp
-                        cout << "Jumlah tim saat ini: " << jumlahTim
-                             << " (bukan pangkat 2). Pastikan pangkat 2 sebelum tutup!" << endl;
-                        cout << "Tetap tutup pendaftaran? (y/n): ";
-                        char konfirmasi;
-                        cin >> konfirmasi;
-                        cin.ignore(10000, '\n');
-                        if (konfirmasi == 'y' || konfirmasi == 'Y') {
-                            pendaftaranDitutup = true;
-                            cout << "Pendaftaran ditutup. Tim: " << jumlahTim << endl;
-                        }
+                        cout << "[ERROR] Jumlah tim saat ini: " << jumlahTim
+                             << " (bukan pangkat 2). Pastikan jumlah tim pangkat 2 sebelum menutup pendaftaran." << endl;
                     } else {
                         pendaftaranDitutup = true;
                         cout << "Pendaftaran ditutup! Total " << jumlahTim << " tim terdaftar." << endl;
