@@ -5,20 +5,20 @@
 void daftarTim() {
     // Cek flag pendaftaran
     if (pendaftaranDitutup) {
-        cout << "Pendaftaran sudah ditutup oleh Admin." << endl;
+        pesanWarning("Pendaftaran sudah ditutup oleh Admin.");
         return;
     }
 
     // Cek kuota maksimum
     if (jumlahTim >= MAX_TIM) {
-        cout << "Jumlah tim sudah mencapai batas maksimum (" << MAX_TIM << " tim)." << endl;
+        pesanWarning("Jumlah tim sudah mencapai batas maksimum (" + to_string(MAX_TIM) + " tim).");
         return;
     }
 
     string nama, password;
     int jumlahPemain;
 
-    cout << "\n=== REGISTRASI TIM BARU ===" << endl;
+    tampilSubjudul("REGISTRASI TIM BARU");
 
     // Input nama tim
     cout << "Nama Tim  : ";
@@ -26,7 +26,7 @@ void daftarTim() {
 
     // Cek duplikat nama tim
     if (cariTim(nama) != NULL) {
-        cout << "[DITOLAK] Nama tim \"" << nama << "\" sudah terdaftar. Pilih nama lain." << endl;
+        pesanError("Nama tim \"" + nama + "\" sudah terdaftar. Pilih nama lain.");
         return;
     }
 
@@ -39,7 +39,7 @@ void daftarTim() {
         cout << "Jumlah Pemain (" << MIN_PEMAIN << "-" << MAX_PEMAIN << "): ";
         jumlahPemain = ambilInputInt();
         if (jumlahPemain < MIN_PEMAIN || jumlahPemain > MAX_PEMAIN) {
-            cout << "[ERROR] Jumlah pemain harus antara " << MIN_PEMAIN << " dan " << MAX_PEMAIN << "." << endl;
+            pesanError("Jumlah pemain harus antara " + to_string(MIN_PEMAIN) + " dan " + to_string(MAX_PEMAIN) + ".");
         }
     } while (jumlahPemain < MIN_PEMAIN || jumlahPemain > MAX_PEMAIN);
 
@@ -50,7 +50,7 @@ void daftarTim() {
     baru->jumlahPemain = jumlahPemain;
     
     // Input nama-nama pemain
-    cout << "\n--- Input Nama Pemain ---" << endl;
+    tampilSubjudul("Input Nama Pemain");
     for (int i = 0; i < jumlahPemain; i++) {
         cout << "Nama Pemain " << (i + 1) << ": ";
         getline(cin, baru->pemain[i]);
@@ -72,15 +72,13 @@ void daftarTim() {
     }
 
     jumlahTim++;
-    cout << "Tim \"" << nama << "\" berhasil terdaftar! (Total: "
-         << jumlahTim << "/" << MAX_TIM << " tim)" << endl;
+    pesanOK("Tim \"" + nama + "\" berhasil terdaftar! (Total: " + to_string(jumlahTim) + "/" + to_string(MAX_TIM) + " tim)");
 
     // Otomatis tutup pendaftaran jika kuota penuh
     if (jumlahTim >= MAX_TIM) {
         pendaftaranDitutup = true;
-        cout << "Kuota tim sudah penuh. Pendaftaran otomatis ditutup!" << endl;
+        pesanWarning("Kuota tim sudah penuh. Pendaftaran otomatis ditutup!");
     }
 
-    cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
-    cin.get();
+    tampilPromptKembali();
 }

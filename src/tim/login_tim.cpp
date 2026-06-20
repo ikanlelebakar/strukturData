@@ -5,7 +5,7 @@
 Tim *masukTim() {
     string nama, password;
 
-    cout << "\n=== LOGIN TIM ===" << endl;
+    tampilSubjudul("LOGIN TIM");
     cout << "Nama Tim (Username): ";
     getline(cin, nama);
     cout << "Password          : ";
@@ -15,16 +15,16 @@ Tim *masukTim() {
     while (curr != NULL) {
         if (curr->nama == nama) {
             if (curr->password == password) {
-                cout << "Login berhasil. Selamat datang, Tim " << nama << "!" << endl;
+                pesanOK("Login berhasil. Selamat datang, Tim " + nama + "!");
                 return curr;
             } else {
-                cout << "Password salah." << endl;
+                pesanError("Password salah.");
                 return NULL;
             }
         }
         curr = curr->berikutnya;
     }
 
-    cout << "Tim dengan nama \"" << nama << "\" tidak ditemukan." << endl;
+    pesanError("Tim dengan nama \"" + nama + "\" tidak ditemukan.");
     return NULL;
 }

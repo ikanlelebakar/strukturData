@@ -4,17 +4,18 @@
 // Fungsi pembantu edit data tim via pointer
 void editDataTim(Tim *ptrTim) {
     if (ptrTim == NULL) {
-        cout << "Pointer tim tidak valid." << endl;
+        pesanError("Pointer tim tidak valid.");
         return;
     }
 
     int pilihan;
-    cout << "\n=== EDIT DATA TIM: " << ptrTim->nama << " ===" << endl;
-    cout << "1. Ubah Nama Tim" << endl;
-    cout << "2. Ubah Jumlah Pemain" << endl;
-    cout << "3. Ubah Nama-nama Pemain" << endl;
-    cout << "4. Ubah Password" << endl;
-    cout << "0. Batal" << endl;
+    tampilSubjudul("EDIT DATA TIM: " + ptrTim->nama);
+    tampilPilihanMenu("1. Ubah Nama Tim");
+    tampilPilihanMenu("2. Ubah Jumlah Pemain");
+    tampilPilihanMenu("3. Ubah Nama-nama Pemain");
+    tampilPilihanMenu("4. Ubah Password");
+    tampilPilihanMenu("0. Batal");
+    tampilMenuBottom();
     cout << "Pilihan: ";
     pilihan = ambilInputInt();
 
@@ -27,10 +28,10 @@ void editDataTim(Tim *ptrTim) {
             // Cek duplikat (tidak boleh sama dengan tim lain)
             Tim *existing = cariTim(namaBaru);
             if (existing != NULL && existing != ptrTim) {
-                cout << "Nama \"" << namaBaru << "\" sudah dipakai tim lain." << endl;
+                pesanError("Nama \"" + namaBaru + "\" sudah dipakai tim lain.");
             } else {
                 ptrTim->nama = namaBaru;
-                cout << "Nama tim berhasil diubah menjadi \"" << namaBaru << "\"." << endl;
+                pesanOK("Nama tim berhasil diubah menjadi \"" + namaBaru + "\".");
             }
             break;
         }
@@ -40,21 +41,21 @@ void editDataTim(Tim *ptrTim) {
                 cout << "Jumlah Pemain Baru (" << MIN_PEMAIN << "-" << MAX_PEMAIN << "): ";
                 jumlahBaru = ambilInputInt();
                 if (jumlahBaru < MIN_PEMAIN || jumlahBaru > MAX_PEMAIN) {
-                    cout << "Harus antara " << MIN_PEMAIN << " dan " << MAX_PEMAIN << "." << endl;
+                    pesanError("Harus antara " + to_string(MIN_PEMAIN) + " dan " + to_string(MAX_PEMAIN) + ".");
                 }
             } while (jumlahBaru < MIN_PEMAIN || jumlahBaru > MAX_PEMAIN);
 
             ptrTim->jumlahPemain = jumlahBaru;
-            cout << "\n--- Input Nama Pemain Baru ---" << endl;
+            tampilSubjudul("Input Nama Pemain Baru");
             for (int i = 0; i < jumlahBaru; i++) {
                 cout << "Nama Pemain " << (i + 1) << ": ";
                 getline(cin, ptrTim->pemain[i]);
             }
-            cout << "[SUKSES] Jumlah dan nama pemain berhasil diubah." << endl;
+            pesanOK("Jumlah dan nama pemain berhasil diubah.");
             break;
         }
         case 3: {
-            cout << "\n--- Ubah Nama-nama Pemain ---" << endl;
+            tampilSubjudul("Ubah Nama-nama Pemain");
             for (int i = 0; i < ptrTim->jumlahPemain; i++) {
                 cout << "Nama Pemain " << (i + 1) << " (" << ptrTim->pemain[i] << "): ";
                 string namaBaru;
@@ -63,7 +64,7 @@ void editDataTim(Tim *ptrTim) {
                     ptrTim->pemain[i] = namaBaru;
                 }
             }
-            cout << "[SUKSES] Nama-nama pemain berhasil diperbarui." << endl;
+            pesanOK("Nama-nama pemain berhasil diperbarui.");
             break;
         }
         case 4: {
@@ -71,21 +72,21 @@ void editDataTim(Tim *ptrTim) {
             cout << "Password Baru: ";
             getline(cin, passBaru);
             ptrTim->password = passBaru;
-            cout << "[SUKSES] Password berhasil diubah." << endl;
+            pesanOK("Password berhasil diubah.");
             break;
         }
         case 0:
-            cout << "Edit dibatalkan." << endl;
+            pesanInfo("Edit dibatalkan.");
             break;
         default:
-            cout << "Pilihan tidak valid." << endl;
+            pesanError("Pilihan tidak valid.");
     }
 }
 
 // Fungsi menu edit tim oleh Admin
 void menuEditTim() {
     if (kepala == NULL) {
-        cout << "Belum ada tim yang terdaftar." << endl;
+        pesanWarning("Belum ada tim yang terdaftar.");
         return;
     }
 
@@ -95,7 +96,7 @@ void menuEditTim() {
 
     Tim *target = cariTim(namaCari);
     if (target == NULL) {
-        cout << "Tim \"" << namaCari << "\" tidak ditemukan." << endl;
+        pesanError("Tim \"" + namaCari + "\" tidak ditemukan.");
         return;
     }
 

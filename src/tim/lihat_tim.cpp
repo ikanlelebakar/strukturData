@@ -3,31 +3,36 @@
 
 // Fungsi tampilkan daftar tim
 void tampilkanTim() {
-    cout << "\n=== DAFTAR TIM TERDAFTAR ===" << endl;
+    tampilSubjudul("DAFTAR TIM TERDAFTAR");
 
     if (kepala == NULL) {
-        cout << "(Belum ada tim yang terdaftar)" << endl;
+        pesanInfo("Belum ada tim yang terdaftar");
         return;
     }
 
-    cout << "Total tim: " << jumlahTim << endl;
-    cout << string(50, '-') << endl;
+    vector<int> lebar = {4, 18, 5, 29, 6, 11};
+    vector<char> alinyemen = {'C', 'L', 'C', 'L', 'C', 'C'};
+
+    tampilGarisTabel(lebar, 'A');
+    tampilBarisTabel({"No", "Nama Tim", "Jml", "Pemain", "Poin", "Status"}, lebar, {'C', 'C', 'C', 'C', 'C', 'C'});
+    tampilGarisTabel(lebar, 'T');
 
     int no = 1;
     Tim *curr = kepala;
     while (curr != NULL) {
-        cout << no << ". " << curr->nama << endl;
-        cout << "   Jumlah Pemain : " << curr->jumlahPemain << endl;
-        cout << "   Daftar Pemain : ";
+        string pemainStr = "";
         for (int i = 0; i < curr->jumlahPemain; i++) {
-            cout << curr->pemain[i];
-            if (i < curr->jumlahPemain - 1) cout << ", ";
+            pemainStr += curr->pemain[i];
+            if (i < curr->jumlahPemain - 1) {
+                pemainStr += ", ";
+            }
         }
-        cout << endl;
-        cout << "   Poin          : " << curr->poin << endl;
-        cout << "   Status        : " << (curr->tereleminasi ? "Tereliminasi" : "Aktif") << endl;
-        cout << string(50, '-') << endl;
+        string statusStr = curr->tereleminasi ? "Tereliminasi" : "Aktif";
+        
+        tampilBarisTabel({to_string(no), curr->nama, to_string(curr->jumlahPemain), pemainStr, to_string(curr->poin), statusStr}, lebar, alinyemen);
+        
         curr = curr->berikutnya;
         no++;
     }
+    tampilGarisTabel(lebar, 'B');
 }
